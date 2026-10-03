@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>光的特性 Light Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Science_Glossary.html">← <span style="font-family:var(--zh)">所有章节</span> · All chapters</a>
+  <header>
+    <div class="eyebrow">Sains Tahun 4 SJKC · 第 5 章 · KSSR 科学笔记</div>
+    <h1><span class="zh">光的特性</span>Properties of Light</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 影子, yingzi, shadow…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms come from Chapter 5 of the Standard 4 Science notes (KSSR 科学笔记 4 年级). Page numbers are the note pages. Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const C=(x,y,r,k='fs')=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+const E=(x,y,rx,ry,k='fs')=>`<ellipse class="${k}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+const kid=(x,y,k='fp')=>C(x,y-14,9,k)+PA(`M${x-13} ${y+14} q13 -24 26 0 z`,k);
+const eye=(x,y,s=1)=>PA(`M${x-26*s} ${y} q26 -20 52 0 q-26 20 -52 0 z`,'fp')+C(x,y,9*s,'fa')+C(x,y,4*s,'ink');
+const ear=(x,y)=>PA(`M${x+8} ${y-18} a18 22 0 1 0 -2 38 q8 2 6 -8 q-8 -6 -2 -14 q6 -8 14 -2 q6 -12 -16 -14 z`,'fs');
+const nose=(x,y)=>PA(`M${x} ${y-22} q-4 18 -12 28 q-4 8 6 10 h14 q10 -2 6 -10 q-8 -10 -12 -28 z`,'fs')+PA(`M${x-8} ${y+14} h16`,'s');
+const tongue=(x,y)=>PA(`M${x-24} ${y-12} q24 -16 48 0 q4 26 -24 30 q-28 -4 -24 -30 z`,'fa')+PA(`M${x} ${y-4} v22`,'s');
+const hand=(x,y)=>PA(`M${x-16} ${y+26} v-24 q0 -8 6 -8 q6 0 6 8 v-16 q0 -8 6 -8 q6 0 6 8 v16 q0 -8 6 -8 q6 0 6 8 v24 z`,'fs');
+const cyl=(x,y,h,fill,k='fs')=>R(x,y,26,h,'fp',3)+(fill?R(x+2,y+h-fill,22,fill-2,k,0):'')+[0,1,2,3].map(i=>L(x,y+10+i*(h-16)/3,x+9,y+10+i*(h-16)/3,'s','stroke-width:1.5')).join('');
+const jar=(x,y,lab,k='fs')=>R(x,y,44,34,'fp',3)+R(x+2,y+12,40,20,k,0)+T(x+22,y+50,lab,'t');
+const watch=(x,y)=>C(x,y,24,'fp')+R(x-5,y-30,10,7,'fa',2)+L(x,y,x+12,y-10,'s','stroke-width:2.5')+DOT(x,y,3,'ink');
+const torch=(x,y,a=0)=>`<g transform="translate(${x} ${y}) rotate(${a})">`+R(-26,-9,34,18,'fs',3)+R(8,-12,10,24,'fa',2)+PA('M18 -12 L40 -22 L40 22 L18 12 Z','fs')+'</g>';
+const bulbSun=(x,y,r=16)=>C(x,y,r,'fa')+[0,45,90,135,180,225,270,315].map(a=>L(x+(r+4)*Math.cos(rad(a)),y+(r+4)*Math.sin(rad(a)),x+(r+12)*Math.cos(rad(a)),y+(r+12)*Math.sin(rad(a)),'a','stroke-width:2.5')).join('');
+const ray=(x1,y1,x2,y2)=>L(x1,y1,x2,y2,'a','stroke-width:2.5')+PA(`M${(x1+x2)/2-6} ${(y1+y2)/2-5} l8 5 l-8 5`,'a');
+const F={
+  light:()=>bulbSun(46,56,16)+ray(70,56,170,56)+T(120,86,'光沿直线传播','ta')+T(100,124,'光：让我们看见东西','t'),
+  straight:()=>bulbSun(34,62,14)+[0,1,2].map(i=>ray(54,62,176,30+i*32)).join('')+T(100,122,'光是沿着直线传播的','ta'),
+  source:()=>bulbSun(52,54,17)+C(140,54,20,'fp')+T(140,60,'月','t')+T(52,96,'光源 ✓','ta')+T(140,96,'不是光源','tn')+T(100,130,'光源：自己会发光','t'),
+  shadow:()=>torch(34,58)+R(96,32,22,56,'fa',2)+PA('M126 24 L176 10 L176 110 L126 94 Z','fs')+R(140,38,20,50,'ink',2)+T(100,126,'影子：光被挡住就形成','ta'),
+  form:()=>R(60,30,30,60,'fa',2)+PA('M100 36 L150 30 L150 94 L100 88 Z','ink')+T(100,118,'形成：产生、出现','ta')+T(100,138,'当光被挡住时会形成影子','tn'),
+  clarity:()=>R(24,34,46,60,'fp',3)+R(84,34,46,60,'fs',3)+R(144,34,46,60,'ink',3)+T(47,112,'清楚','t')+T(107,112,'模糊','t')+T(167,112,'很黑','tw').replace('class="tw"','class="t"')+T(100,136,'清晰度：影子有多清楚','ta'),
+  transparent:()=>R(60,28,80,66,'fp',4)+ray(16,61,58,61)+ray(142,61,186,61)+T(100,64,'全部透过','t')+T(100,120,'透明体','ta')+T(100,138,'保鲜膜、透明塑料盒','tn'),
+  translucent:()=>R(60,28,80,66,'fs',4)+ray(16,61,58,61)+PA('M142 61 H168','a')+T(100,64,'部分透过','t')+T(100,120,'半透明体','ta')+T(100,138,'描图纸、墨镜、毛玻璃','tn'),
+  opaque:()=>R(60,28,80,66,'ink',4)+ray(16,61,58,61)+PA('M150 44 L166 60 M166 44 L150 60','a')+T(100,120,'不透明体','ta')+T(100,138,'纸卡、订书机、树枝','tn'),
+  block:()=>torch(28,50)+R(84,26,20,52,'fa',2)+PA('M110 20 L170 8 L170 96 L110 84 Z','ink')+T(94,100,'挡住','ta')+T(100,130,'阻挡：拦住光线','t'),
+  screen:()=>torch(22,54)+R(80,36,16,44,'fa',2)+R(130,16,54,96,'fp',2)+R(142,40,30,48,'fs',2)+T(157,126,'屏幕','ta')+T(60,126,'物体','t'),
+  distance:()=>torch(20,70)+R(70,46,14,44,'fa',2)+R(150,20,34,100,'fp',2)+L(84,96,150,96,'d')+T(117,114,'距离','ta')+T(100,136,'物体与屏幕 / 光源的距离','t'),
+  nearer:()=>torch(16,70)+R(50,50,14,38,'fa',2)+R(150,24,36,92,'fp',2)+R(158,36,20,68,'ink',1)+T(100,20,'物体靠近光源','t')+T(168,130,'影子变大','ta'),
+  further:()=>torch(16,70)+R(100,54,14,32,'fa',2)+R(150,36,36,68,'fp',2)+R(158,54,20,32,'ink',1)+T(100,20,'物体远离光源','t')+T(168,124,'影子变小','ta'),
+  size:()=>R(30,40,20,44,'ink',1)+R(110,24,46,76,'ink',2)+T(40,100,'小','t')+T(133,116,'大','t')+T(100,134,'大小：影子有多大','ta'),
+  shape:()=>R(30,40,34,34,'ink',2)+PA('M110 36 h56 v40 h-56 z','ink')+T(47,96,'正方','t')+T(138,96,'长方','t')+T(100,128,'形状：影子的样子','ta'),
+  position:()=>[30,100,170].map((x,i)=>torch(x-12,30,i===1?30:0)).join('')+R(90,78,20,22,'fs',1)+T(100,128,'手电筒的位置会改变影子','ta'),
+  orient:()=>R(44,40,16,42,'fs',1)+R(40,92,24,10,'ink',0)+R(128,56,44,16,'fs',1)+R(120,92,60,10,'ink',0)+T(52,122,'竖着放','t')+T(150,122,'横着放','t')+T(100,138,'摆放方式：东西怎么放','ta'),
+  more:()=>T(100,40,'距离越远','t')+T(100,70,'↓','ta')+T(100,100,'影子越小','ta')+T(100,134,'越……越……：一起变化','t'),
+  // reflection
+  reflect:()=>R(20,76,160,10,'fs',0)+ray(30,20,96,74)+ray(104,74,170,20)+T(100,110,'光碰到物体会反射','ta')+T(100,134,'反射：光弹回来','t'),
+  smooth:()=>R(20,76,160,10,'fs',0)+[0,1,2].map(i=>ray(30+i*30,20,70+i*30,74)+ray(78+i*30,74,118+i*30,20)).join('')+T(100,112,'表面平滑 → 反射有规律','ta'),
+  rough:()=>PA('M20 86 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 q10 -12 20 0 v10 H20 z','fs')+ray(28,20,60,74)+ray(66,74,96,26)+ray(104,20,130,76)+ray(136,74,176,44)+T(100,114,'表面粗糙 → 漫反射','ta'),
+  ray:()=>R(20,80,160,8,'fs',0)+ray(34,24,92,76)+ray(100,76,158,24)+T(64,44,'入射','tn')+T(132,44,'反射','tn')+T(100,116,'射线图：用箭头画光线','ta'),
+  mirror:()=>R(60,20,80,88,'fp',6)+R(66,26,68,76,'fs',4)+C(100,56,12,'fp')+PA('M88 84 q12 -14 24 0 z','fp')+T(100,132,'镜子：能看见自己的影像','ta'),
+  image:()=>R(104,22,74,84,'fs',4)+C(140,54,13,'fp')+C(56,54,13,'fp')+PA('M40 90 q16 -20 32 0 z','fp')+PA('M124 90 q16 -20 32 0 z','fp')+L(96,16,96,112,'d')+T(56,126,'人','t')+T(140,126,'影像','ta'),
+  sidemirror:()=>PA('M30 40 q40 -16 72 2 l-6 36 q-34 -16 -66 -2 z','fs')+R(120,56,54,34,'fp',4)+C(133,96,8,'ink')+C(161,96,8,'ink')+T(66,104,'后视镜','ta')+T(147,124,'车','t'),
+  convex:()=>PA('M60 100 q40 -90 80 0','a')+C(100,52,6,'fa')+T(100,126,'凸面镜：看见拐角处的车','ta'),
+  periscope:()=>R(70,16,30,96,'fp',2)+R(70,16,30,22,'fs',0)+R(70,90,30,22,'fs',0)+L(76,30,94,48,'a')+L(76,104,94,86,'a')+R(100,20,40,12,'fa',1)+R(30,92,40,12,'fa',1)+T(100,134,'潜望镜：从水下看水面','ta'),
+  dental:()=>PA('M40 92 l56 -46','s')+C(104,40,14,'fs')+PA('M30 86 q12 -6 18 2','s')+T(100,120,'口腔镜：牙医看牙齿内侧','ta'),
+  // refraction
+  refract:()=>R(30,56,140,52,'fs',0)+ray(30,16,96,56)+L(96,56,130,106,'a','stroke-width:2.5')+L(96,56,118,16,'d')+T(100,128,'折射：光进入水时改变方向','ta'),
+  medium:()=>R(20,56,160,52,'fs',0)+T(100,40,'空气','t')+T(100,86,'水','tw')+L(20,56,180,56,'s','stroke-width:2.5')+T(100,130,'介质：光经过的东西','ta'),
+  bent:()=>R(30,52,140,56,'fs',0)+L(60,20,100,52,'s','stroke-width:4')+L(100,52,150,96,'s','stroke-width:4')+T(100,130,'铅笔看起来弯曲了','ta'),
+  shallow:()=>R(26,46,148,62,'fs',0)+E(96,96,16,8,'ink')+E(96,70,16,8,'fp')+PA('M60 24 q20 30 36 46','d')+T(140,70,'看起来','tn')+T(100,128,'较浅：看起来比真的浅','ta'),
+  bigger:()=>R(60,40,54,70,'fs',4)+T(87,84,'大','tb').replace('class="tb"','class="tb" style="font-size:30px"')+T(150,84,'小','t')+T(100,134,'隔着水看，字体变大','ta'),
+  rainbow:()=>[0,1,2,3,4,5,6].map(i=>PA(`M${24+i*5} 120 a${76-i*5} ${76-i*5} 0 0 1 ${152-i*10} 0`,'a')).join('')+T(100,30,'彩虹','ta')+T(100,138,'红橙黄绿蓝靛紫','t'),
+  seven:()=>[0,1,2,3,4,5,6].map(i=>R(16+i*24,40,22,40,'fa',2)).join('')+T(100,100,'七种颜色','ta')+T(100,130,'白色光由七彩光线组成','t'),
+  disperse:()=>bulbSun(34,44,14)+PA('M52 50 L108 70','a')+[0,1,2,3].map(i=>PA(`M108 70 L176 ${40+i*16}`,'a')).join('')+C(112,70,14,'fp')+T(112,110,'雨滴','t')+T(100,136,'分散：把光分开成七彩','ta'),
+  raindrop:()=>[40,100,160].map(x=>PA(`M${x} 30 q16 26 0 36 q-16 -10 0 -36 z`,'fs')).join('')+T(100,106,'雨滴','ta')+T(100,132,'雨后天空中的小水滴','t'),
+  white:()=>R(20,50,60,30,'fp',2)+PA('M80 50 L120 80 L120 50 Z','fs')+[0,1,2,3].map(i=>PA(`M120 65 L180 ${44+i*14}`,'a')).join('')+T(50,96,'白色光','t')+T(150,100,'七彩','ta')
+};
+const SECTIONS=[
+  {id:'travel',zh:'光的传播与影子',py:'guāng de chuán bō yǔ yǐng zi',en:'Light & shadows',color:'--c1',pg:'Notes pp. 49–53'},
+  {id:'reflect',zh:'光的反射',py:'guāng de fǎn shè',en:'Reflection',color:'--c2',pg:'Notes pp. 54–56'},
+  {id:'refract',zh:'光的折射',py:'guāng de zhé shè',en:'Refraction',color:'--c3',pg:'Notes pp. 57–60'}
+];
+const TERMS=[
+ {s:'travel',zh:'光',py:'guāng',en:'light',bm:'cahaya',pg:49,f:'light',def:'What lets us see things. Light comes from the sun, lamps, fire and torches.'},
+ {s:'travel',zh:'沿直线传播',py:'yán zhí xiàn chuán bō',en:'travels in a straight line',say:'travels in a straight line',bm:'bergerak lurus',pg:49,f:'straight',def:'Light always moves in straight lines — it cannot bend around a corner.'},
+ {s:'travel',zh:'光源',py:'guāng yuán',en:'light source',bm:'sumber cahaya',pg:51,f:'source',def:'Something that gives out its own light, like the sun or a torch.'},
+ {s:'travel',zh:'影子',py:'yǐng zi',en:'shadow',bm:'bayang-bayang',pg:49,f:'shadow',def:'The dark shape made when an object blocks the light.'},
+ {s:'travel',zh:'形成',py:'xíng chéng',en:'to form',bm:'terbentuk',pg:49,f:'form',def:'To be made or to appear.',tip:'例：当光被物体挡住时会形成阴影。'},
+ {s:'travel',zh:'清晰度',py:'qīng xī dù',en:'clarity (how clear)',bm:'kejelasan',pg:49,f:'clarity',def:'How clear or sharp a shadow is. It depends on the kind of object blocking the light.'},
+ {s:'travel',zh:'透明体',py:'tòu míng tǐ',en:'transparent object',bm:'objek lut sinar',pg:50,f:'transparent',def:'Lets all the light pass through, so it makes almost no shadow.',tip:'例：保鲜膜、透明塑料盒、透明文件夹'},
+ {s:'travel',zh:'半透明体',py:'bàn tòu míng tǐ',en:'translucent object',bm:'objek lut cahaya',pg:50,f:'translucent',def:'Lets only some of the light pass through, so the shadow is faint.',tip:'例：描图纸、墨镜、毛玻璃'},
+ {s:'travel',zh:'不透明体',py:'bú tòu míng tǐ',en:'opaque object',bm:'objek legap',pg:50,f:'opaque',def:'Lets no light pass through, so the shadow is dark and clear.',tip:'例：纸卡、订书机、树枝'},
+ {s:'travel',zh:'阻挡',py:'zǔ dǎng',en:'to block',bm:'menghalang',pg:50,f:'block',def:'To stop the light getting through.'},
+ {s:'travel',zh:'屏幕',py:'píng mù',en:'screen',bm:'skrin',pg:52,f:'screen',def:'The flat surface where the shadow appears.'},
+ {s:'travel',zh:'距离',py:'jù lí',en:'distance',bm:'jarak',pg:51,f:'distance',def:'How far apart two things are — here, the object, the light source and the screen.'},
+ {s:'travel',zh:'越近越大',py:'yuè jìn yuè dà',en:'the nearer, the bigger',say:'the nearer the bigger',bm:'semakin dekat, semakin besar',pg:51,f:'nearer',def:'Move the object nearer the light source and its shadow gets bigger.'},
+ {s:'travel',zh:'越远越小',py:'yuè yuǎn yuè xiǎo',en:'the further, the smaller',say:'the further the smaller',bm:'semakin jauh, semakin kecil',pg:51,f:'further',def:'Move the object further from the light source and its shadow gets smaller.',tip:'屏幕与物体的距离越远，影子越大。'},
+ {s:'travel',zh:'大小',py:'dà xiǎo',en:'size',bm:'saiz',pg:51,f:'size',def:'How big something is.'},
+ {s:'travel',zh:'形状',py:'xíng zhuàng',en:'shape',bm:'bentuk',pg:53,f:'shape',def:'What something looks like — round, square, long.'},
+ {s:'travel',zh:'手电筒的位置',py:'shǒu diàn tǒng de wèi zhì',en:'position of the torch',say:'position of the torch',bm:'kedudukan lampu',pg:53,f:'position',def:'Where the light shines from. Move the torch and the shape of the shadow changes.'},
+ {s:'travel',zh:'摆放方式',py:'bǎi fàng fāng shì',en:'orientation (how it is placed)',say:'orientation',bm:'orientasi objek',pg:53,f:'orient',def:'Which way round the object is put. Turning it changes the shape of the shadow.'},
+ {s:'travel',zh:'越……越……',py:'yuè … yuè …',en:'the more … the more …',say:'the more, the more',bm:'semakin … semakin …',pg:51,f:'more',def:'Shows that two things change together.',tip:'例：距离越远，影子的大小越小。'},
+ // reflection
+ {s:'reflect',zh:'反射',py:'fǎn shè',en:'reflection',bm:'pantulan',pg:54,f:'reflect',def:'When light hits a surface and bounces off, changing direction.'},
+ {s:'reflect',zh:'平滑',py:'píng huá',en:'smooth / flat',bm:'rata dan licin',pg:54,f:'smooth',def:'A flat, shiny surface. Light bounces off it in a regular way, so you see a clear image.'},
+ {s:'reflect',zh:'粗糙',py:'cū cāo',en:'rough',bm:'kasar',pg:54,f:'rough',def:'An uneven surface. Light bounces off in all directions.'},
+ {s:'reflect',zh:'漫反射',py:'màn fǎn shè',en:'irregular reflection',bm:'pantulan tidak teratur',pg:54,f:'rough',def:'The scattered reflection you get from a rough surface.'},
+ {s:'reflect',zh:'射线图',py:'shè xiàn tú',en:'ray diagram',bm:'gambar rajah sinar',pg:54,f:'ray',def:'A drawing with arrows showing where the light goes.'},
+ {s:'reflect',zh:'镜子',py:'jìng zi',en:'mirror',bm:'cermin',pg:56,f:'mirror',def:'A smooth, shiny surface that reflects light so we can see ourselves.'},
+ {s:'reflect',zh:'影像',py:'yǐng xiàng',en:'image / reflection',bm:'imej / pantulan',pg:56,f:'image',def:'What you see in a mirror.'},
+ {s:'reflect',zh:'后视镜',py:'hòu shì jìng',en:'rear-view / side mirror',say:'rear view mirror',bm:'cermin sisi',pg:55,f:'sidemirror',def:'The mirror on a car that shows the driver what is behind.'},
+ {s:'reflect',zh:'凸面镜',py:'tū miàn jìng',en:'convex mirror',bm:'cermin cembung',pg:55,f:'convex',def:'A mirror that curves outwards. Put at road corners so drivers can see round the bend.'},
+ {s:'reflect',zh:'潜望镜',py:'qián wàng jìng',en:'periscope',bm:'periskop',pg:55,f:'periscope',def:'A tube with two mirrors. A submarine uses it to see above the water.'},
+ {s:'reflect',zh:'口腔镜',py:'kǒu qiāng jìng',en:'dental mirror',bm:'cermin pergigian',pg:56,f:'dental',def:'A small mirror that lets a dentist see the inside of your teeth.'},
+ // refraction
+ {s:'refract',zh:'折射',py:'zhé shè',en:'refraction',bm:'pembiasan',pg:57,f:'refract',def:'When light goes from one material into another, like air into water, it changes direction.'},
+ {s:'refract',zh:'介质',py:'jiè zhì',en:'medium',bm:'medium',pg:57,f:'medium',def:'The material light travels through, such as air, water or glass.'},
+ {s:'refract',zh:'弯曲',py:'wān qū',en:'bent',bm:'bengkok',pg:57,f:'bent',def:'Looking bent, not straight.',tip:'例：光线从水进入空气，使铅笔看起来弯曲了。'},
+ {s:'refract',zh:'较浅',py:'jiào qiǎn',en:'shallower',bm:'lebih cetek',pg:57,f:'shallow',def:'Looking less deep than it really is.',tip:'例：泳池看起来比实际的深度来得浅。'},
+ {s:'refract',zh:'变大',py:'biàn dà',en:'look bigger',bm:'kelihatan lebih besar',pg:59,f:'bigger',def:'Letters look bigger when you look through a glass of water.'},
+ {s:'refract',zh:'彩虹',py:'cǎi hóng',en:'rainbow',bm:'pelangi',pg:60,f:'rainbow',def:'The arc of seven colours in the sky after rain.'},
+ {s:'refract',zh:'七彩',py:'qī cǎi',en:'seven colours',say:'seven colours',bm:'tujuh warna',pg:60,f:'seven',def:'Red, orange, yellow, green, blue, indigo and purple.',tip:'红、橙、黄、绿、蓝、靛、紫'},
+ {s:'refract',zh:'分散',py:'fēn sàn',en:'to disperse / split',bm:'memencarkan',pg:60,f:'disperse',def:'To split white light into its colours.'},
+ {s:'refract',zh:'雨滴',py:'yǔ dī',en:'raindrop',bm:'titisan hujan',pg:60,f:'raindrop',def:'A tiny drop of rain. Light refracts inside raindrops to make a rainbow.'},
+ {s:'refract',zh:'白色光',py:'bái sè guāng',en:'white light',bm:'cahaya putih',pg:60,f:'white',def:'The ordinary light we see. It is made up of seven colours mixed together.'}
+];
+const COMMON=new Set();
+
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “guancha”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

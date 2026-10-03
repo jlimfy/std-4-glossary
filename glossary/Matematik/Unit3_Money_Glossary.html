@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>钱币 Money Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 3 单元 · pp. 83–117</div>
+    <h1><span class="zh">钱币</span>Money</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 储蓄, chuxu, savings…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 3 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const rmNote=(x,y,v,k='fs',w=74,h=40)=>R(x,y,w,h,k,5)+`<circle class="fp" cx="${x+w-14}" cy="${y+h/2}" r="8"/>`+T(x+28,y+h/2+5,v,k==='fa'?'tw':'t');
+const coin=(x,y,v,r=17)=>`<circle class="fs" cx="${x}" cy="${y}" r="${r}"/><circle class="fx" cx="${x}" cy="${y}" r="${r-4}" style="stroke-width:1.2"/>`+T(x,y+4,v,'tn');
+const card=(x,y,lab,k='fa')=>R(x,y,96,60,k,8)+R(x+10,y+14,18,13,'fp',2)+L(x+10,y+40,x+60,y+40,k==='fa'?'s':'s','stroke-width:2;stroke:var(--paper)')+T(x+48,y+54,lab,k==='fa'?'tw':'t');
+const man=(x,y,k='fp')=>`<circle class="${k}" cx="${x}" cy="${y-12}" r="8"/>`+PA(`M${x-12} ${y+12} q12 -22 24 0 z`,k);
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+function qr(x,y,s){const pat='1110111010110101111010101011101100011101011011110110111';let o=R(x,y,s*7,s*7,'fp',0);for(let i=0;i<49;i++)if(pat[i]==='1')o+=R(x+(i%7)*s,y+Math.floor(i/7)*s,s,s,'ink',0).replace('class="ink"','class="ink" style="stroke:none"');return o;}
+function tag(x,y,v,sub){return PA(`M${x} ${y} H${x+90} L${x+114} ${y+30} L${x+90} ${y+60} H${x} Z`,'fs')+`<circle class="fp" cx="${x+96}" cy="${y+30}" r="5"/>`+T(x+46,y+36,v,'tb').replace('class="tb"','class="tb" style="font-size:15px"')+(sub?T(x+46,y+50,sub,'t'):'');}
+const F={
+  money:()=>rmNote(18,26,'RM50','fa')+rmNote(108,26,'RM10')+coin(60,96,'50仙')+coin(100,96,'20仙')+coin(140,96,'10仙')+T(100,134,'纸币和硬币','ta'),
+  ringgit:()=>rmNote(56,30,'RM1','fa',88,48)+T(100,104,'RM = 令吉','ta')+T(100,128,'1 令吉 = 100 仙','t'),
+  sen:()=>coin(50,54,'10仙',20)+coin(100,54,'20仙',20)+coin(150,54,'50仙',20)+T(100,104,'仙 = sen','ta')+T(100,128,'100 仙 = RM1','t'),
+  value:()=>BT(100,62,'RM15 297.90','tba',24)+T(100,96,'令吉 . 仙','t')+T(100,126,'钱的数值','ta'),
+  amount:()=>R(24,24,152,72,'fp',4)+R(24,24,152,22,'fa',4)+T(64,40,'项目','tw')+T(136,40,'数额','tw')+T(64,64,'电费','t')+T(136,64,'RM159.25','ta')+T(64,88,'水费','t')+T(136,88,'RM41.00','ta')+T(100,124,'数额：一笔钱有多少','t'),
+  total:()=>R(20,40,50,26,'fa',0)+R(70,40,40,26,'fs',0)+R(110,40,70,26,'fa',0)+T(45,58,'电费','tw')+T(90,58,'水费','tn')+T(145,58,'装修费','tw')+PA('M20 76 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+T(100,120,'总额 = 全部加起来','ta'),
+  unitprice:()=>tag(40,30,'RM6 899','一台')+T(100,126,'单价：一个的价钱','ta'),
+  quantity:()=>[0,1,2,3,4,5,6,7].map(i=>R(16+(i%4)*44,20+Math.floor(i/4)*40,36,26,'fs',3)+R(28+(i%4)*44,46+Math.floor(i/4)*40,12,6,'fp',1)).join('')+T(100,120,'数量：8 台','ta'),
+  spend:()=>R(24,40,70,50,'fa',8)+R(70,54,24,22,'fp',4)+PA('M104 64 H136','a')+PA('M130 58 L138 64 L130 70','a')+coin(160,50,'RM',14)+coin(166,82,'RM',14)+T(100,126,'花费：把钱用掉','ta'),
+  consume:()=>PA('M60 50 H140 L132 112 H68 Z','fs')+PA('M80 50 q0 -24 20 -24 q20 0 20 24','s')+T(100,88,'RM','ta')+T(100,134,'消费：买东西、用服务','t'),
+  expense:()=>R(40,18,120,92,'fp',4)+['电费','水费','装修费'].map((s,i)=>T(76,44+i*26,s,'t')+L(104,40+i*26,146,40+i*26,'d')).join('')+T(100,134,'开销：要付的各种费用','ta'),
+  price:()=>tag(40,30,'RM1 999.90')+T(100,122,'价格：东西卖多少钱','ta'),
+  cheap:()=>qBar(30,'A 店',70,'fa','RM89 687')+qBar(72,'B 店',120,'fs','RM90 000')+T(100,128,'A 店比较便宜','ta'),
+  dear:()=>qBar(30,'A 店',70,'fs','RM89 687')+qBar(72,'B 店',120,'fa','RM90 000')+T(100,128,'B 店比较贵','ta'),
+  offer:()=>[...Array(11)].map((_,i)=>R(8+i*17,44,14,24,i===10?'fa':'fs',2)).join('')+T(100,34,'买 10 送 1','ta')+T(100,96,'付 10 台的钱，得 11 台','t')+T(100,126,'优惠：比较便宜的交易','ta'),
+  quick:()=>T(100,40,'RM603.10 × 100','t')+T(100,64,'小数点向右移 2 位','tn')+T(100,92,'= RM60 310','ta')+T(100,126,'× 10 / 100 / 1 000 心算','t'),
+  share:()=>man(30,60)+man(65,60)+man(100,60)+man(135,60)+man(170,60)+[30,65,100,135,170].map(x=>coin(x,96,'',10)).join('')+T(100,132,'RM49 485.75 ÷ 5','ta'),
+  // planning
+  savings:()=>`<ellipse class="fa" cx="98" cy="68" rx="52" ry="36"/>`+R(84,30,28,5,'fp',2)+`<circle class="fp" cx="130" cy="58" r="4"/>`+R(62,96,12,18,'fa',2)+R(118,96,12,18,'fa',2)+coin(98,18,'RM',11)+T(100,136,'储蓄：把钱存起来','ta'),
+  invest:()=>coin(70,104,'',16)+coin(70,94,'',16)+coin(70,84,'RM',16)+PA('M70 68 V28','s')+PA('M70 44 q-22 -4 -26 -20 q20 0 26 20','fs')+PA('M70 36 q22 -4 26 -20 q-20 0 -26 20','fs')+PA('M112 90 L140 64 L156 74 L184 40','a')+PA('M174 40 H184 V50','a')+T(100,134,'投资：用钱去赚更多钱','ta'),
+  risk:()=>PA('M40 100 A60 60 0 0 1 160 100','s')+PA('M130 48 A60 60 0 0 1 160 100','a').replace('class="a"','class="a" style="stroke-width:10"')+L(100,100,142,62,'s','stroke-width:4')+DOT(100,100,6,'ink')+T(50,118,'低','tn')+T(152,118,'高','ta')+T(100,136,'风险：可能亏钱','ta'),
+  returns:()=>[20,36,56,80].map((h,i)=>R(40+i*32,100-h,24,h,i===3?'fa':'fs',2)).join('')+L(30,100,172,100,'s','stroke-width:2')+T(100,126,'回酬：投资赚回来的钱','ta'),
+  income:()=>coin(40,60,'RM',16)+PA('M60 60 H104','a')+PA('M98 54 L106 60 L98 66','a')+R(116,38,64,46,'fa',8)+T(100,118,'收入：得到的钱','ta')+T(100,136,'例：零用、薪水','t'),
+  pocket:()=>coin(60,60,'RM1',18)+coin(100,60,'RM1',18)+coin(140,60,'RM1',18)+T(100,106,'每天 RM6','t')+T(100,130,'零用：家人给的钱','ta'),
+  budget:()=>R(22,16,156,94,'fp',4)+R(22,16,156,22,'fa',4)+T(60,32,'项目','tw')+T(140,32,'数额','tw')+[['收入','RM36.00'],['储蓄','RM22.50'],['消费','RM13.50']].map((r,i)=>T(60,58+i*22,r[0],'t')+T(140,58+i*22,r[1],'t')).join('')+T(100,132,'预算：先计划怎么用钱','ta'),
+  incexp:()=>R(20,24,76,70,'fs',6)+R(104,24,76,70,'fp',6)+T(58,52,'收入','t')+T(58,78,'+ 钱进来','ta')+T(142,52,'支出','t')+T(142,78,'− 钱出去','tn')+T(100,128,'收支：进来和出去的钱','ta'),
+  need:()=>PA('M50 60 H150 Q146 110 100 110 Q54 110 50 60 Z','fa')+PA('M70 60 q10 -20 20 0 q10 -20 20 0 q10 -20 20 0','s')+T(100,134,'需求：生活一定要有的','ta'),
+  want:()=>PA('M100 22 L112 52 L144 54 L119 74 L128 106 L100 88 L72 106 L81 74 L56 54 L88 52 Z','fs')+T(100,134,'要求：想要，但不是必需','ta'),
+  donate:()=>R(50,50,100,64,'fs',6)+R(84,44,32,8,'ink',2)+PA('M100 96 q-18 -12 -18 -24 q0 -10 9 -10 q9 0 9 8 q0 -8 9 -8 q9 0 9 10 q0 12 -18 24 z','fa')+coin(100,22,'RM',11)+T(100,136,'捐款：把钱送给需要的人','ta'),
+  balance:()=>R(20,44,160,34,'fs',0)+R(20,44,90,34,'fa',0)+T(65,66,'用了','tw')+T(145,66,'余额','ta')+T(100,112,'剩下的钱','t')+T(100,134,'余额 RM11.40','ta'),
+  compare:()=>['A 店','B 店','C 店'].map((s,i)=>R(18+i*60,34,48,56,i===1?'fa':'fs',6)+T(42+i*60,56,s,i===1?'tw':'t')+T(42+i*60,78,['RM12','RM9','RM11'][i],i===1?'tw':'tn')).join('')+T(100,120,'货比三家','ta')+T(100,138,'比较价钱和品质','t'),
+  target:()=>[40,28,16].map((r,i)=>`<circle class="${i%2?'fp':'fs'}" cx="84" cy="66" r="${r}"/>`).join('')+DOT(84,66,6)+PA('M150 20 L90 62','a')+T(154,100,'✓','ta').replace('class="ta"','class="ta" style="font-size:30px"')+T(100,134,'达标：达到目标','ta'),
+  // payment
+  currency:()=>['RM','$','€','£','¥','₩'].map((s,i)=>`<circle class="${i?'fs':'fa'}" cx="${40+(i%3)*60}" cy="${36+Math.floor(i/3)*50}" r="20"/>`+T(40+(i%3)*60,42+Math.floor(i/3)*50,s,i?'t':'tw')).join('')+T(100,134,'货币：各国用的钱','ta'),
+  rate:()=>coin(46,56,'RM1',22)+BT(100,64,'=','tb')+coin(154,56,'$0.24',22)+T(100,106,'1 令吉 = 0.240 美元','t')+T(100,130,'汇率：换钱的比率','ta'),
+  pay:()=>card(14,34,'CARD')+coin(150,44,'RM',18)+rmNote(122,76,'RM10','fs',66,30)+T(100,134,'付款：给钱买东西','ta'),
+  cash:()=>rmNote(20,30,'RM50','fa')+rmNote(106,30,'RM20')+coin(70,100,'50仙')+coin(130,100,'20仙')+T(100,138,'现金','ta'),
+  cheque:()=>R(14,30,172,76,'fp',4)+T(40,52,'Bank','tn')+L(30,66,120,66,'s','stroke-width:1.5')+R(128,56,48,18,'fs',2)+T(152,70,'RM','tn')+L(30,86,100,86,'s','stroke-width:1.5')+PA('M120 90 q10 -14 18 0 t18 -4','a')+T(100,130,'支票：向银行取钱的票据','ta'),
+  debit:()=>card(52,26,'DEBIT')+T(100,112,'钱直接从户头扣除','t')+T(100,134,'借记卡','ta'),
+  credit:()=>card(52,26,'CREDIT')+T(100,112,'先消费，后还款','t')+T(100,134,'信用卡','ta'),
+  prepaid:()=>card(52,26,'PREPAID','fs')+T(100,112,'先加额，再使用','t')+T(100,134,'预付卡','ta'),
+  online:()=>R(40,26,120,72,'fp',6)+R(48,34,104,56,'fs',2)+T(100,68,'Pay RM','t')+PA('M28 104 H172 L164 112 H36 Z','fa')+T(100,134,'在线支付：在网上付钱','ta'),
+  ewallet:()=>R(70,14,60,104,'fp',10)+qr(79,36,6)+T(100,106,'扫描','tn')+T(100,136,'电子钱包','ta'),
+  qrcode:()=>qr(65,18,10)+T(100,112,'用手机扫描','t')+T(100,134,'二维码','ta'),
+  postal:()=>R(30,34,140,74,'fs',4)+PA('M30 34 L100 80 L170 34','s')+R(136,44,24,26,'fa',2)+T(100,134,'邮政汇票：在邮政局汇款','ta'),
+  bank:()=>PA('M30 50 L100 18 L170 50 Z','fa')+[0,1,2,3].map(i=>R(44+i*34,56,14,44,'fs',0)).join('')+R(30,100,140,10,'fa',0)+T(100,134,'银行：存钱、取钱的地方','ta'),
+  // question words
+  respectively:()=>R(18,30,74,54,'fs',6)+T(55,52,'A 店','t')+T(55,74,'8 台 = ?','ta')+R(108,30,74,54,'fs',6)+T(145,52,'B 店','t')+T(145,74,'8 台 = ?','ta')+T(100,118,'分别：一个一个算出来','ta'),
+  compareq:()=>qText('比较便宜',[['从哪一家买比较便宜？'],['比一比，选便宜的','ta']],24),
+  more:()=>qCmp('more'), less:()=>qCmp('less'),
+  addup:()=>man(40,60)+T(76,62,'+','tb')+man(112,60)+BT(146,66,'=','tb')+R(160,40,30,34,'fa',4)+T(100,120,'加起来：合在一起','ta'),
+  between:()=>L(16,70,184,70,'s')+R(70,62,70,16,'fa',3)+[['RM19 000',70],['RM20 000',140]].map(([s,x])=>L(x,64,x,76,'s','stroke-width:2')+T(x,96,s,'tn')).join('')+T(105,50,'介于这里','ta')+T(100,128,'介于……至……：在两个数之间','t'),
+  exceed:()=>R(20,48,170,30,'fa',0)+L(140,34,140,92,'d')+T(140,28,'预算','ta')+T(166,110,'超出','ta')+T(100,134,'超出：比限定的多','t'),
+  enough:()=>coin(40,50,'RM5',18)+coin(80,50,'RM5',18)+coin(60,82,'RM2',14)+BT(112,72,'≥','tb')+R(128,46,58,40,'fs',6)+T(157,71,'RM11','t')+T(100,124,'足以购买 ✓','ta'),
+  atleast:()=>BT(100,66,'≥ RM3','tba',34)+T(100,100,'RM3 或更多','t')+T(100,128,'至少：最少也要','ta'),
+  eachperson:()=>[40,85,130,175].map(x=>man(x-10,56)+coin(x-10,92,'RM',11)).join('')+T(100,130,'每人：每一个人','ta'),
+  trial:()=>T(100,30,'试一：RM21 100 ✗','t')+T(100,56,'试二：RM18 700 ✗','t')+T(100,82,'试三：RM20 000 ✓','ta')+T(100,122,'尝试法：试到找到答案','ta')
+};
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'calc',zh:'币值与运算',py:'bì zhí yǔ yùn suàn',en:'Money & calculating',color:'--c1',pg:'pp. 83–96'},
+  {id:'plan',zh:'理财',py:'lǐ cái',en:'Managing money',color:'--c2',pg:'pp. 97–103'},
+  {id:'pay',zh:'货币与付款',py:'huò bì yǔ fù kuǎn',en:'Currencies & paying',color:'--c3',pg:'pp. 104–108'},
+  {id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'pp. 84–117'}
+];
+const TERMS=[
+ {s:'calc',zh:'钱币',py:'qián bì',en:'money (notes & coins)',bm:'wang',pg:83,f:'money',def:'The notes and coins we use to buy things.'},
+ {s:'calc',zh:'令吉',py:'lìng jí',en:'ringgit (RM)',say:'ringgit',bm:'ringgit',pg:83,f:'ringgit',def:'Malaysia’s money. Written RM before the number, like RM10.',tip:'1 令吉 = 100 仙'},
+ {s:'calc',zh:'仙',py:'xiān',en:'sen',bm:'sen',pg:83,f:'sen',def:'A smaller unit of Malaysian money. 100 sen = RM1.',tip:'RM0.50 = 50 仙'},
+ {s:'calc',zh:'币值',py:'bì zhí',en:'money value',bm:'nilai wang',pg:84,f:'value',def:'An amount of money written with RM, like RM15 297.90.',tip:'币值的加法 → adding amounts of money'},
+ {s:'calc',zh:'数额',py:'shù é',en:'amount (of money)',bm:'amaun',pg:84,f:'amount',def:'How much money one item or payment is.'},
+ {s:'calc',zh:'总额',py:'zǒng é',en:'total amount',bm:'jumlah',pg:84,f:'total',def:'All the amounts added together.',tip:'例：计算开销的总额。'},
+ {s:'calc',zh:'价格',py:'jià gé',en:'price',bm:'harga',pg:90,f:'price',def:'How much you must pay to buy something.'},
+ {s:'calc',zh:'单价',py:'dān jià',en:'price of one (unit price)',bm:'harga seunit',pg:91,f:'unitprice',def:'The price of one item.',tip:'Total = unit price × quantity'},
+ {s:'calc',zh:'数量',py:'shù liàng',en:'quantity',bm:'kuantiti',pg:91,f:'quantity',def:'How many items there are.'},
+ {s:'calc',zh:'花费',py:'huā fèi',en:'spend',bm:'belanja',pg:84,f:'spend',def:'Use money to pay for things.',tip:'例：共花费了多少钱？'},
+ {s:'calc',zh:'消费',py:'xiāo fèi',en:'spending / buying',bm:'perbelanjaan',pg:84,f:'consume',def:'Using money to buy goods or services.'},
+ {s:'calc',zh:'开销',py:'kāi xiāo',en:'expenses',bm:'perbelanjaan',pg:85,f:'expense',def:'Money that has to be paid out, like electricity and water bills.'},
+ {s:'calc',zh:'便宜',py:'pián yi',en:'cheap',bm:'murah',pg:90,f:'cheap',def:'Costs less money.',tip:'例：从哪一家购入 13 台电脑比较便宜？'},
+ {s:'calc',zh:'贵',py:'guì',en:'expensive',bm:'mahal',pg:90,f:'dear',def:'Costs more money.'},
+ {s:'calc',zh:'优惠',py:'yōu huì',en:'special offer / discount',bm:'tawaran istimewa',pg:90,f:'offer',def:'A deal from a shop that lets you pay less.',tip:'例：买 10 送 1 → pay for 10, get 11.'},
+ {s:'calc',zh:'速算法',py:'sù suàn fǎ',en:'quick calculation',bm:'kaedah pengiraan pantas',pg:91,f:'quick',def:'A shortcut. For × or ÷ 10, 100 or 1 000, just move the decimal point.'},
+ {s:'calc',zh:'平分',py:'píng fēn',en:'share equally',bm:'bahagi sama rata',pg:92,f:'share',def:'Divide money so everyone gets the same amount.',tip:'例：RM49 485.75 将会平分给 5 人。'},
+ // planning
+ {s:'plan',zh:'储蓄',py:'chǔ xù',en:'savings / save',bm:'simpanan',pg:97,f:'savings',def:'Money you keep and don’t spend.',tip:'先储蓄后消费 → save first, then spend.'},
+ {s:'plan',zh:'投资',py:'tóu zī',en:'invest',bm:'pelaburan',pg:86,f:'invest',def:'Putting money into something so it can grow into more money.'},
+ {s:'plan',zh:'风险',py:'fēng xiǎn',en:'risk',bm:'risiko',pg:86,f:'risk',def:'The chance of losing money.',tip:'风险高 = high risk · 风险低 = low risk'},
+ {s:'plan',zh:'回酬',py:'huí chóu',en:'returns / profit',bm:'pulangan',pg:86,f:'returns',def:'The money you get back from investing.'},
+ {s:'plan',zh:'收入',py:'shōu rù',en:'income',bm:'pendapatan',pg:99,f:'income',def:'Money that you receive, like pocket money or a salary.'},
+ {s:'plan',zh:'零用',py:'líng yòng',en:'pocket money',bm:'wang saku',pg:99,f:'pocket',def:'Money your family gives you to spend or save.'},
+ {s:'plan',zh:'预算',py:'yù suàn',en:'budget',bm:'bajet',pg:99,f:'budget',def:'A plan of how much money you will get, save and spend.',tip:'例：收支预算表 → a budget table.'},
+ {s:'plan',zh:'收支',py:'shōu zhī',en:'income & spending',bm:'pendapatan dan perbelanjaan',pg:99,f:'incexp',def:'Money coming in (收) and money going out (支).'},
+ {s:'plan',zh:'需求',py:'xū qiú',en:'needs',bm:'keperluan',pg:100,f:'need',def:'Things you must have, like food and water.',tip:'先满足需求 → take care of needs first.'},
+ {s:'plan',zh:'要求',py:'yāo qiú',en:'wants',bm:'kehendak',pg:100,f:'want',def:'Things you would like to have but don’t really need, like toys.'},
+ {s:'plan',zh:'捐款',py:'juān kuǎn',en:'donation',bm:'derma',pg:94,f:'donate',def:'Money given to help other people.'},
+ {s:'plan',zh:'余额',py:'yú é',en:'balance (money left)',bm:'baki',pg:102,f:'balance',def:'The money that is left after spending.'},
+ {s:'plan',zh:'货比三家',py:'huò bǐ sān jiā',en:'compare prices at shops',bm:'bandingkan harga',pg:101,f:'compare',def:'Check prices and quality at several shops before you buy.'},
+ {s:'plan',zh:'达标',py:'dá biāo',en:'reach the target',bm:'mencapai sasaran',pg:99,f:'target',def:'You reached the goal you set. 不达标 means you did not.'},
+ // paying
+ {s:'pay',zh:'货币',py:'huò bì',en:'currency',bm:'mata wang',pg:104,f:'currency',def:'The kind of money a country uses, like the ringgit, dollar or yen.'},
+ {s:'pay',zh:'汇率',py:'huì lǜ',en:'exchange rate',bm:'kadar pertukaran',pg:105,f:'rate',def:'How much of another currency you get for 1 ringgit. It can change.',tip:'例：1 令吉 = 0.240 美元（2019 年）'},
+ {s:'pay',zh:'付款',py:'fù kuǎn',en:'payment / pay',bm:'bayaran',pg:106,f:'pay',def:'Giving money to pay for something.',tip:'付款工具 → ways to pay'},
+ {s:'pay',zh:'现金',py:'xiàn jīn',en:'cash',bm:'wang tunai',pg:106,f:'cash',def:'Notes and coins. The most basic way to pay.'},
+ {s:'pay',zh:'支票',py:'zhī piào',en:'cheque',bm:'cek',pg:106,f:'cheque',def:'A signed paper that tells the bank to pay money from your account.'},
+ {s:'pay',zh:'借记卡',py:'jiè jì kǎ',en:'debit card',bm:'kad debit',pg:106,f:'debit',def:'A card that takes the money straight out of your bank account.'},
+ {s:'pay',zh:'信用卡',py:'xìn yòng kǎ',en:'credit card',bm:'kad kredit',pg:106,f:'credit',def:'A card that lets you buy now and pay the bank back later.'},
+ {s:'pay',zh:'预付卡',py:'yù fù kǎ',en:'prepaid card',bm:'kad prabayar',pg:107,f:'prepaid',def:'Put money on the card first, then use it — often for buses, trains and tolls.'},
+ {s:'pay',zh:'在线支付',py:'zài xiàn zhī fù',en:'online payment',bm:'pembayaran dalam talian',pg:107,f:'online',def:'Paying on the internet, like buying bus tickets or paying bills.'},
+ {s:'pay',zh:'电子钱包',py:'diàn zǐ qián bāo',en:'e-wallet',bm:'e-dompet',pg:107,f:'ewallet',def:'An app on a phone. Scan a QR code to pay.'},
+ {s:'pay',zh:'二维码',py:'èr wéi mǎ',en:'QR code',bm:'kod QR',pg:83,f:'qrcode',def:'A square code that a phone can scan.'},
+ {s:'pay',zh:'邮政汇票',py:'yóu zhèng huì piào',en:'postal order',bm:'kiriman wang pos',pg:107,f:'postal',def:'A paper bought at the post office to send money to someone.'},
+ {s:'pay',zh:'银行',py:'yín háng',en:'bank',bm:'bank',pg:97,f:'bank',def:'A place that keeps your money safe. You can save and take out money there.'},
+ // question words
+ {s:'q',zh:'分别',py:'fēn bié',en:'each separately',bm:'masing-masing',pg:90,f:'respectively',def:'Work out the answer for each one on its own.',tip:'例：在两家电脑店各订购 8 台电脑，分别需多少钱？'},
+ {s:'q',zh:'比较',py:'bǐ jiào',en:'compare / rather',bm:'bandingkan / lebih',pg:90,f:'compareq',def:'To look at two things to see which is more or less. Also used like “more”: 比较便宜 = cheaper.'},
+ {s:'q',zh:'比……多',py:'bǐ … duō',en:'more than',bm:'lebih daripada',pg:88,f:'more',def:'The first amount is bigger by this much. Add.',tip:'例：我拥有的资金比二哥多 RM40 860。'},
+ {s:'q',zh:'比……少',py:'bǐ … shǎo',en:'less than',bm:'kurang daripada',pg:88,f:'less',def:'The first amount is smaller by this much. Subtract.',tip:'例：我的资金比大哥少 RM18 000。'},
+ {s:'q',zh:'加起来',py:'jiā qǐ lái',en:'added together',bm:'dicampurkan',pg:88,f:'addup',def:'Put the amounts together.',tip:'例：比大哥和三弟加起来还少 RM12 860。'},
+ {s:'q',zh:'介于……至……',py:'jiè yú … zhì …',en:'between … and …',bm:'di antara … hingga …',pg:109,f:'between',def:'The answer must be inside this range.',tip:'例：总值介于 RM19 000 至 RM20 000'},
+ {s:'q',zh:'超出',py:'chāo chū',en:'go over / exceed',bm:'melebihi',pg:109,f:'exceed',def:'More than the limit.',tip:'例：超出预算 → over budget.'},
+ {s:'q',zh:'足以',py:'zú yǐ',en:'enough to',bm:'cukup untuk',pg:102,f:'enough',def:'There is enough money to do it.',tip:'例：余额足以购买一个文具盒。'},
+ {s:'q',zh:'至少',py:'zhì shǎo',en:'at least',bm:'sekurang-kurangnya',pg:98,f:'atleast',def:'This amount or more — not less.',tip:'例：我每天必须至少将 RM3 储蓄起来。'},
+ {s:'q',zh:'每人',py:'měi rén',en:'each person',bm:'setiap orang',pg:92,f:'eachperson',def:'For every single person. Usually divide.',tip:'例：每人会有多少钱？'},
+ {s:'q',zh:'尝试法',py:'cháng shì fǎ',en:'trial and error',bm:'cuba jaya',pg:109,f:'trial',def:'Try different answers and check each one until one works.'}
+];
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “chuxu”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

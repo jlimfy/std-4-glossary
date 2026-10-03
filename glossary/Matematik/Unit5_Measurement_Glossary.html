@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>度量衡 Measurement Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 5 单元 · pp. 156–190</div>
+    <h1><span class="zh">度量衡</span>Measurement</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 公里, gongli, kilometre…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 5 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019) and the EPH workbook (Workbook pp. 65–67). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+function ruler(x0,y0,w,h,n,labels,unit,hi){
+  const step=(w-16)/n;let o=R(x0,y0,w,h,'fp',4);
+  if(hi!=null)o+=R(x0+8+hi*step,y0+1,step,h*0.45,'fa');
+  for(let i=0;i<=n;i++){const x=x0+8+i*step;o+=L(x,y0,x,y0+h*0.45,'s','stroke-width:2');if(labels)o+=T(x,y0+h-6,labels(i),'tn');
+    if(i<n&&n<=12)o+=L(x+step/2,y0,x+step/2,y0+h*0.25,'s','stroke-width:1.2');}
+  if(unit)o+=T(x0+w-12,y0+h*0.6,unit,'tn');
+  return o;
+}
+function bottle(x,y,lab,fill){
+  return R(x-9,y,18,9,'fa',2)+R(x-7,y+9,14,18,'fp',2)+R(x-20,y+26,40,72,fill?'fs':'fp',9)+(lab?T(x,y+68,lab,'t'):'');
+}
+function cup(x,y,lab,h=46){
+  return PA(`M${x-22} ${y} L${x-16} ${y+h} H${x+16} L${x+22} ${y} Z`,'fp')+PA(`M${x-20} ${y+10} L${x-16} ${y+h} H${x+16} L${x+20} ${y+10} Z`,'fs')+(lab?T(x,y+h+16,lab,'t'):'');
+}
+function person(x,foot,hgt){
+  const top=foot-hgt;return `<circle class="fp" cx="${x}" cy="${top+11}" r="11"/>`+L(x,top+22,x,foot-34)+L(x-16,top+38,x+16,top+38)+L(x,foot-34,x-11,foot)+L(x,foot-34,x+11,foot);
+}
+const F={
+  measure:()=>[['长度','cm',14],['质量','kg',76],['体积','l',138]].map(([a,b,x])=>R(x,30,48,60,'fs',8)+T(x+24,56,a,'t')+T(x+24,78,b,'ta')).join('')+T(100,128,'量长度、质量和体积','ta'),
+  unit:()=>T(78,62,'142','tb')+T(134,62,'厘米','tba')+L(62,72,94,72,'s','stroke-width:2')+L(112,72,156,72,'a')+T(78,92,'数目','t')+T(134,92,'单位','ta')+T(100,128,'数目后面要写单位'),
+  length:()=>R(30,52,120,18,'fs',3)+PA('M150 52 L178 61 L150 70 Z','fp')+R(24,52,8,18,'fa',2)+L(24,92,178,92,'d')+L(24,84,24,100,'a','stroke-width:2')+L(178,84,178,100,'a','stroke-width:2')+T(100,112,'从一头到另一头','ta')+T(100,134,'长度：有多长'),
+  mm:()=>{let o=R(16,40,168,44,'fp',4)+R(30+3*14,41,14,18,'fa');for(let i=0;i<=10;i++)o+=L(30+i*14,40,30+i*14,i%5?56:66,'s',i%5?'stroke-width:1.5':'stroke-width:2.5');return o+T(30,78,'0','tn')+T(170,78,'1 cm','tn')+T(79,30,'1 mm','ta')+T(100,112,'1 cm 里有 10 小格','t')+T(100,134,'10 mm = 1 cm','ta');},
+  cm:()=>ruler(12,44,176,40,10,i=>i,'',2)+T(24+2.5*16,34,'1 cm','ta')+T(100,112,'尺上一大格','t')+T(100,134,'1 cm = 10 mm','ta'),
+  m:()=>cells(10,10,{w:180,ch:30,y:44,lab:()=>'10'})+T(100,32,'每格 10 cm','tn')+T(100,108,'10 × 10 cm = 100 cm','t')+T(100,134,'1 m = 100 cm','ta'),
+  km:()=>R(14,60,172,20,'fs',4)+[0,250,500,750,1000].map((v,i)=>L(20+i*40,56,20+i*40,84,'s','stroke-width:2')+T(20+i*40,100,v,'tn')).join('')+PA('M20 50 Q100 22 180 50','a')+T(100,26,'1 km','ta')+T(186,112,'m','tn')+T(100,132,'1 km = 1 000 m','ta'),
+  height:()=>person(80,116,96)+L(30,116,170,116,'s','stroke-width:2')+L(122,20,122,116,'a')+L(114,20,130,20,'a','stroke-width:2')+T(154,72,'142 cm','ta')+T(100,136,'身高：人有多高','t'),
+  thick:()=>R(40,58,120,26,'fs',3)+[0,1,2].map(i=>L(44,66+i*6,156,66+i*6,'s','stroke-width:1')).join('')+L(172,58,172,84,'a')+L(166,58,178,58,'a','stroke-width:2')+L(166,84,178,84,'a','stroke-width:2')+T(172,106,'15 mm','ta')+T(100,40,'书','t')+T(100,134,'厚度：有多厚','t'),
+  distance:()=>PA('M35 70 Q70 30 100 66 T165 60','d')+DOT(35,70,7,'ink')+DOT(165,60,7,'ink')+T(35,94,'芙蓉','t')+T(165,84,'吉隆坡','t')+T(100,36,'59 km','ta')+T(100,132,'距离：两地相隔多远','t'),
+  measuring:()=>R(30,34,122,14,'fs',3)+`<circle class="fs" cx="162" cy="41" r="13"/><circle class="fp" cx="164" cy="41" r="4"/>`+ruler(22,58,164,34,10,i=>i,'')+L(30,26,30,98,'a','stroke-width:2')+T(52,116,'从 0 开始','ta')+T(118,132,'约 9 cm 5 mm','t'),
+  ruler:()=>ruler(12,44,176,44,10,i=>i,'')+T(100,106,'cm','tn')+T(100,130,'用尺测量和画直线','ta'),
+  mass:()=>L(100,48,100,112)+L(70,112,130,112)+L(36,48,164,48)+L(40,48,28,78,'s','stroke-width:1.5')+L(40,48,52,78,'s','stroke-width:1.5')+L(160,48,148,78,'s','stroke-width:1.5')+L(160,48,172,78,'s','stroke-width:1.5')+PA('M22 78 Q40 94 58 78 Z','fp')+PA('M142 78 Q160 94 178 78 Z','fp')+`<circle class="fa" cx="40" cy="64" r="13"/>`+R(148,62,24,16,'fs',2)+T(160,74,'1 kg','tn')+DOT(100,46,5,'ink')+T(100,134,'质量：东西有多重','ta'),
+  gram:()=>[0,1,2,3].map(i=>R(22+i*40,46,36,36,i===0?'fa':'fs',4)+T(40+i*40,69,'250 g',i===0?'tw':'tn')).join('')+T(100,106,'4 × 250 g = 1 000 g','t')+T(100,132,'1 000 g = 1 kg','ta'),
+  kg:()=>PA('M70 44 H130 L144 112 H56 Z','fs')+PA('M84 44 q16 -26 32 0','s')+T(100,86,'1 kg','tb')+T(100,134,'1 kg = 1 000 g','ta'),
+  weight:()=>person(100,100,84)+R(66,100,68,16,'fa',4)+T(100,112,'46 kg','tw')+T(100,136,'体重：身体有多重','t'),
+  half:()=>PA('M95 28 A42 42 0 0 0 95 112 Z','fa')+PA('M105 28 A42 42 0 0 1 105 112 Z','fs')+T(100,18,'1 kg 的西瓜','t')+T(100,136,'一半 = 500 g','ta'),
+  liquid:()=>PA('M58 26 L70 116 H130 L142 26','s')+PA('M64 66 q9 -7 18 0 t18 0 t18 0 t18 0 L130 116 H70 Z','fs')+PA('M100 12 q-7 10 0 14 q7 -4 0 -14 z','fa')+T(100,136,'液体会流动','ta'),
+  liqvol:()=>R(70,20,56,96,'fp',3)+R(71,44,54,71,'fs')+[250,500,750,1000].map((v,i)=>L(126,116-i*24,114,116-i*24,'s','stroke-width:1.5')+T(150,120-i*24,v,'tn')).join('')+T(172,20,'ml','tn')+T(100,136,'液体体积：有多少液体','ta'),
+  ml:()=>cup(100,40,'',60)+T(100,78,'330','t')+T(100,92,'ml','t')+T(100,120,'一杯 330 ml','t')+T(100,138,'1 000 ml = 1 l','ta'),
+  litre:()=>bottle(100,16,'1 l',true)+T(100,134,'1 l = 1 000 ml','ta'),
+  cup:()=>cup(60,40,'330 ml')+cup(140,40,'330 ml')+T(100,56,'+','tb')+T(100,130,'2 杯 = 660 ml','ta'),
+  bottle:()=>bottle(100,12,'1 200',true)+T(100,96,'ml','t')+T(100,134,'一瓶橙汁','ta'),
+  single:()=>T(100,60,'67 mm','tb')+L(60,72,140,72,'a')+T(100,94,'只有一个单位','ta')+T(100,130,'单名数','t'),
+  compound:()=>T(100,60,'6 cm 7 mm','tb')+L(46,72,94,72,'a')+L(106,72,154,72,'a')+T(70,92,'cm','ta')+T(130,92,'mm','ta')+T(100,130,'= 67 mm','t'),
+  convert:()=>['mm','cm','m','km'].map((u,i)=>R(8+i*48,52,40,28,'fs',6)+T(28+i*48,71,u,'t')).join('')+['10','100','1 000'].map((n,i)=>T(52+i*48,40,'÷'+n,'ta')+T(52+i*48,100,'×'+n,'tn')).join('')+T(100,20,'小 → 大：除','t')+T(100,132,'大 → 小：乘','t'),
+  carry:()=>vcalc(['cm','mm'],'+',[['35','9'],['62','3']],['97','12'],[['满 10 mm 进 1 cm'],['→ 98 cm 2 mm','t']]),
+  borrow:()=>vcalc(['kg','g'],'−',[['75','2'],['36','240']],['38','762'],[['借 1 kg = 1 000 g']],T(76,24,'74','ta')+L(88,44,112,28,'a','stroke-width:2')+T(178,24,'1 002','ta')+L(142,44,158,28,'a','stroke-width:2')),
+  mixed:()=>L(14,72,186,72,'s')+[[0,'0'],[400,'400'],[700,'700'],[1000,'1 000']].map(([v,l])=>L(20+v*.16,67,20+v*.16,77,'s','stroke-width:2')+T(20+v*.16,90,l,'tn')).join('')+PA('M20 66 Q52 40 84 66','a')+T(52,48,'+400','ta')+PA('M84 66 Q132 26 180 66','a')+T(132,40,'+600','ta')+PA('M180 96 Q156 118 132 96','a')+T(156,128,'−300','ta')+T(100,18,'400 g + 600 g − 300 g','t')+T(48,128,'= 700 g','ta'),
+  order:()=>T(100,30,'2 100 − 1 280 + 1 180','t')+T(100,52,'↓ 调换次序','tn')+T(100,74,'2 100 + 1 180 − 1 280','t')+T(100,98,'= 3 280 − 1 280','t')+T(100,126,'= 2 000 ml','ta'),
+  check:()=>T(100,34,'3 468 mm ÷ 6 = 578 mm','t')+T(100,64,'验算','tn')+T(100,90,'578 × 6 = 3 468 ✓','ta')+T(100,126,'用乘法检查除法','t'),
+  estimate:()=>L(20,64,180,64,'s','stroke-width:2')+DOT(20,64,6,'ink')+DOT(90,64,6,'ink')+DOT(180,64,6,'ink')+PA('M20 58 Q55 30 90 58','a')+T(55,34,'10 km','ta')+PA('M90 58 Q135 22 180 58','d')+T(135,26,'?','ta')+T(100,96,'差不多是 2 倍','t')+T(100,128,'≈ 大约 20 km','ta'),
+  simplest:()=>T(100,40,'101 cm 20 mm','tb')+L(40,34,160,34,'a','stroke-width:3')+T(188,44,'✗','ta')+T(100,68,'20 mm = 2 cm','tn')+T(100,100,'103 cm','tb')+T(160,102,'✓','ta')+T(100,132,'最简：小单位不能再换','t'),
+  line:()=>L(14,76,186,76,'s')+Array.from({length:11},(_,i)=>L(20+i*16,70,20+i*16,82,'s','stroke-width:2')+T(20+i*16,98,i,'tn')).join('')+PA('M36 70 Q84 30 132 70','a')+T(84,40,'+6','ta')+DOT(132,76,6)+T(100,130,'1 + 6 = 7','ta'),
+  calc:()=>R(56,10,88,120,'fp',10)+R(64,18,72,26,'dgr',4)+`<text class="dg" x="100" y="39" style="font-size:18px">578</text>`+Array.from({length:12},(_,i)=>R(66+(i%4)*18,52+Math.floor(i/4)*24,14,18,i===11?'fa':'fs',3)).join('')+T(100,140,'用计算器验算','ta'),
+  share:()=>[0,1,2,3,4,5].map(i=>cup(35+(i%3)*65,14+Math.floor(i/3)*56,'',30)+T(35+(i%3)*65,58+Math.floor(i/3)*56,'600 ml','tn')).join('')+T(100,134,'3 600 ml ÷ 6 = 600 ml','ta'),
+  metric:()=>T(100,34,'长度：mm · cm · m · km','t')+T(100,64,'质量：g · kg','t')+T(100,94,'体积：ml · l','t')+T(100,130,'用 10、100、1 000 换算','ta'),
+  imperial:()=>{let o=R(24,40,152,56,'fp',4);for(let i=0;i<=5;i++)o+=L(30+i*24,40,30+i*24,54,'s','stroke-width:2')+T(30+i*24,66,i,'tn');for(let i=0;i<=2;i++)o+=L(30+i*61,96,30+i*61,80,'a','stroke-width:3')+T(30+i*61,112,i,'ta');return o+T(166,66,'cm','tn')+T(166,112,'in','ta')+T(100,24,'英寸 in · 英尺 ft · 码 yd · 英里 mi','tn')+T(100,136,'1 英寸 ≈ 2.5 cm','ta');}
+};
+
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'len',zh:'长度',py:'cháng dù',en:'Length',color:'--c1',pg:'pp. 156–169'},
+  {id:'mass',zh:'质量',py:'zhì liàng',en:'Mass',color:'--c2',pg:'pp. 157, 170–174'},
+  {id:'liq',zh:'液体的体积',py:'yè tǐ de tǐ jī',en:'Volume of liquid',color:'--c3',pg:'pp. 157, 175–179'},
+  {id:'calc',zh:'换算与运算',py:'huàn suàn yǔ yùn suàn',en:'Converting & calculating',color:'--c4',pg:'pp. 158–190'}
+];
+const TERMS=[
+ // length
+ {s:'len',zh:'度量衡',py:'dù liáng héng',en:'measurement',bm:'ukuran dan sukatan',pg:156,f:'measure',def:'Measuring how long, how heavy and how much something holds.'},
+ {s:'len',zh:'单位',py:'dān wèi',en:'unit',bm:'unit',pg:156,f:'unit',def:'The name after a number that tells what we measured in, like cm, kg or ml.'},
+ {s:'len',zh:'长度',py:'cháng dù',en:'length',bm:'panjang',pg:156,f:'length',def:'How long something is, from one end to the other.'},
+ {s:'len',zh:'毫米',py:'háo mǐ',en:'millimetre (mm)',say:'millimetre',bm:'milimeter',pg:158,f:'mm',def:'A very small unit of length. It is one small mark on a ruler.',tip:'10 mm = 1 cm'},
+ {s:'len',zh:'厘米',py:'lí mǐ',en:'centimetre (cm)',say:'centimetre',bm:'sentimeter',pg:158,f:'cm',def:'A small unit of length, about as wide as your fingernail.',tip:'Change cm to mm: × 10. Change mm to cm: ÷ 10.'},
+ {s:'len',zh:'米',py:'mǐ',en:'metre (m)',say:'metre',bm:'meter',pg:159,f:'m',def:'A unit of length equal to 100 centimetres, about one big step.',tip:'100 cm = 1 m'},
+ {s:'len',zh:'公里',py:'gōng lǐ',en:'kilometre (km)',say:'kilometre',bm:'kilometer',pg:159,f:'km',def:'A long unit of length for distances between places. It equals 1 000 metres.',tip:'9 km 300 m = 9 000 m + 300 m = 9 300 m'},
+ {s:'len',zh:'身高',py:'shēn gāo',en:'height (of a person)',bm:'tinggi badan',pg:156,f:'height',def:'How tall a person is, from the feet to the top of the head.'},
+ {s:'len',zh:'厚度',py:'hòu dù',en:'thickness',bm:'ketebalan',pg:160,f:'thick',def:'How thick something is, like a book.'},
+ {s:'len',zh:'距离',py:'jù lí',en:'distance',bm:'jarak',pg:156,f:'distance',def:'How far apart two places are.'},
+ {s:'len',zh:'测量',py:'cè liáng',en:'to measure',bm:'mengukur',pg:160,f:'measuring',def:'To find the size of something using a tool, such as a ruler.',tip:'Line up the object with the “0” on the ruler.'},
+ {s:'len',zh:'尺',py:'chǐ',en:'ruler',bm:'pembaris',pg:160,f:'ruler',def:'A straight tool marked in cm and mm, used for measuring length.'},
+ // mass
+ {s:'mass',zh:'质量',py:'zhì liàng',en:'mass (weight)',bm:'jisim',pg:157,f:'mass',def:'How heavy something is.'},
+ {s:'mass',zh:'克',py:'kè',en:'gram (g)',say:'gram',bm:'gram',pg:157,f:'gram',def:'A small unit of mass for light things.',tip:'1 000 g = 1 kg'},
+ {s:'mass',zh:'公斤',py:'gōng jīn',en:'kilogram (kg)',say:'kilogram',bm:'kilogram',pg:157,f:'kg',def:'A unit of mass for heavier things. It equals 1 000 grams.',tip:'Also called 千克 (qiān kè).'},
+ {s:'mass',zh:'体重',py:'tǐ zhòng',en:'body weight',bm:'berat badan',pg:171,f:'weight',def:'How heavy a person’s body is.'},
+ {s:'mass',zh:'一半',py:'yí bàn',en:'half',bm:'separuh',pg:157,f:'half',def:'One of two equal parts. To find half, divide by 2.'},
+ // liquid
+ {s:'liq',zh:'液体',py:'yè tǐ',en:'liquid',bm:'cecair',pg:157,f:'liquid',def:'Something that flows and can be poured, like water, juice or milk.'},
+ {s:'liq',zh:'液体体积',py:'yè tǐ tǐ jī',en:'volume of liquid',bm:'isi padu cecair',pg:157,f:'liqvol',def:'How much liquid there is, or how much a container holds.'},
+ {s:'liq',zh:'毫升',py:'háo shēng',en:'millilitre (ml)',say:'millilitre',bm:'mililiter',pg:157,f:'ml',def:'A small unit for measuring liquid.',tip:'1 000 ml = 1 l'},
+ {s:'liq',zh:'升',py:'shēng',en:'litre (l)',say:'litre',bm:'liter',pg:157,f:'litre',def:'A bigger unit for measuring liquid. It equals 1 000 millilitres.',tip:'13 l = 13 000 ml'},
+ {s:'liq',zh:'杯',py:'bēi',en:'cup / glass',bm:'cawan',pg:157,f:'cup',def:'A small container for drinking. Also used to count drinks: 2 杯.'},
+ {s:'liq',zh:'瓶',py:'píng',en:'bottle',bm:'botol',pg:177,f:'bottle',def:'A container for liquids. Also used to count them: 3 瓶橙汁.'},
+ // converting & calculating
+ {s:'calc',zh:'换算',py:'huàn suàn',en:'convert (change units)',bm:'tukar unit',pg:158,f:'convert',def:'To change a measurement from one unit to another.',tip:'Big unit → small unit: multiply. Small → big: divide.'},
+ {s:'calc',zh:'单名数',py:'dān míng shù',en:'amount with one unit',bm:'unit tunggal',pg:159,f:'single',def:'A measurement written with just one unit, like 67 mm.'},
+ {s:'calc',zh:'复名数',py:'fù míng shù',en:'amount with two units',bm:'unit campuran',pg:159,f:'compound',def:'One measurement written with two units together, like 6 cm 7 mm.',tip:'6 cm 7 mm = 67 mm'},
+ {s:'calc',zh:'进位',py:'jìn wèi',en:'carry over (regroup)',bm:'mengumpul semula',pg:161,f:'carry',def:'When adding, once the small unit is full (10 mm, 1 000 m, 1 000 g, 1 000 ml), change it into 1 of the bigger unit.'},
+ {s:'calc',zh:'借',py:'jiè',en:'borrow (regroup)',bm:'pinjam',pg:163,f:'borrow',def:'When subtracting and the small unit is not enough, take 1 from the big unit and change it into small units.',tip:'Borrow 1 cm = 10 mm · 1 km = 1 000 m · 1 kg = 1 000 g · 1 l = 1 000 ml'},
+ {s:'calc',zh:'混合运算',py:'hùn hé yùn suàn',en:'mixed operations',bm:'operasi bergabung',pg:170,f:'mixed',def:'A sum with more than one kind of operation, like + and − together.'},
+ {s:'calc',zh:'运算次序',py:'yùn suàn cì xù',en:'order of operations',bm:'tertib operasi',pg:175,f:'order',def:'Which part of a sum you work out first. With only + and −, you can sometimes swap the order to make it easier.'},
+ {s:'calc',zh:'验算',py:'yàn suàn',en:'check the answer',bm:'semak jawapan',pg:161,f:'check',def:'Working the sum another way to make sure the answer is right.',tip:'Check ÷ with ×, and − with +.'},
+ {s:'calc',zh:'估算',py:'gū suàn',en:'estimate',bm:'menganggar',pg:160,f:'estimate',def:'To make a sensible guess of a measurement, like the distance between two towns.'},
+ {s:'calc',zh:'最简',py:'zuì jiǎn',en:'simplest form',bm:'bentuk termudah',pg:161,f:'simplest',def:'The answer is written so the small unit can’t be changed into the big unit any more.'},
+ {s:'calc',zh:'数轴',py:'shù zhóu',en:'number line',bm:'garis nombor',pg:170,f:'line',def:'A line with numbers in order. Jumps along it show adding and subtracting.'},
+ {s:'calc',zh:'计算器',py:'jì suàn qì',en:'calculator',bm:'kalkulator',pg:178,f:'calc',def:'A machine for working out sums. Useful for checking answers.'},
+ {s:'calc',zh:'平分',py:'píng fēn',en:'share equally',bm:'bahagi sama rata',pg:177,f:'share',def:'To divide something so everyone gets the same amount.'},
+ {s:'calc',zh:'公制',py:'gōng zhì',en:'metric system',bm:'sistem metrik',pg:157,f:'metric',def:'The measuring system we use: mm, cm, m, km, g, kg, ml and l.'},
+ {s:'calc',zh:'英制',py:'yīng zhì',en:'imperial system',bm:'sistem imperial',pg:157,f:'imperial',def:'An older measuring system that uses inches, feet, yards and miles, and pounds and gallons.'}
+];
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+Object.assign(F,{
+  container:()=>qP('M36 40 h12 v10 q18 8 18 30 q0 30 -24 30 h0 q-24 0 -24 -30 q0 -22 18 -30 z','fs')+qP('M82 62 h44 q0 36 -22 36 q-22 0 -22 -36 z','fs')+qR(142,50,32,50,'fs',6)+qR(150,40,16,10,'fp',2)+qT(40,124,'R','t')+qT(104,124,'S','t')+qT(158,124,'T','t')+qT(100,20,'容器：装东西的器具','ta'),
+  balance:()=>F.mass(),
+  level:()=>qL(20,72,180,72,'s','stroke-width:4')+qP('M100 76 L88 100 H112 Z','fa')+qR(30,44,32,28,'fs',2)+qT(46,63,'9 kg','tn')+[0,1,2].map(i=>qC(132+i*16,62,8,'fa')).join('')+qC(140,48,8,'fa')+qC(156,48,8,'fa')+qT(100,126,'平衡：两边一样重','ta'),
+  scale:()=>qR(40,58,120,56,'fp',6)+qR(52,70,60,30,'dgr',3)+qT(82,91,'3.7 kg','dg','font-size:14px')+qR(120,70,30,30,'fs',2)+[0,1,2,3,4].map(i=>`<ellipse class="fs" cx="${58+i*21}" cy="46" rx="14" ry="9"/>`).join('')+qT(100,136,'电子秤显示质量','ta'),
+  picture:()=>qPic(),
+  total:()=>qR(20,40,70,26,'fa',0)+qR(90,40,90,26,'fs',0)+qT(55,58,'5 l','tw')+qT(135,58,'2 l 550 ml','tn')+qP('M20 76 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+qT(100,118,'总体积','ta')+qT(100,138,'全部加起来'),
+  diff:()=>qCmp('diff'), short:()=>qCmp('short'),
+  each:()=>[40,140].map(x=>qC(x,40,12,'fp')+qR(x-26,64,22,28,'fs',3)+qR(x+4,64,22,28,'fs',3)).join('')+qT(100,118,'各喝了 2 杯','ta')+qT(100,138,'每人都一样'),
+  remain:()=>qFrac(4,3,'剩余 3 份','倒走 1 份，剩下 3 份')+qR(137.5,34,37.5,44,'d',0),
+  takeaway:()=>[0,1,2,3,4].map(i=>`<ellipse class="${i<3?'fa':'fs'}" cx="${28+i*36}" cy="60" rx="16" ry="11"${i>2?' style="opacity:.45"':''}/>`).join('')+qP('M136 40 q20 -20 40 -6','a')+qT(100,106,'拿走 2 个','ta')+qT(100,134,'剩下 3 个'),
+  same:()=>qC(64,60,22,'fa')+qC(136,60,22,'fa')+qT(100,66,'=','tb')+qT(100,112,'大小相同','ta')+qT(100,134,'一模一样'),
+  equal:()=>qR(30,40,60,40,'fs',4)+qT(60,65,'8 个','t')+qT(100,68,'=','tb')+qR(110,40,60,40,'fs',4)+qT(140,65,'3 袋','t')+qT(100,112,'质量相等','ta')+qT(100,134,'一样多、一样重'),
+  prove:()=>qText('证明',[['计算给大家看'],['左边 = 右边 ✓','ta']]),
+  quarter:()=>qFrac(4,1,'四分之一 = 1/4','分成 4 份，取 1 份'),
+  third:()=>qFrac(3,1,'三分之一 = 1/3','分成 3 份，取 1 份'),
+  divideinto:()=>qCut(10)+qT(100,112,'平分成 10 杯','ta')+qT(100,134,'分成一样多的几份'),
+  about:()=>qLine([[20,'P'],[70,'Q',1],[180,'R']],[20,70,'10 公里',40],'大约：差不多，不是刚好'),
+  inunits:()=>qText('以……为单位',[['以 kg 和 g 为单位'],['→ 1 kg 250 g','ta']],22)
+});
+SECTIONS.push({id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'Workbook pp. 65–67'});
+TERMS.push(
+ {s:'liq',zh:'容器',py:'róng qì',en:'container',bm:'bekas',pg:'Workbook p. 65',f:'container',def:'Something that holds things inside, like a bottle, bowl or jug.',tip:'例：三个容器 R、S 与 T 里水的体积。'},
+ {s:'mass',zh:'天平',py:'tiān píng',en:'balance scale',bm:'neraca',pg:'Workbook p. 65',f:'balance',def:'A tool with two sides for comparing how heavy things are.'},
+ {s:'mass',zh:'平衡',py:'píng héng',en:'balanced',bm:'seimbang',pg:'Workbook p. 65',f:'level',def:'When both sides of a balance are level, both sides have the same mass.',tip:'Balanced → left side mass = right side mass.'},
+ {s:'mass',zh:'电子秤',py:'diàn zǐ chèng',en:'digital scale',bm:'penimbang digital',pg:'Workbook p. 66',f:'scale',def:'A scale that shows the mass as numbers on a screen.'},
+ {s:'q',zh:'下图显示',py:'xià tú xiǎn shì',en:'the picture below shows',bm:'rajah di bawah menunjukkan',pg:'Workbook p. 65',f:'picture',def:'Look at the picture under the sentence for the information you need.'},
+ {s:'q',zh:'以……为单位',py:'yǐ … wéi dān wèi',en:'give the answer in (units)',say:'give the answer in these units',bm:'dalam unit',pg:'Workbook p. 66',f:'inunits',def:'Tells you which units to write your answer in.',tip:'例：以 ml 为单位 → answer in millilitres.'},
+ {s:'q',zh:'总',py:'zǒng',en:'total',bm:'jumlah',pg:'Workbook p. 65',f:'total',def:'Everything added together.',tip:'例：总体积 (total volume) · 总质量 (total mass)'},
+ {s:'q',zh:'相差',py:'xiāng chà',en:'difference between',bm:'beza',pg:'Workbook p. 65',f:'diff',def:'How much bigger one amount is than the other. Subtract.',tip:'例：……与容器 S 里的水的体积相差多少 ml？'},
+ {s:'q',zh:'比……短',py:'bǐ … duǎn',en:'shorter than',bm:'lebih pendek daripada',pg:'Workbook p. 67',f:'short',def:'Compares two lengths: the first one is shorter. Subtract.',tip:'例：铅笔 N 比铅笔 M 短 2 cm. The opposite is 比……长 (longer than).'},
+ {s:'q',zh:'各',py:'gè',en:'each (of them)',bm:'masing-masing',pg:'Workbook p. 65',f:'each',def:'Each person or thing gets the same amount.',tip:'例：她和弟弟各喝了 2 杯 → 2 + 2 = 4 杯.'},
+ {s:'q',zh:'平分成',py:'píng fēn chéng',en:'divide equally into',bm:'dibahagi sama rata kepada',pg:'Workbook p. 65',f:'divideinto',def:'Split into parts that are all the same size.',tip:'例：把水平分成 10 杯。'},
+ {s:'q',zh:'剩余',py:'shèng yú',en:'remaining / left over',bm:'baki',pg:'Workbook p. 65',f:'remain',def:'What is still there after some is used or taken away. Also 剩下.',tip:'例：容器 R 里剩余的水的体积。'},
+ {s:'q',zh:'拿走',py:'ná zǒu',en:'take away',bm:'ambil',pg:'Workbook p. 66',f:'takeaway',def:'Remove some. Usually means subtract.'},
+ {s:'q',zh:'相同',py:'xiāng tóng',en:'the same',bm:'sama',pg:'Workbook p. 65',f:'same',def:'Exactly alike.',tip:'例：几个质量相同的铁球 · 五个大小相同的芒果'},
+ {s:'q',zh:'相等',py:'xiāng děng',en:'equal',bm:'sama dengan',pg:'Workbook p. 66',f:'equal',def:'The same amount or value.',tip:'例：3 袋面粉的总质量与 8 个铁球的质量相等。'},
+ {s:'q',zh:'证明',py:'zhèng míng',en:'prove / show that',bm:'buktikan',pg:'Workbook p. 66',f:'prove',def:'Show with working that something is true.',tip:'例：计算以证明天平上两边物体的质量是相等的。'},
+ {s:'q',zh:'四分之一',py:'sì fēn zhī yī',en:'one quarter (¼)',say:'one quarter',bm:'satu per empat',pg:'Workbook p. 65',f:'quarter',def:'One of 4 equal parts. Divide by 4.'},
+ {s:'q',zh:'三分之一',py:'sān fēn zhī yī',en:'one third (⅓)',say:'one third',bm:'satu per tiga',pg:'Workbook p. 67',f:'third',def:'One of 3 equal parts. Divide by 3.',tip:'例：铅笔 L 的长度是铅笔 N 的三分之一。'},
+ {s:'q',zh:'大约',py:'dà yuē',en:'about / roughly',bm:'kira-kira',pg:'Workbook p. 67',f:'about',def:'Close to the amount, but not exact.',tip:'例：从 P 到 Q 的距离大约是 10 公里。'}
+);
+
+const bigT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+Object.assign(F,{
+  now:()=>qLine([[30,'早上'],[100,'中午'],[170,'目前',1]],null,'目前：到现在为止')+qT(100,30,'一步一步算到最后','tn'),
+  therefore:()=>qT(100,34,'用了 7 kg 350 g','t')+qT(100,60,'于是','ta')+qT(100,86,'又准备了 5 kg 650 g','t')+qT(100,124,'于是：所以、接着就','ta'),
+  cause:()=>qR(20,44,60,30,'fs',4)+qT(50,64,'买了米','t')+qP('M86 59 H114','a')+qP('M108 53 L116 59 L108 65','a')+qR(120,44,60,30,'fa',4)+qT(150,64,'质量变了','tw')+qT(100,110,'导致：造成这个结果','ta'),
+  only:()=>qBar(30,'上午',130,'fs','50 份')+qBar(72,'下午',65,'fa','仅有一半')+qT(100,130,'仅 = 只有','ta'),
+  lessthan:()=>qCmp('less'),
+  statement:()=>qT(100,44,'这项说明正确吗？','ta')+qT(60,86,'✓ 正确','t')+qT(140,86,'✗ 不正确','tn')+qT(100,126,'要先算，才能回答','t'),
+  consume:()=>[0,1,2].map(i=>qR(16+i*62,34,50,40,'fs',8)+qT(41+i*62,59,'350 g','tn')).join('')+qT(100,102,'每份消耗 350 g','ta')+qT(100,132,'消耗：用掉','t'),
+  portion:()=>[0,1,2].map(i=>`<ellipse class="fs" cx="${46+i*54}" cy="54" rx="24" ry="16"/>`+qT(46+i*54,59,'1 份','tn')).join('')+qT(100,100,'份：一份一份地算','ta')+qT(100,130,'50 份椰浆饭','t'),
+  sales:()=>[0,1,2].map(i=>qR(40+i*14,40-i*4,70,70,'fp',2)).join('')+qT(100,132,'销量：卖出了多少','ta'),
+  bag:()=>qP('M62 44 h76 l14 66 h-104 z','fs')+qP('M82 44 q18 -22 36 0','s')+qT(100,86,'10 kg','t')+qT(100,132,'袋：一袋米','ta'),
+  store:()=>qR(24,30,152,80,'fp',4)+[0,1].map(i=>qL(24,58+i*26,176,58+i*26,'s','stroke-width:1.5')).join('')+[0,1,2].map(i=>qR(38+i*48,36,34,18,'fs',2)+qR(38+i*48,62,34,18,'fs',2)).join('')+qT(100,134,'储藏室：放东西的房间','ta'),
+  business:()=>qR(30,40,140,60,'fp',4)+qR(30,24,140,16,'fa',4)+qT(100,72,'OPEN','tb')+qT(100,130,'营业：开店做生意','ta')
+});
+TERMS.push(
+ {s:'q',zh:'目前',py:'mù qián',en:'at present / now',bm:'pada masa ini',pg:'Workbook p. 19',f:'now',def:'The amount right now, after everything that has happened.',tip:'例：梅莉目前有多少 kg 和 g 的椰浆饭？'},
+ {s:'q',zh:'于是',py:'yú shì',en:'so / and then',bm:'lalu',pg:'Workbook p. 19',f:'therefore',def:'Joins what happened next. The story continues, so keep calculating.'},
+ {s:'q',zh:'导致',py:'dǎo zhì',en:'causes / results in',bm:'menyebabkan',pg:'Workbook p. 20',f:'cause',def:'One thing makes another thing happen.',tip:'例：梅莉又买了一袋米，导致……质量比……少了 5 kg 300 g'},
+ {s:'q',zh:'仅',py:'jǐn',en:'only',bm:'hanya',pg:'Workbook p. 19',f:'only',def:'No more than that.',tip:'例：下午的销量仅有上午的一半'},
+ {s:'q',zh:'比……少',py:'bǐ … shǎo',en:'less than',bm:'kurang daripada',pg:'Workbook p. 20',f:'lessthan',def:'The first amount is smaller by this much. Subtract.'},
+ {s:'q',zh:'说明',py:'shuō míng',en:'statement',bm:'pernyataan',pg:'Workbook p. 20',f:'statement',def:'A sentence about the numbers. Work it out, then say whether it is 正确 (correct).',tip:'例：这项说明正确吗？'},
+ {s:'q',zh:'消耗',py:'xiāo hào',en:'use up / consume',bm:'menggunakan',pg:'Workbook p. 19',f:'consume',def:'How much is used up each time.',tip:'例：一份椰浆饭须消耗 350 g 的米饭'},
+ {s:'q',zh:'份',py:'fèn',en:'portion / serving',bm:'bahagian',pg:'Workbook p. 19',f:'portion',def:'One serving. Also used for counting servings: 50 份.'},
+ {s:'mass',zh:'销量',py:'xiāo liàng',en:'amount sold (sales)',bm:'jualan',pg:'Workbook p. 19',f:'sales',def:'How much was sold.'},
+ {s:'mass',zh:'袋',py:'dài',en:'bag (counting word)',say:'bag',bm:'beg / guni',pg:'Workbook p. 20',f:'bag',def:'Used for counting bags of things: 一袋泰国香米.'},
+ {s:'mass',zh:'储藏室',py:'chǔ cáng shì',en:'storeroom',bm:'bilik stor',pg:'Workbook p. 20',f:'store',def:'A room for keeping supplies.'},
+ {s:'len',zh:'营业',py:'yíng yè',en:'open for business',bm:'berniaga',pg:'Workbook p. 19',f:'business',def:'A shop or restaurant is open and selling.',tip:'例：营业前准备的椰浆饭 · 结束营业时'}
+);
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “gongli”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

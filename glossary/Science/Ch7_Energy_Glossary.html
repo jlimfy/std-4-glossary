@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>能 Energy Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Science_Glossary.html">← <span style="font-family:var(--zh)">所有章节</span> · All chapters</a>
+  <header>
+    <div class="eyebrow">Sains Tahun 4 SJKC · 第 7 章 · KSSR 科学笔记</div>
+    <h1><span class="zh">能</span>Energy</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 太阳能, taiyangneng, solar…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms come from Chapter 7 of the Standard 4 Science notes (KSSR 科学笔记 4 年级). Page numbers are the note pages. Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const C=(x,y,r,k='fs')=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+const E=(x,y,rx,ry,k='fs')=>`<ellipse class="${k}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+const kid=(x,y,k='fp')=>C(x,y-14,9,k)+PA(`M${x-13} ${y+14} q13 -24 26 0 z`,k);
+const eye=(x,y,s=1)=>PA(`M${x-26*s} ${y} q26 -20 52 0 q-26 20 -52 0 z`,'fp')+C(x,y,9*s,'fa')+C(x,y,4*s,'ink');
+const ear=(x,y)=>PA(`M${x+8} ${y-18} a18 22 0 1 0 -2 38 q8 2 6 -8 q-8 -6 -2 -14 q6 -8 14 -2 q6 -12 -16 -14 z`,'fs');
+const nose=(x,y)=>PA(`M${x} ${y-22} q-4 18 -12 28 q-4 8 6 10 h14 q10 -2 6 -10 q-8 -10 -12 -28 z`,'fs')+PA(`M${x-8} ${y+14} h16`,'s');
+const tongue=(x,y)=>PA(`M${x-24} ${y-12} q24 -16 48 0 q4 26 -24 30 q-28 -4 -24 -30 z`,'fa')+PA(`M${x} ${y-4} v22`,'s');
+const hand=(x,y)=>PA(`M${x-16} ${y+26} v-24 q0 -8 6 -8 q6 0 6 8 v-16 q0 -8 6 -8 q6 0 6 8 v16 q0 -8 6 -8 q6 0 6 8 v24 z`,'fs');
+const cyl=(x,y,h,fill,k='fs')=>R(x,y,26,h,'fp',3)+(fill?R(x+2,y+h-fill,22,fill-2,k,0):'')+[0,1,2,3].map(i=>L(x,y+10+i*(h-16)/3,x+9,y+10+i*(h-16)/3,'s','stroke-width:1.5')).join('');
+const jar=(x,y,lab,k='fs')=>R(x,y,44,34,'fp',3)+R(x+2,y+12,40,20,k,0)+T(x+22,y+50,lab,'t');
+const watch=(x,y)=>C(x,y,24,'fp')+R(x-5,y-30,10,7,'fa',2)+L(x,y,x+12,y-10,'s','stroke-width:2.5')+DOT(x,y,3,'ink');
+const sunF=(x,y,r=14)=>C(x,y,r,'fa')+[0,45,90,135,180,225,270,315].map(a=>L(x+(r+3)*Math.cos(rad(a)),y+(r+3)*Math.sin(rad(a)),x+(r+10)*Math.cos(rad(a)),y+(r+10)*Math.sin(rad(a)),'a','stroke-width:2.5')).join('');
+const bolt=(x,y,k='fa')=>PA(`M${x+2} ${y-18} l-12 20 h9 l-5 16 l16 -22 h-9 l6 -14 z`,k);
+const bulbF=(x,y)=>C(x,y-4,11,'fa')+R(x-5,y+8,10,8,'fs',2)+L(x-4,y+13,x+4,y+13,'s');
+const flameF=(x,y)=>PA(`M${x} ${y-18} q12 12 7 20 q-2 7 -7 9 q-5 -2 -7 -9 q-5 -8 7 -20 z`,'fa');
+const carF=(x,y,k='fs')=>R(x-24,y-12,48,16,k,3)+R(x-14,y-22,24,11,'fp',2)+C(x-14,y+6,5,'ink')+C(x+12,y+6,5,'ink');
+const plantF=(x,y)=>L(x,y,x,y-34,'s','stroke-width:3')+E(x-12,y-24,11,6,'fs')+E(x+12,y-24,11,6,'fs')+E(x-11,y-34,10,6,'fs')+E(x+11,y-34,10,6,'fs');
+const battF=(x,y,w=26,h=40,fill=1)=>R(x-w/2,y-h/2,w,h,'fp',3)+R(x-5,y-h/2-5,10,5,'ink',1)+R(x-w/2+4,y+h/2-4-(h-8)*fill,w-8,(h-8)*fill,'fa',2);
+const chain=(ls,y=46,h=32)=>{const n=ls.length,gap=n>3?11:16,w=(192-(n-1)*gap)/n,k=n>3?'tn':'t';let o='';for(let i=0;i<n;i++){const x=4+i*(w+gap);o+=R(x,y,w,h,'fp',5)+T(x+w/2,y+h/2+(n>3?4:5),ls[i],k);if(i<n-1){o+=PA(`M${x+w+2} ${y+h/2} h${gap-7}`,'a','')+PA(`M${x+w+gap-5} ${y+h/2-4} l4 4 l-4 4`,'a');}}return o;};
+const F={
+  /* ---- 7.1 sources ---- */
+  energy:()=>sunF(34,52,12)+bolt(100,54)+flameF(162,62)+T(100,104,'能：让东西动起来的本领','ta')+T(100,128,'光、热、声、电都是能','t'),
+  source:()=>sunF(30,44,11)+E(100,44,22,10,'fs')+flameF(170,52)+T(30,78,'太阳','tn')+T(100,78,'水','tn')+T(170,78,'燃料','tn')+T(100,110,'能源：能量的来源','ta'),
+  generate:()=>R(16,44,52,38,'fs',4)+T(42,68,'发电机','tn')+PA('M72 63 h24','a')+PA('M94 59 l5 4 l-5 4','a')+bolt(118,62)+PA('M138 63 h16','a')+PA('M152 59 l5 4 l-5 4','a')+bulbF(174,58)+T(100,120,'发电：做出电能','ta'),
+  sun:()=>sunF(60,56,20)+R(120,50,56,36,'fs',2)+PA('M116 50 L148 26 L180 50 Z','fp')+T(100,120,'太阳：能源的主要来源','ta'),
+  panel:()=>sunF(36,34,12)+PA('M60 44 L96 70','a')+PA('M88 62 l9 9 l-11 1','a')+PA('M86 100 L124 58 L190 58 L152 100 Z','fp')+[0,1,2].map(i=>L(100+i*16,100,138+i*16,58,'s')).join('')+T(100,128,'太阳能电池板：把阳光变成电','ta'),
+  water:()=>R(10,62,180,40,'fp',0)+[0,1,2].map(i=>PA(`M20 ${72+i*12} q24 -8 48 0 q24 8 48 0 q24 -8 48 0`,'s')).join('')+PA('M150 48 h24','a')+PA('M170 44 l5 4 l-5 4','a')+T(100,126,'水：流动的水可以发电','ta'),
+  dam:()=>PA('M20 30 L54 30 L54 108 L20 108 Z','fs')+R(54,54,18,54,'fp',0)+PA('M72 60 q30 4 46 34','a')+R(118,90,48,18,'fs',2)+T(142,103,'涡轮机','tn')+T(37,24,'水','t')+T(100,130,'大坝：拦住河水来发电','ta'),
+  turbine:()=>C(100,58,10,'fa')+[0,72,144,216,288].map(a=>PA(`M${100+10*Math.cos(rad(a))} ${58+10*Math.sin(rad(a))} L${100+40*Math.cos(rad(a-16))} ${58+40*Math.sin(rad(a-16))} L${100+38*Math.cos(rad(a+16))} ${58+38*Math.sin(rad(a+16))} Z`,'fs')).join('')+T(100,124,'涡轮机：被水或风推着旋转','ta'),
+  waves:()=>PA('M118 34 q34 4 42 38 q-18 -16 -34 -8 q18 16 4 34 q-16 -22 -34 -14','fs')+[0,1].map(i=>PA(`M16 ${92+i*14} q20 -9 40 0 q20 9 40 0 q20 -9 40 0 q20 9 40 0`,'s')).join('')+T(100,134,'海浪：推动海里的涡轮机','ta'),
+  wind:()=>[0,1,2].map(i=>PA(`M16 ${40+i*18} q34 -10 62 0 q16 5 26 -3`,'s')).join('')+PA('M104 37 l10 3 l-10 4','s')+L(166,110,166,48,'s','stroke-width:3')+[90,210,330].map(a=>PA(`M166 48 L${166+30*Math.cos(rad(a))} ${48+30*Math.sin(rad(a))} L${166+26*Math.cos(rad(a+16))} ${48+26*Math.sin(rad(a+16))} Z`,'fs')).join('')+T(100,132,'风：吹动风车来发电','ta'),
+  windmill:()=>L(100,118,100,58,'s','stroke-width:4')+[90,210,330].map(a=>PA(`M100 58 L${100+42*Math.cos(rad(a))} ${58+42*Math.sin(rad(a))} L${100+36*Math.cos(rad(a+18))} ${58+36*Math.sin(rad(a+18))} Z`,'fs')).join('')+C(100,58,6,'fa')+T(100,136,'风车：风推动扇叶','ta'),
+  biomass:()=>plantF(42,86)+E(108,82,20,12,'fs')+E(108,74,14,9,'fs')+R(152,66,34,26,'fp',3)+T(169,83,'燃料','tn')+T(42,106,'植物','tn')+T(108,106,'粪便','tn')+T(100,130,'生物质：植物或动物粪便','ta'),
+  fossil:()=>R(22,70,44,30,'ink',3)+T(44,90,'煤','t').replace('class="t"','class="t" style="fill:#fff"')+E(104,84,20,14,'ink')+R(94,56,20,28,'ink',2)+R(150,62,36,40,'fp',3)+T(168,88,'油','t')+T(100,126,'化石燃料：石油、天然气、煤炭','ta'),
+  nuclearfuel:()=>PA('M44 100 q6 -56 26 -56 q20 0 26 56 Z','fs')+PA('M112 100 q6 -56 26 -56 q20 0 26 56 Z','fs')+[0,120,240].map(a=>PA(`M70 72 L${70+16*Math.cos(rad(a))} ${72+16*Math.sin(rad(a))} L${70+14*Math.cos(rad(a+30))} ${72+14*Math.sin(rad(a+30))} Z`,'fa')).join('')+T(100,124,'核燃料：铀等核物质','ta'),
+  /* ---- 7.2 forms ---- */
+  lightE:()=>R(70,18,58,14,'fs',3)+PA('M78 32 L120 32 L140 68 L58 68 Z','fa')+[0,1,2].map(i=>L(68+i*32,78,68+i*32,94,'a','stroke-width:2.5')).join('')+T(100,124,'光能：发光的东西产生的能','ta'),
+  elecE:()=>R(22,34,156,54,'fp',6)+bolt(100,62)+T(100,120,'电能：在完整电路中流动的能','ta'),
+  circuit:()=>PA('M36 36 H164 V92 H36 Z','s').replace('class="s"','class="s" fill="none" style="stroke-width:2.5"')+R(78,30,44,13,'fp',2)+R(120,33,5,7,'ink',1)+T(100,41,'电池','tn')+bulbF(164,64)+T(100,120,'电路：电流走的一圈路','ta'),
+  nuclearE:()=>PA('M50 96 q6 -52 24 -52 q18 0 24 52 Z','fs')+PA('M112 96 q6 -52 24 -52 q18 0 24 52 Z','fs')+C(86,66,5,'fa')+[0,60,120].map(a=>E(86,66,20,7,'s').replace('<ellipse',`<ellipse transform="rotate(${a} 86 66)"`)).join('')+T(100,120,'核能：核物质中含有的能','ta'),
+  solarE:()=>sunF(40,46,15)+PA('M66 56 L108 74','a')+PA('M100 68 l9 7 l-11 2','a')+PA('M106 104 L136 64 L190 64 L160 104 Z','fp')+T(100,130,'太阳能：从太阳得到的能','ta'),
+  soundE:()=>C(58,58,16,'fp')+C(58,53,3,'ink')+C(66,53,3,'ink')+PA('M50 64 q8 8 16 0','s')+[0,1,2].map(i=>PA(`M${86+i*16} ${58-10-i*5} a ${12+i*6} ${12+i*6} 0 0 1 0 ${20+i*10}`,'a')).join('')+T(100,112,'声能：振动的物体产生的能','ta'),
+  chemE:()=>battF(42,62,24,42,0.7)+R(86,46,38,34,'fs',4)+T(105,68,'食物','tn')+R(146,46,38,34,'fs',4)+T(165,68,'燃料','tn')+T(100,116,'化学能：储存在物质里的能','ta'),
+  potE:()=>L(16,104,110,104,'s','stroke-width:3')+R(28,62,34,42,'fs',2)+C(45,52,9,'fa')+PA('M130 40 q26 30 0 62','s','')+L(130,40,130,102,'d')+PA('M130 71 l26 0','a')+T(45,126,'高处','tn')+T(146,126,'被拉伸','tn')+T(100,22,'势能：储存起来的能','ta'),
+  kinE:()=>carF(120,64)+[0,1,2].map(i=>L(20+i*8,52+i*12,56+i*8,52+i*12,'a','stroke-width:2.5')).join('')+T(100,122,'动能：运动的物体中的能','ta'),
+  heatE:()=>R(60,56,80,36,'fs',4)+PA('M56 56 h88','s','')+[0,1,2].map(i=>PA(`M${80+i*20} 50 q6 -10 0 -18 q-6 -8 0 -14`,'a')).join('')+[0,1,2].map(i=>flameF(78+i*22,112)).join('')+T(100,134,'热能：被加热的物体中的能','ta'),
+  /* ---- 7.3 transformations ---- */
+  convert:()=>chain(['化学能','动能'],40,36)+T(100,112,'转换：从一种能变成另一种能','ta')+T(100,132,'身体把食物的化学能转成动能','tn'),
+  photosyn:()=>sunF(166,30,11)+plantF(62,96)+PA('M146 42 L92 64','a')+PA('M99 57 l-9 8 l11 2','a')+T(100,122,'光合作用：植物把阳光','ta')+T(100,138,'变成化学能储存起来','tn'),
+  store:()=>battF(60,60,30,50,0.45)+PA('M88 60 h28','a')+PA('M112 56 l5 4 l-5 4','a')+battF(150,60,30,50,0.95)+T(100,106,'储存：留起来以后再用','ta')+T(100,130,'电池把电能储存起来','tn'),
+  conserve:()=>T(100,34,'能不可被创造','ta')+T(100,56,'也不可被消灭','ta')+chain(['这种能','那种能'],70,30)+T(100,132,'但能可以从一种形式变成另一种','tn'),
+  battery:()=>battF(70,62,34,56,0.8)+T(70,62,'+','t')+R(118,46,56,34,'fp',4)+T(146,68,'电池盒','tn')+T(100,118,'电池：储存化学能','ta'),
+  slide:()=>PA('M30 102 L70 36 L74 36 L74 102 Z','fs')+PA('M74 40 q40 36 72 60','s','stroke-width:3')+C(74,30,8,'fa')+C(146,94,8,'fa')+T(50,124,'势能','t')+T(150,124,'动能','ta')+T(100,20,'滑梯：势能 → 动能','ta'),
+  rccar:()=>chain(['化学能','电能','动能'],34,32)+carF(100,104)+T(100,134,'遥控车：电池 → 马达 → 跑动','tn'),
+  tvchain:()=>chain(['电能','光能','声能'],30,30)+R(56,70,88,42,'fs',4)+T(100,96,'TV','t')+T(100,134,'开电视：电能 → 光能 + 声能','tn'),
+  torchchain:()=>chain(['化学能','电能','热能','光能'],32,30)+T(100,90,'手电筒','ta')+T(100,116,'电池的化学能变成电能，','tn')+T(100,134,'再变成热能和光能','tn'),
+  /* ---- 7.4 renewable ---- */
+  renewable:()=>sunF(38,50,12)+PA('M90 40 q22 22 0 44 q-22 -22 0 -44','fs')+L(156,92,156,44,'s','stroke-width:3')+[90,210,330].map(a=>PA(`M156 44 L${156+22*Math.cos(rad(a))} ${44+22*Math.sin(rad(a))} L${156+19*Math.cos(rad(a+18))} ${44+19*Math.sin(rad(a+18))} Z`,'fs')).join('')+T(100,112,'可更新的能源','ta')+T(100,134,'用不完，能自动再生','t'),
+  nonrenewable:()=>R(30,62,44,34,'ink',3)+E(110,80,20,14,'ink')+R(148,58,36,38,'fp',3)+PA('M40 36 l34 0 M74 36 l-6 -5 M74 36 l-6 5','a')+T(100,26,'用完就没有了','tn')+T(100,118,'不可更新的能源','ta')+T(100,138,'煤、石油、天然气、核燃料','tn'),
+  regenerate:()=>PA('M100 30 a32 32 0 1 1 -22 9','a','stroke-width:3')+PA('M74 30 l6 10 l-12 2','a')+T(100,72,'再生','ta')+T(100,116,'再生：用完以后自己长回来','ta'),
+  hydro:()=>PA('M18 26 L50 26 L50 100 L18 100 Z','fs')+R(50,50,16,50,'fp',0)+PA('M66 58 q28 4 42 30','a')+C(126,92,16,'fa')+[0,72,144,216,288].map(a=>PA(`M126 92 L${126+26*Math.cos(rad(a))} ${92+26*Math.sin(rad(a))} L${126+23*Math.cos(rad(a+18))} ${92+23*Math.sin(rad(a+18))} Z`,'fs')).join('')+bolt(176,66)+T(100,130,'水力发电：水的势能 → 动能 → 电能','tn'),
+  generator:()=>R(40,44,76,44,'fs',4)+C(78,66,14,'fp')+T(78,71,'G','t')+PA('M120 64 h22','a')+PA('M138 60 l5 4 l-5 4','a')+bulbF(166,60)+T(100,118,'发电机：转动来产生电能','ta'),
+  coal:()=>R(40,58,100,34,'fs',3)+[0,1,2,3].map(i=>E(56+i*26,56,13,9,'ink')).join('')+C(62,98,8,'ink')+C(120,98,8,'ink')+T(100,124,'煤：埋在地下，燃烧来发电','ta'),
+  petroleum:()=>L(44,100,44,36,'s','stroke-width:3')+L(30,100,58,100,'s','stroke-width:3')+PA('M44 40 l26 10','s','stroke-width:3')+R(100,52,34,48,'ink',3)+PA('M117 62 q8 10 0 16 q-8 -6 0 -16','fp')+R(148,58,34,42,'ink',3)+T(100,126,'石油：地下的液体燃料','ta'),
+  natgas:()=>R(66,46,68,56,'fs',6)+T(100,80,'气','t')+[0,1,2].map(i=>C(84+i*16,60,4,'fa')).join('')+PA('M30 74 h28','a')+PA('M142 74 h28','a')+T(100,126,'天然气：和石油一起埋在地下','ta'),
+  reserves:()=>PA('M20 56 h160 v46 h-160 z','fs')+[0,1,2,3].map(i=>E(44+i*38,56,16,8,'ink')).join('')+T(100,36,'地下的存货','tn')+T(100,126,'储藏量：地下还剩多少','ta'),
+  exhaust:()=>R(30,46,44,52,'fs',3)+R(92,60,44,38,'fs',3)+R(154,86,34,12,'fs',3)+PA('M34 26 h132','d')+T(100,120,'耗尽：用到一点也不剩','ta')+T(100,138,'越用越少','tn'),
+  /* ---- 7.5 saving ---- */
+  saveE:()=>bulbF(60,56)+PA('M92 56 h26','a')+PA('M114 52 l5 4 l-5 4','a')+R(136,36,42,42,'fp',4)+T(157,62,'省','ta')+T(100,110,'明智地使用能源','ta')+T(100,132,'不浪费，用得刚刚好','t'),
+  switchoff:()=>R(60,32,80,76,'fp',4)+R(96,58,16,24,'fs',2)+T(104,76,'OFF','tn')+T(100,130,'关掉不使用的电源','ta'),
+  transport:()=>R(26,54,118,38,'fs',4)+[0,1,2,3].map(i=>R(36+i*26,60,18,14,'fp',2)).join('')+C(52,96,8,'ink')+C(122,96,8,'ink')+L(168,92,168,36,'s','stroke-width:3')+R(158,36,22,12,'fa',2)+T(100,126,'搭公共交通或拼车','ta'),
+  stairs:()=>[0,1,2,3].map(i=>R(26+i*26,96-i*18,26,18+i*18,'fs',0)).join('')+PA('M148 36 h34 v72 h-34 z','d')+PA('M148 36 h34 v72 h-34 z','s').replace('class="s"','class="s" fill="none"')+PA('M157 70 l8 -10 l8 10 M157 80 l8 10 l8 -10','a')+T(165,128,'电梯 ✗','tn')+T(70,128,'多用楼梯','ta'),
+  efficient:()=>R(56,30,88,76,'fp',5)+[0,1,2,3,4].map(i=>PA(`M${72+i*14} 58 l4 11 h11 l-9 7 l4 11 l-10 -7 l-10 7 l4 -11 l-9 -7 h11 z`,i<4?'fa':'fs')).join('')+T(100,96,'节能标签','tn')+T(100,128,'使用节能电器','ta'),
+  extend:()=>R(24,58,52,20,'fs',3)+PA('M80 68 h40','a')+PA('M116 64 l5 4 l-5 4','a')+R(124,58,56,20,'fa',3)+T(100,110,'延长：让它可以用得更久','ta'),
+  consume:()=>[0,1,2,3].map(i=>R(26+i*44,100-(40-i*10),34,40-i*10,'fs',2)).join('')+PA('M30 36 q60 24 150 46','a')+T(100,126,'消耗：用掉的量','ta'),
+  pollution:()=>R(34,62,44,46,'fs',2)+R(96,50,30,58,'fs',2)+[0,1].map(i=>PA(`M${50+i*58} 54 q10 -12 0 -22 q-10 -10 0 -18`,'a')).join('')+PA('M146 42 a24 24 0 1 1 10 44','a','stroke-width:3')+plantF(166,104)+T(100,130,'减少环境污染','ta'),
+  bill:()=>R(56,24,88,76,'fp',4)+[0,1,2].map(i=>L(70,48+i*14,130,48+i*14,'d')).join('')+T(100,38,'电费单','tn')+T(118,88,'RM','ta')+PA('M150 60 l20 0','a')+PA('M164 56 l6 4 l-6 4','a')+T(100,126,'减少电费开销','ta')
+};
+const SECTIONS=[
+  {id:'src',zh:'能的来源',py:'néng de lái yuán',en:'Sources of energy',color:'--c1',pg:'Notes pp. 70–71'},
+  {id:'form',zh:'能的形式',py:'néng de xíng shì',en:'Forms of energy',color:'--c2',pg:'Notes pp. 72–74'},
+  {id:'change',zh:'能的转换',py:'néng de zhuǎn huàn',en:'Energy changes',color:'--c3',pg:'Notes pp. 75–78'},
+  {id:'renew',zh:'可更新和不可更新',py:'kě gēng xīn hé bù kě gēng xīn',en:'Renewable & non-renewable',color:'--c4',pg:'Notes pp. 79–82'},
+  {id:'save',zh:'明智地使用能源',py:'míng zhì dì shǐ yòng néng yuán',en:'Saving energy',color:'--c5',pg:'Notes pp. 82–83'}
+];
+const TERMS=[
+ {s:'src',zh:'能',py:'néng',en:'energy',bm:'tenaga',pg:70,f:'energy',def:'What makes things work, move, light up or get hot.'},
+ {s:'src',zh:'能量',py:'néng liàng',en:'energy (amount of)',say:'energy',bm:'tenaga',pg:72,f:'energy',def:'Another word for energy, used when we talk about how much there is.'},
+ {s:'src',zh:'能源',py:'néng yuán',en:'energy source',say:'energy source',bm:'sumber tenaga',pg:70,f:'source',def:'Where the energy comes from — the sun, water, wind, fuel and so on.'},
+ {s:'src',zh:'发电',py:'fā diàn',en:'to generate electricity',say:'generate electricity',bm:'menjanakan elektrik',pg:70,f:'generate',def:'To make electricity.'},
+ {s:'src',zh:'太阳',py:'tài yáng',en:'sun',bm:'matahari',pg:70,f:'sun',def:'The main source of energy. Solar panels turn its light into electricity.'},
+ {s:'src',zh:'太阳能电池板',py:'tài yáng néng diàn chí bǎn',en:'solar panel',say:'solar panel',bm:'panel suria',pg:70,f:'panel',def:'A flat panel that turns sunlight into electricity.'},
+ {s:'src',zh:'水',py:'shuǐ',en:'water',bm:'air',pg:70,f:'water',def:'Flowing water can turn a turbine to make electricity.'},
+ {s:'src',zh:'大坝',py:'dà bà',en:'dam',bm:'empangan',pg:70,f:'dam',def:'A big wall that holds back a river. The water rushing out turns the turbines.'},
+ {s:'src',zh:'涡轮机',py:'wō lún jī',en:'turbine',bm:'turbin',pg:70,f:'turbine',def:'A wheel with blades. Water, wind or steam makes it spin to produce electricity.'},
+ {s:'src',zh:'海浪',py:'hǎi làng',en:'waves',bm:'ombak',pg:70,f:'waves',def:'Sea waves can turn turbines in the ocean to make electricity.'},
+ {s:'src',zh:'风',py:'fēng',en:'wind',bm:'angin',pg:71,f:'wind',def:'Moving air. Wind blows the blades of a windmill round.'},
+ {s:'src',zh:'风车',py:'fēng chē',en:'windmill / wind turbine',say:'windmill',bm:'kincir angin',pg:71,f:'windmill',def:'A tall tower with big blades that the wind turns.'},
+ {s:'src',zh:'生物质',py:'shēng wù zhì',en:'biomass',bm:'biojisim',pg:71,f:'biomass',def:'Material from plants or animal droppings. It is burned to make fuel and electricity.'},
+ {s:'src',zh:'化石燃料',py:'huà shí rán liào',en:'fossil fuels',say:'fossil fuels',bm:'bahan api fosil',pg:71,f:'fossil',def:'Petroleum, natural gas and coal. They are burned to generate electricity.'},
+ {s:'src',zh:'核燃料',py:'hé rán liào',en:'nuclear fuel',say:'nuclear fuel',bm:'bahan nuklear',pg:71,f:'nuclearfuel',def:'Substances such as uranium, used in nuclear power stations.'},
+ /* forms */
+ {s:'form',zh:'光能',py:'guāng néng',en:'light energy',say:'light energy',bm:'tenaga cahaya',pg:72,f:'lightE',def:'The energy produced by objects that give out light.'},
+ {s:'form',zh:'电能',py:'diàn néng',en:'electrical energy',say:'electrical energy',bm:'tenaga elektrik',pg:72,f:'elecE',def:'The energy that flows in a complete electrical circuit.'},
+ {s:'form',zh:'电路',py:'diàn lù',en:'electrical circuit',say:'electrical circuit',bm:'litar elektrik',pg:72,f:'circuit',def:'The loop of wires, battery and bulb that electricity flows around.'},
+ {s:'form',zh:'核能',py:'hé néng',en:'nuclear energy',say:'nuclear energy',bm:'tenaga nuklear',pg:72,f:'nuclearE',def:'The energy held inside nuclear substances such as uranium.'},
+ {s:'form',zh:'太阳能',py:'tài yáng néng',en:'solar energy',say:'solar energy',bm:'tenaga suria',pg:72,f:'solarE',def:'The energy we get from the sun.'},
+ {s:'form',zh:'声能',py:'shēng néng',en:'sound energy',say:'sound energy',bm:'tenaga bunyi',pg:73,f:'soundE',def:'The energy made by things that vibrate.'},
+ {s:'form',zh:'化学能',py:'huà xué néng',en:'chemical energy',say:'chemical energy',bm:'tenaga kimia',pg:73,f:'chemE',def:'Energy stored inside food, fuel, biomass or a battery.'},
+ {s:'form',zh:'势能',py:'shì néng',en:'potential energy',say:'potential energy',bm:'tenaga keupayaan',pg:73,f:'potE',def:'Stored energy in something high up, stretched or squashed.'},
+ {s:'form',zh:'动能',py:'dòng néng',en:'kinetic energy',say:'kinetic energy',bm:'tenaga kinetik',pg:74,f:'kinE',def:'The energy of anything that is moving.'},
+ {s:'form',zh:'热能',py:'rè néng',en:'heat energy',say:'heat energy',bm:'tenaga haba',pg:74,f:'heatE',def:'The energy stored in something hot.'},
+ /* changes */
+ {s:'change',zh:'转换',py:'zhuǎn huàn',en:'to convert / change into',say:'to convert',bm:'menukarkan',pg:75,f:'convert',def:'To change from one form of energy into another.',tip:'例：我们的身体把食物中的化学能转换成动能。'},
+ {s:'change',zh:'光合作用',py:'guāng hé zuò yòng',en:'photosynthesis',bm:'fotosintesis',pg:75,f:'photosyn',def:'How a plant turns sunlight into chemical energy and stores it.'},
+ {s:'change',zh:'储存',py:'chǔ cún',en:'to store',bm:'menyimpan',pg:75,f:'store',def:'To keep something to use later.'},
+ {s:'change',zh:'电池',py:'diàn chí',en:'battery',bm:'bateri',pg:77,f:'battery',def:'It stores chemical energy and turns it into electrical energy.'},
+ {s:'change',zh:'不可被创造或消灭',py:'bù kě bèi chuàng zào huò xiāo miè',en:'cannot be created or destroyed',say:'cannot be created or destroyed',bm:'tidak boleh dicipta atau dimusnahkan',pg:78,f:'conserve',def:'Energy can never be made from nothing or disappear — it only changes form.'},
+ {s:'change',zh:'滑梯',py:'huá tī',en:'slide',bm:'gelongsor',pg:76,f:'slide',def:'At the top you have potential energy; sliding down turns it into kinetic energy.'},
+ {s:'change',zh:'遥控模型车',py:'yáo kòng mó xíng chē',en:'remote control car',say:'remote control car',bm:'kereta kawalan jauh',pg:76,f:'rccar',def:'Chemical energy in the battery becomes electrical energy, then kinetic energy.'},
+ {s:'change',zh:'电视机',py:'diàn shì jī',en:'television',bm:'televisyen',pg:78,f:'tvchain',def:'When it is switched on, electrical energy changes into light and sound energy.'},
+ {s:'change',zh:'手电筒',py:'shǒu diàn tǒng',en:'torch / flashlight',say:'torch',bm:'lampu suluh',pg:78,f:'torchchain',def:'Chemical energy becomes electrical energy, then heat and light energy.'},
+ /* renewable */
+ {s:'renew',zh:'可更新的能源',py:'kě gēng xīn de néng yuán',en:'renewable energy source',say:'renewable energy',bm:'sumber tenaga boleh dibaharui',pg:79,f:'renewable',def:'Energy that comes back by itself and will never run out — sun, water, wind, waves, biomass.'},
+ {s:'renew',zh:'不可更新的能源',py:'bù kě gēng xīn de néng yuán',en:'non-renewable energy source',say:'non renewable energy',bm:'sumber tenaga tidak boleh dibaharui',pg:81,f:'nonrenewable',def:'Energy that cannot be made again quickly. There is only a limited amount left.'},
+ {s:'renew',zh:'再生',py:'zài shēng',en:'to regenerate / renew',say:'to regenerate',bm:'dijana semula',pg:79,f:'regenerate',def:'To be made again by itself after being used.'},
+ {s:'renew',zh:'水力发电',py:'shuǐ lì fā diàn',en:'hydropower',bm:'kuasa hidro',pg:79,f:'hydro',def:'Making electricity from the potential energy of water stored behind a dam.'},
+ {s:'renew',zh:'发电机',py:'fā diàn jī',en:'generator',bm:'penjana',pg:79,f:'generator',def:'A machine that is turned round to produce electricity.'},
+ {s:'renew',zh:'煤',py:'méi',en:'coal',bm:'arang batu',pg:81,f:'coal',def:'A black rock buried underground. It is burned to generate electricity.'},
+ {s:'renew',zh:'石油',py:'shí yóu',en:'petroleum',bm:'petroleum',pg:81,f:'petroleum',def:'A liquid fuel buried underground.'},
+ {s:'renew',zh:'天然气',py:'tiān rán qì',en:'natural gas',say:'natural gas',bm:'gas asli',pg:81,f:'natgas',def:'A gas fuel usually buried together with petroleum.'},
+ {s:'renew',zh:'储藏量',py:'chǔ cáng liàng',en:'reserves (amount stored)',say:'reserves',bm:'rizab',pg:81,f:'reserves',def:'How much is still left underground. For fossil fuels it is limited.'},
+ {s:'renew',zh:'耗尽',py:'hào jìn',en:'to be used up / exhausted',say:'used up',bm:'habis digunakan',pg:81,f:'exhaust',def:'To be completely finished, with none left.'},
+ /* saving */
+ {s:'save',zh:'明智地使用能源',py:'míng zhì dì shǐ yòng néng yuán',en:'to use energy wisely',say:'use energy wisely',bm:'berhemat menggunakan tenaga',pg:82,f:'saveE',def:'Using only the energy we really need, and not wasting it.'},
+ {s:'save',zh:'关掉电源',py:'guān diào diàn yuán',en:'to turn off the switch',say:'turn off the switch',bm:'tutup suis',pg:82,f:'switchoff',def:'Switch off anything you are not using.'},
+ {s:'save',zh:'公共交通',py:'gōng gòng jiāo tōng',en:'public transport',say:'public transport',bm:'kenderaan awam',pg:82,f:'transport',def:'Buses and trains that many people share, so less fuel is used.',tip:'拼车 pīn chē = carpool（几个人共用一辆车）'},
+ {s:'save',zh:'楼梯',py:'lóu tī',en:'stairs',bm:'tangga',pg:82,f:'stairs',def:'Use the stairs more and the lift (电梯 diàn tī) less.'},
+ {s:'save',zh:'节能电器',py:'jié néng diàn qì',en:'energy-efficient appliance',say:'energy efficient appliance',bm:'peralatan cekap tenaga',pg:82,f:'efficient',def:'A machine that does the same job using less electricity. Look for the star label.'},
+ {s:'save',zh:'延长',py:'yán cháng',en:'to extend / make longer',say:'to extend',bm:'memanjangkan',pg:83,f:'extend',def:'To make something last longer.',tip:'例：延长不可更新的能源的使用期限。'},
+ {s:'save',zh:'消耗',py:'xiāo hào',en:'consumption / to use up',say:'consumption',bm:'penggunaan',pg:83,f:'consume',def:'The amount of energy that gets used.'},
+ {s:'save',zh:'环境污染',py:'huán jìng wū rǎn',en:'environmental pollution',say:'environmental pollution',bm:'pencemaran alam sekitar',pg:83,f:'pollution',def:'Dirtying the air, water or land. Using less energy makes less pollution.'},
+ {s:'save',zh:'电费',py:'diàn fèi',en:'electricity bill',say:'electricity bill',bm:'bil elektrik',pg:83,f:'bill',def:'The money you pay for the electricity you use.'}
+];
+const COMMON=new Set();
+
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “guancha”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

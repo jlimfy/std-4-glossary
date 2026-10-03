@@ -1,0 +1,1993 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Voxel Island - a voxel world built by answering KSSR Year 4 Science questions.">
+<style>html,body{margin:0;background:#0c1013;color-scheme:dark}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Voxel Island</title>
+<style>
+  :root{
+    --ground:#0c1013;
+    --panel:#141a20;
+    --panel-2:#1b232b;
+    --line:#2a3641;
+    --line-soft:#1f2830;
+    --ink:#e8edf2;
+    --ink-dim:#93a2b0;
+    --ink-faint:#63717e;
+    --brass:#d3a04a;
+    --brass-dim:#8a6a32;
+    --teal:#57b0a3;
+    --good:#6cbf7a;
+    --bad:#c86a5a;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, "Segoe UI", "Microsoft YaHei", "PingFang SC", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);overflow:hidden}
+  #wrap{position:fixed;inset:0;background:var(--ground)}
+  canvas#view{display:block;width:100%;height:100%;touch-action:none}
+
+  /* pinyin sits over each character the way the notes print it, so the
+     syllables need a little air or they read as one long word */
+  ruby{ruby-position:over;margin-inline:.13em}
+  rt{font-size:.5em;color:var(--brass);font-family:var(--mono);letter-spacing:.01em;font-weight:400;line-height:1.15}
+
+  /* ---------- HUD ---------- */
+  #hud{position:absolute;inset:0;pointer-events:none;user-select:none}
+
+  #telemetry{
+    position:absolute;top:10px;left:12px;
+    font-family:var(--mono);font-size:11px;line-height:1.55;
+    color:var(--ink-dim);letter-spacing:.02em;
+    background:rgba(12,16,19,.55);border:1px solid var(--line-soft);
+    border-radius:3px;padding:6px 9px;font-variant-numeric:tabular-nums;min-width:150px;
+  }
+  #telemetry b{color:var(--ink);font-weight:600}
+  #telemetry .fpsbig{font-size:19px;line-height:1.1;color:var(--brass);font-weight:600;letter-spacing:0}
+  #telemetry .row{display:flex;justify-content:space-between;gap:14px}
+  #telemetry .k{color:var(--ink-faint)}
+  #telemetry.lean .detail{display:none}
+
+  #skyinfo{
+    position:absolute;top:10px;right:12px;text-align:right;
+    background:rgba(12,16,19,.55);border:1px solid var(--line-soft);border-radius:3px;
+    padding:7px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);
+  }
+  #skyinfo .tod{font-size:14px;color:var(--ink);letter-spacing:.04em}
+  #skyinfo .tod small{color:var(--ink-faint);font-size:10px}
+  #skyinfo .facing{margin-top:3px;color:var(--brass);letter-spacing:.1em}
+  #skyinfo .keyhint{margin-top:4px;color:var(--ink-faint);font-size:10px}
+
+  #crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;opacity:.85}
+  #crosshair:before,#crosshair:after{content:"";position:absolute;background:#fff;box-shadow:0 0 2px rgba(0,0,0,.9)}
+  #crosshair:before{left:8px;top:0;width:2px;height:18px}
+  #crosshair:after{top:8px;left:0;height:2px;width:18px}
+
+  #hotbar{
+    position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+    display:flex;gap:5px;padding:5px;
+    background:rgba(12,16,19,.6);border:1px solid var(--line-soft);border-radius:4px;
+  }
+  .slot{
+    width:52px;height:52px;border:1px solid var(--line);border-radius:3px;
+    background:var(--panel);position:relative;transition:border-color .12s ease, transform .12s ease;
+  }
+  .slot canvas{position:absolute;inset:6px;width:40px;height:40px;image-rendering:pixelated;border-radius:2px}
+  .slot .num{position:absolute;top:2px;left:4px;font-family:var(--mono);font-size:9px;color:var(--ink-faint)}
+  .slot .qty{position:absolute;bottom:1px;right:4px;font-family:var(--mono);font-size:11px;color:#fff;
+             text-shadow:0 1px 2px #000,0 0 3px #000;font-variant-numeric:tabular-nums}
+  .slot.sel{border-color:var(--brass);transform:translateY(-3px)}
+  .slot.sel:after{content:"";position:absolute;left:50%;bottom:-6px;width:20px;height:2px;margin-left:-10px;background:var(--brass)}
+
+  #blockname{
+    position:absolute;left:50%;bottom:82px;transform:translateX(-50%);text-align:center;
+    font-size:13px;color:var(--ink);text-shadow:0 1px 4px #000;opacity:0;transition:opacity .25s ease;
+  }
+  #blockname.show{opacity:1}
+  #blockname em{font-style:normal;color:var(--ink-dim);font-size:11px;display:block;letter-spacing:.06em}
+
+  #toast{
+    position:absolute;left:50%;top:64px;transform:translateX(-50%);max-width:min(420px,80vw);
+    font-size:12.5px;line-height:1.5;color:var(--ink);
+    background:rgba(12,16,19,.85);border:1px solid var(--line);border-left:2px solid var(--brass);
+    padding:7px 13px;border-radius:3px;opacity:0;transition:opacity .3s ease;text-align:left;
+  }
+  #toast.show{opacity:1}
+
+  #labhint{
+    position:absolute;left:50%;bottom:96px;transform:translateX(-50%);
+    font-size:12px;color:var(--ink-dim);background:rgba(12,16,19,.7);
+    border:1px solid var(--line-soft);border-radius:3px;padding:5px 11px;
+  }
+  #labhint b{color:var(--brass)}
+
+  /* ---------- Overlays ---------- */
+  .screen{
+    position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 50% 40%, rgba(12,16,19,.74), rgba(12,16,19,.95));
+    pointer-events:auto;padding:16px;
+  }
+  .screen.on{display:flex}
+  /* only the opaque backdrop - .screen / .screen.on own the show/hide.
+     An id selector setting display here would outrank them and pin the panel open. */
+  #loading{background:var(--ground)}
+
+  .card{
+    width:min(620px, 100%);max-height:calc(100vh - 40px);overflow-y:auto;
+    background:var(--panel);border:1px solid var(--line);border-radius:5px;
+    padding:26px 28px;box-shadow:0 24px 70px rgba(0,0,0,.6);
+  }
+  .card.wide{width:min(780px,100%)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass-dim)}
+  h1{font-size:30px;line-height:1.1;margin:8px 0 6px;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+  h2{font-size:19px;margin:0 0 4px;font-weight:600;letter-spacing:-.01em}
+  .lede{color:var(--ink-dim);font-size:13.5px;line-height:1.6;margin:0 0 20px;max-width:64ch}
+  .rule{height:1px;background:var(--line-soft);margin:18px 0}
+
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px;align-items:center}
+  .keys dt{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+  .keys dd{margin:0;color:var(--ink-dim)}
+  kbd{
+    font-family:var(--mono);font-size:10.5px;line-height:1;color:var(--ink);
+    background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;
+    border-radius:3px;padding:4px 6px;white-space:nowrap;
+  }
+
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  button{
+    font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink);
+    background:var(--panel-2);border:1px solid var(--line);border-radius:3px;
+    padding:10px 18px;cursor:pointer;transition:background .12s ease,border-color .12s ease;
+  }
+  button:hover:not(:disabled){background:#222c35;border-color:#38485a}
+  button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.primary{background:var(--brass);border-color:var(--brass);color:#160f03;font-weight:600}
+  button.primary:hover:not(:disabled){background:#e3ae55;border-color:#e3ae55}
+  button.ghost{background:transparent}
+  button.warn:hover{border-color:var(--bad);color:var(--bad)}
+
+  .opts{display:flex;flex-direction:column;gap:15px;margin-top:4px}
+  .opt{display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:center}
+  .opt label{font-size:13px}
+  .opt .hint{grid-column:1/-1;font-size:11.5px;color:var(--ink-faint);line-height:1.45;margin-top:-2px}
+  .opt .val{font-family:var(--mono);font-size:11.5px;color:var(--brass);min-width:46px;text-align:right;font-variant-numeric:tabular-nums}
+  .opt input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--brass);margin:0}
+  .seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .seg button{border:0;border-radius:0;padding:6px 12px;font-size:12px;background:transparent;color:var(--ink-dim)}
+  .seg button.on{background:var(--brass);color:#160f03;font-weight:600}
+
+  #loading .inner{width:min(320px,80vw);text-align:left}
+  #bar{height:2px;background:var(--line);margin-top:14px;border-radius:2px;overflow:hidden}
+  #bar span{display:block;height:100%;width:0;background:var(--brass);transition:width .1s linear}
+  #loadmsg{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:8px;letter-spacing:.04em}
+
+  .note{font-size:12px;color:var(--ink-faint);line-height:1.5;margin-top:14px}
+
+  /* ---------- Lab ---------- */
+  .secgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:6px}
+  .seccard{
+    text-align:left;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;
+  }
+  .seccard:hover{border-color:var(--brass-dim)}
+  .seccard .cn{font-size:15px;line-height:1.9}
+  .seccard .en{font-size:11.5px;color:var(--ink-dim)}
+  .seccard .meter{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:2px}
+  .seccard .meter i{display:block;height:100%;background:var(--teal);width:0}
+  .seccard .cnt{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.06em}
+  .chaptag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--brass-dim);text-transform:uppercase;margin:16px 0 2px}
+
+  #qtext{font-size:21px;line-height:2.1;margin:10px 0 4px}
+  #qtext-en{font-size:13px;color:var(--ink-dim);line-height:1.5;margin-bottom:16px}
+  .answers{display:flex;flex-direction:column;gap:8px}
+  .ans{
+    text-align:left;padding:11px 14px;font-size:15px;line-height:1.95;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;
+    display:flex;gap:11px;align-items:flex-start;width:100%;
+  }
+  .ans .mark{font-family:var(--mono);font-size:11px;color:var(--brass-dim);padding-top:6px;flex:0 0 auto}
+  .ans .body{flex:1}
+  .ans .en{display:block;font-size:12px;color:var(--ink-dim);line-height:1.4;margin-top:1px}
+  .ans:hover:not(:disabled){border-color:var(--brass-dim)}
+  .ans.right{border-color:var(--good);background:rgba(108,191,122,.11)}
+  .ans.wrong{border-color:var(--bad);background:rgba(200,106,90,.1)}
+  .ans:disabled{cursor:default;opacity:1}
+
+  #verdict{margin-top:16px;padding:13px 15px;border-radius:4px;border:1px solid var(--line);background:var(--panel-2)}
+  #verdict.right{border-left:3px solid var(--good)}
+  #verdict.wrong{border-left:3px solid var(--bad)}
+  #verdict .head{font-size:14px;font-weight:600;margin-bottom:6px}
+  #verdict .head.right{color:var(--good)}
+  #verdict .head.wrong{color:var(--bad)}
+  #verdict .why{font-size:14px;line-height:1.85}
+  #verdict .why-en{font-size:12.5px;color:var(--ink-dim);line-height:1.5;margin-top:5px}
+  #payout{display:flex;align-items:center;gap:9px;margin-top:12px;flex-wrap:wrap}
+  .prize{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--brass-dim);
+         border-radius:3px;padding:5px 10px 5px 5px}
+  .prize canvas{width:26px;height:26px;image-rendering:pixelated;border-radius:2px}
+  .prize span{font-size:12.5px}
+  .prize b{color:var(--brass);font-family:var(--mono)}
+
+  /* ---------- Inventory ---------- */
+  .invgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px;margin-top:4px}
+  .invcell{
+    display:flex;align-items:center;gap:9px;padding:7px 9px;text-align:left;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;
+  }
+  .invcell:hover{border-color:var(--brass-dim)}
+  .invcell canvas{width:30px;height:30px;image-rendering:pixelated;border-radius:2px;flex:0 0 auto}
+  .invcell .t{font-size:13px;line-height:1.35}
+  .invcell .t em{font-style:normal;display:block;font-size:10.5px;color:var(--ink-faint)}
+  .invcell .n{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--brass)}
+  .empty{color:var(--ink-faint);font-size:13px;padding:18px 0}
+
+  @media (max-width:430px){ .card{padding:20px} h1{font-size:24px} #qtext{font-size:18px} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+
+<div id="wrap">
+  <canvas id="view"></canvas>
+
+  <div id="hud">
+    <div id="telemetry">
+      <div class="fpsbig"><span id="t-fps">--</span> FPS</div>
+      <div class="row detail"><span class="k">frame</span><b><span id="t-ms">--</span> ms</b></div>
+      <div class="row detail"><span class="k">worst 3s</span><b><span id="t-worst">--</span> ms</b></div>
+      <div class="row detail"><span class="k">triangles</span><b id="t-tris">--</b></div>
+      <div class="row detail"><span class="k">draw calls</span><b id="t-calls">--</b></div>
+      <div class="row detail"><span class="k">position</span><b id="t-pos">--</b></div>
+    </div>
+    <div id="skyinfo">
+      <div class="tod" id="t-tod">中午 <small>noon</small></div>
+      <div class="facing" id="t-face">N</div>
+      <div class="keyhint">[ &nbsp;] move the sun</div>
+    </div>
+    <div id="crosshair"></div>
+    <div id="blockname"></div>
+    <div id="toast"></div>
+    <div id="labhint">按 <b>L</b> 打开实验室 · Press <b>L</b> for the Lab</div>
+    <div id="hotbar"></div>
+  </div>
+
+  <div class="screen on" id="loading">
+    <div class="inner">
+      <div class="eyebrow">Voxel Island</div>
+      <h2 style="margin-top:6px">Generating world</h2>
+      <div id="bar"><span id="barfill"></span></div>
+      <div id="loadmsg">allocating terrain…</div>
+    </div>
+  </div>
+
+  <div class="screen" id="start">
+    <div class="card">
+      <div class="eyebrow">四年级科学 · KSSR Year 4 Science</div>
+      <h1>Voxel Island</h1>
+      <p class="lede">An island you build by knowing things. The Lab asks a Science question; a right answer pays out the material that <em>is</em> that answer — glass that light passes through, sand that falls, rubber that bounces. Chapters 5, 8 and 9: 光的特性, 材料, 地球.</p>
+      <dl class="keys">
+        <dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Walk</dd>
+        <dt><kbd>Space</kbd></dt><dd>Jump</dd>
+        <dt><kbd>Shift</kbd></dt><dd>Run</dd>
+        <dt><kbd>Mouse</kbd> <span style="color:var(--ink-faint);font-size:12px">or</span> <kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd></dt><dd>Look around</dd>
+        <dt><kbd>Left click</kbd> <span style="color:var(--ink-faint);font-size:12px">or</span> <kbd>Q</kbd></dt><dd>Break block</dd>
+        <dt><kbd>Right click</kbd> <span style="color:var(--ink-faint);font-size:12px">or</span> <kbd>E</kbd></dt><dd>Place block</dd>
+        <dt><kbd>L</kbd></dt><dd>实验室 — the Lab, where you earn materials</dd>
+        <dt><kbd>Tab</kbd></dt><dd>Materials you own</dd>
+        <dt><kbd>[</kbd><kbd>]</kbd></dt><dd>Move the sun — watch the shadows</dd>
+        <dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Choose block</dd>
+        <dt><kbd>Esc</kbd></dt><dd>Pause &amp; settings</dd>
+      </dl>
+      <div class="btnrow">
+        <button class="primary" id="btn-play">Enter world</button>
+        <button class="ghost" id="btn-settings-1">Controls &amp; comfort</button>
+      </div>
+      <p class="note" id="lookhint">New to first-person games? Open <b>Controls &amp; comfort</b> to slow the mouse down, or switch mouse look off and turn with the arrow keys instead.</p>
+    </div>
+  </div>
+
+  <div class="screen" id="pause">
+    <div class="card">
+      <div class="eyebrow">Paused</div>
+      <h2 style="margin-top:6px">Voxel Island</h2>
+      <p class="lede" style="margin-bottom:14px">Your world, your materials and your Lab progress all save to this browser.</p>
+      <div class="btnrow" style="margin-top:0">
+        <button class="primary" id="btn-resume">Resume</button>
+        <button class="ghost" id="btn-lab-2">Open the Lab</button>
+        <button class="ghost" id="btn-settings-2">Controls &amp; comfort</button>
+        <button class="ghost" id="btn-save">Save now</button>
+      </div>
+      <div class="rule"></div>
+      <div class="opt">
+        <label>Position of the sun</label>
+        <div class="seg" id="sunseg"></div>
+        <div class="hint">Unlocked by answering 9.2 地球的转动 in the Lab. In the world, press <kbd>[</kbd> and <kbd>]</kbd>.</div>
+      </div>
+      <div class="rule"></div>
+      <div class="opt">
+        <label for="opt-reset">Start a fresh island</label>
+        <button class="ghost warn" id="opt-reset">Reset everything</button>
+        <div class="hint">Deletes what you have built, your materials and your Lab progress.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="settings">
+    <div class="card">
+      <div class="eyebrow">Controls &amp; comfort</div>
+      <h2 style="margin-top:6px">Make it comfortable</h2>
+      <p class="lede" style="margin-bottom:18px">Everything here can be changed mid-game.</p>
+      <div class="opts">
+        <div class="opt">
+          <label for="s-sens">Mouse look speed</label><span class="val" id="v-sens">1.00×</span>
+          <input type="range" id="s-sens" min="0.1" max="2.5" step="0.05">
+          <div class="hint">Lower is calmer.</div>
+        </div>
+        <div class="opt">
+          <label>Look with the mouse</label>
+          <div class="seg"><button id="s-mouselook-on" data-v="1">On</button><button id="s-mouselook-off" data-v="0">Off</button></div>
+          <div class="hint">Off means the view only turns with the arrow keys — much easier to learn on.</div>
+        </div>
+        <div class="opt">
+          <label for="s-arrow">Arrow-key look speed</label><span class="val" id="v-arrow">1.00×</span>
+          <input type="range" id="s-arrow" min="0.2" max="3" step="0.05">
+        </div>
+        <div class="opt">
+          <label>Invert up / down</label>
+          <div class="seg"><button id="s-inv-off" data-v="0">Normal</button><button id="s-inv-on" data-v="1">Inverted</button></div>
+        </div>
+        <div class="rule" style="grid-column:1/-1"></div>
+        <div class="opt">
+          <label>Lab language</label>
+          <div class="seg"><button id="s-lang-both" data-v="1">中文 + English</button><button id="s-lang-zh" data-v="0">只要中文</button></div>
+          <div class="hint">Pinyin always shows above the Chinese.</div>
+        </div>
+        <div class="opt">
+          <label for="s-fov">Field of view</label><span class="val" id="v-fov">75°</span>
+          <input type="range" id="s-fov" min="55" max="95" step="1">
+        </div>
+        <div class="opt">
+          <label>Render resolution</label>
+          <div class="seg">
+            <button data-scale="0.6">60%</button><button data-scale="0.8">80%</button><button data-scale="1">100%</button>
+          </div>
+          <div class="hint">Drop this first if the frame rate is low.</div>
+        </div>
+        <div class="opt">
+          <label>Sound</label>
+          <div class="seg"><button id="s-snd-on" data-v="1">On</button><button id="s-snd-off" data-v="0">Off</button></div>
+        </div>
+        <div class="opt">
+          <label>Telemetry panel</label>
+          <div class="seg"><button id="s-tel-full" data-v="1">Full</button><button id="s-tel-lean" data-v="0">FPS only</button></div>
+        </div>
+      </div>
+      <div class="btnrow"><button class="primary" id="btn-back">Back</button></div>
+    </div>
+  </div>
+
+  <div class="screen" id="lab">
+    <div class="card wide">
+      <div class="eyebrow">实验室 · The Lab</div>
+      <h2 style="margin-top:6px" id="lab-title">Choose a topic</h2>
+      <p class="lede" id="lab-lede" style="margin-bottom:12px">A right answer pays out the material that answer is about.</p>
+      <div id="lab-menu"></div>
+      <div id="lab-quiz" hidden>
+        <div class="cnt" style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--brass-dim)" id="q-sec"></div>
+        <div id="qtext"></div>
+        <div id="qtext-en"></div>
+        <div class="answers" id="q-answers"></div>
+        <div id="verdict" hidden></div>
+      </div>
+      <div class="btnrow">
+        <button class="primary" id="btn-next" hidden>下一题 · Next question</button>
+        <button class="ghost" id="btn-lab-menu" hidden>← 所有课题 · All topics</button>
+        <button class="ghost" id="btn-lab-close">回到岛上 · Back to the island</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="inv">
+    <div class="card wide">
+      <div class="eyebrow">材料 · Materials</div>
+      <h2 style="margin-top:6px">What you own</h2>
+      <p class="lede" style="margin-bottom:12px">Click a material to put it in hotbar slot <b id="inv-slot">1</b>. Mined blocks and Lab rewards both land here.</p>
+      <div id="inv-grid"></div>
+      <div class="btnrow"><button class="primary" id="btn-inv-close">Back</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const BANK = {"meta":{"source":"KSSR 科学笔记 4 年级 (Yumii's Bookstore), chapters 5, 8, 9","note":"Distractors are drawn from the same section. Where a distractor comes from a neighbouring section of the SAME chapter it is marked adj:true — used only where that confusion is the point (reflection vs refraction)."},"sections":{"5.1":{"ch":5,"chZh":"光的特性","chEn":"Properties of Light","zh":"光沿直线传播","en":"Light travels in a straight line","ms":"Pergerakan cahaya","p":["guāng","yán","zhí","xiàn","chuán","bō"]},"5.2":{"ch":5,"chZh":"光的特性","chEn":"Properties of Light","zh":"光的反射","en":"Reflection of light","ms":"Pantulan cahaya","p":["guāng","de","fǎn","shè"]},"5.3":{"ch":5,"chZh":"光的特性","chEn":"Properties of Light","zh":"光的折射","en":"Refraction of light","ms":"Pembiasan cahaya","p":["guāng","de","zhé","shè"]},"8.1":{"ch":8,"chZh":"材料","chEn":"Materials","zh":"材料的来源","en":"Sources of materials","ms":"Sumber asas bahan","p":["cái","liào","de","lái","yuán"]},"8.2":{"ch":8,"chZh":"材料","chEn":"Materials","zh":"材料的性质","en":"Properties of materials","ms":"Sifat bahan","p":["cái","liào","de","xìng","zhì"]},"8.3":{"ch":8,"chZh":"材料","chEn":"Materials","zh":"材料性质的应用","en":"Applications of material properties","ms":"Aplikasi sifat bahan","p":["cái","liào","xìng","zhì","dì","yìng","yòng"]},"9.1":{"ch":9,"chZh":"地球","chEn":"Earth","zh":"地心引力","en":"Gravity of Earth","ms":"Graviti bumi","p":["dì","xīn","yǐn","lì"]},"9.2":{"ch":9,"chZh":"地球","chEn":"Earth","zh":"地球的转动","en":"Rotation and revolution of Earth","ms":"Putaran dan peredaran bumi","p":["dì","qiú","de","zhuǎn","dòng"]}},"rewards":{"5.1":{"1":{"PLANK":5},"2":{"FROST":3},"3":{"GLASS":3}},"5.2":{"1":{"METAL":2},"2":{"METAL":3},"3":{"METAL":4}},"5.3":{"1":{"WATER":2},"2":{"WATER":3},"3":{"GLASS":4}},"8.1":{"1":{"PLANK":4},"2":{"BRICK":4},"3":{"BRICK":5}},"8.2":{"1":{"COTTON":3},"2":{"PLASTIC":3},"3":{"RUBBER":3}},"8.3":{"1":{"METAL":2},"2":{"METAL":3},"3":{"RUBBER":4}},"9.1":{"1":{"SAND":6},"2":{"GRAVEL":6},"3":{"GRAVEL":8}},"9.2":{"1":{"GRAVEL":4},"2":{"SUN":1},"3":{"SUN":1}}},"questions":[{"id":"5.1-01","sec":"5.1","d":1,"q":{"zh":"光是怎样传播的？","en":"How does light travel?"},"o":[{"zh":"沿着直线","en":"In a straight line","p":["yán","zhe","zhí","xiàn"]},{"zh":"沿着曲线","en":"Along a curve","p":["yán","zhe","qū","xiàn"]},{"zh":"沿着圆形的路径","en":"Along a circular path","p":["yán","zhe","yuán","xíng","de","lù","jìng"]},{"zh":"随意向各个方向弯曲","en":"Bending freely in all directions","p":["suí","yì","xiàng","gè","gè","fāng","xiàng","wān","qū"]}],"c":0,"why":{"zh":"光是沿着直线传播的。","en":"Light travels in a straight line."},"qp":["guāng","shì","zěn","yàng","chuán","bō","de",""]},{"id":"5.1-02","sec":"5.1","d":1,"q":{"zh":"影子是怎样形成的？","en":"How is a shadow formed?"},"o":[{"zh":"光被物体挡住时","en":"When light is blocked by an object","p":["guāng","bèi","wù","tǐ","dǎng","zhù","shí"]},{"zh":"光穿过透明的物体时","en":"When light passes through a transparent object","p":["guāng","chuān","guò","tòu","míng","de","wù","tǐ","shí"]},{"zh":"物体自己发出光时","en":"When an object gives out its own light","p":["wù","tǐ","zì","jǐ","fā","chū","guāng","shí"]},{"zh":"光变得越来越弱时","en":"When light slowly becomes weaker","p":["guāng","biàn","dé","yuè","lái","yuè","ruò","shí"]}],"c":0,"why":{"zh":"当光被物体挡住时会形成阴影。","en":"Shadows are formed when light travelling in a straight line is obstructed by an object."},"qp":["yǐng","zi","shì","zěn","yàng","xíng","chéng","de",""]},{"id":"5.1-03","sec":"5.1","d":1,"q":{"zh":"保鲜膜和透明文件夹属于哪一类物体？","en":"Plastic wrap and a clear folder are which kind of object?"},"o":[{"zh":"透明体","en":"Transparent object","p":["tòu","míng","tǐ"]},{"zh":"半透明体","en":"Translucent object","p":["bàn","tòu","míng","tǐ"]},{"zh":"不透明体","en":"Opaque object","p":["bú","tòu","míng","tǐ"]},{"zh":"光源","en":"A light source","p":["guāng","yuán"]}],"c":0,"why":{"zh":"透明体能让全部光线透过。保鲜膜、透明塑料盒和透明文件夹都是透明体。","en":"A transparent object allows all the light to pass through it. Plastic wrap, a clear plastic box and a clear folder are transparent."},"qp":["bǎo","xiān","mó","hé","tòu","míng","wén","jiàn","jiā","shǔ","yú","nǎ","yī","lèi","wù","tǐ",""]},{"id":"5.1-04","sec":"5.1","d":1,"q":{"zh":"描图纸、墨镜和毛玻璃属于哪一类物体？","en":"Tracing paper, sunglasses and frosted glass are which kind of object?"},"o":[{"zh":"半透明体","en":"Translucent object","p":["bàn","tòu","míng","tǐ"]},{"zh":"透明体","en":"Transparent object","p":["tòu","míng","tǐ"]},{"zh":"不透明体","en":"Opaque object","p":["bú","tòu","míng","tǐ"]},{"zh":"光源","en":"A light source","p":["guāng","yuán"]}],"c":0,"why":{"zh":"半透明体只让部分的光线透过。描图纸、墨镜和毛玻璃都是半透明体。","en":"A translucent object allows only some light to pass through. Tracing paper, sunglasses and frosted glass are translucent."},"qp":["miáo","tú","zhǐ","","mò","jìng","hé","máo","bō","lí","shǔ","yú","nǎ","yī","lèi","wù","tǐ",""]},{"id":"5.1-05","sec":"5.1","d":1,"q":{"zh":"纸卡、订书机和树枝属于哪一类物体？","en":"Paper cards, a stapler and twigs are which kind of object?"},"o":[{"zh":"不透明体","en":"Opaque object","p":["bú","tòu","míng","tǐ"]},{"zh":"半透明体","en":"Translucent object","p":["bàn","tòu","míng","tǐ"]},{"zh":"透明体","en":"Transparent object","p":["tòu","míng","tǐ"]},{"zh":"光源","en":"A light source","p":["guāng","yuán"]}],"c":0,"why":{"zh":"不透明体完全阻挡光线。纸卡、订书机和树枝都是不透明体。","en":"An opaque object does not allow any light to pass through it. Paper cards, a stapler and twigs are opaque."},"qp":["zhǐ","kǎ","","dìng","shū","jī","hé","shù","zhī","shǔ","yú","nǎ","yī","lèi","wù","tǐ",""]},{"id":"5.1-06","sec":"5.1","d":2,"q":{"zh":"透明体有什么特点？","en":"What is true of a transparent object?"},"o":[{"zh":"能让全部光线透过","en":"It allows all the light to pass through","p":["néng","ràng","quán","bù","guāng","xiàn","tòu","guò"]},{"zh":"只能让部分光线透过","en":"It allows only some light to pass through","p":["zhǐ","néng","ràng","bù","fèn","guāng","xiàn","tòu","guò"]},{"zh":"完全阻挡光线","en":"It blocks light completely","p":["wán","quán","zǔ","dǎng","guāng","xiàn"]},{"zh":"会把所有光线反射回去","en":"It reflects all the light back","p":["huì","bǎ","suǒ","yǒu","guāng","xiàn","fǎn","shè","huí","qù"]}],"c":0,"why":{"zh":"透明体能让全部光线透过，所以它几乎不会形成影子。","en":"A transparent object allows all the light through, so it casts almost no shadow."},"qp":["tòu","míng","tǐ","yǒu","shén","me","tè","diǎn",""]},{"id":"5.1-07","sec":"5.1","d":2,"q":{"zh":"半透明体有什么特点？","en":"What is true of a translucent object?"},"o":[{"zh":"只有部分的光线会透过","en":"Only some of the light passes through it","p":["zhǐ","yǒu","bù","fèn","de","guāng","xiàn","huì","tòu","guò"]},{"zh":"全部光线都会透过","en":"All of the light passes through it","p":["quán","bù","guāng","xiàn","dū","huì","tòu","guò"]},{"zh":"完全不让光线透过","en":"No light passes through it at all","p":["wán","quán","bù","ràng","guāng","xiàn","tòu","guò"]},{"zh":"它自己会发出光线","en":"It gives out light of its own","p":["tā","zì","jǐ","huì","fā","chū","guāng","xiàn"]}],"c":0,"why":{"zh":"半透明体只让部分的光线透过，在它背面的物体会显得模糊。","en":"A translucent object lets only part of the light through, and objects behind it look blurry."},"qp":["bàn","tòu","míng","tǐ","yǒu","shén","me","tè","diǎn",""]},{"id":"5.1-08","sec":"5.1","d":2,"q":{"zh":"物体与光源的距离越远，影子的大小会怎样？","en":"The further an object is from the light source, what happens to its shadow?"},"o":[{"zh":"越小","en":"It becomes smaller","p":["yuè","xiǎo"]},{"zh":"越大","en":"It becomes bigger","p":["yuè","dà"]},{"zh":"保持不变","en":"It stays the same","p":["bǎo","chí","bù","biàn"]},{"zh":"先变大再变小","en":"It grows first, then shrinks","p":["xiān","biàn","dà","zài","biàn","xiǎo"]}],"c":0,"why":{"zh":"物体与光源的距离越远，影子的大小越小。","en":"The further the distance of an object from the light source, the smaller the shadow."},"qp":["wù","tǐ","yǔ","guāng","yuán","de","jù","lí","yuè","yuǎn","","yǐng","zi","de","dà","xiǎo","huì","zěn","yàng",""]},{"id":"5.1-09","sec":"5.1","d":2,"q":{"zh":"物体与光源的距离越近，影子的大小会怎样？","en":"The nearer an object is to the light source, what happens to its shadow?"},"o":[{"zh":"越大","en":"It becomes bigger","p":["yuè","dà"]},{"zh":"越小","en":"It becomes smaller","p":["yuè","xiǎo"]},{"zh":"保持不变","en":"It stays the same","p":["bǎo","chí","bù","biàn"]},{"zh":"完全消失","en":"It disappears completely","p":["wán","quán","xiāo","shī"]}],"c":0,"why":{"zh":"物体与光源的距离越近，影子的大小越大。","en":"The nearer the distance of an object to the light source, the bigger the shadow."},"qp":["wù","tǐ","yǔ","guāng","yuán","de","jù","lí","yuè","jìn","","yǐng","zi","de","dà","xiǎo","huì","zěn","yàng",""]},{"id":"5.1-10","sec":"5.1","d":2,"q":{"zh":"物体与屏幕的距离越远，影子的大小会怎样？","en":"The further an object is from the screen, what happens to its shadow?"},"o":[{"zh":"越大","en":"It becomes bigger","p":["yuè","dà"]},{"zh":"越小","en":"It becomes smaller","p":["yuè","xiǎo"]},{"zh":"保持不变","en":"It stays the same","p":["bǎo","chí","bù","biàn"]},{"zh":"变得更清晰但不变大","en":"It gets sharper but not bigger","p":["biàn","dé","gèng","qīng","xī","dàn","bù","biàn","dà"]}],"c":0,"why":{"zh":"屏幕与物体的距离越远，影子的大小越大。","en":"The further the distance of an object from the screen, the bigger the shadow."},"qp":["wù","tǐ","yǔ","píng","mù","de","jù","lí","yuè","yuǎn","","yǐng","zi","de","dà","xiǎo","huì","zěn","yàng",""]},{"id":"5.1-11","sec":"5.1","d":2,"q":{"zh":"物体与屏幕的距离越近，影子的大小会怎样？","en":"The nearer an object is to the screen, what happens to its shadow?"},"o":[{"zh":"越小","en":"It becomes smaller","p":["yuè","xiǎo"]},{"zh":"越大","en":"It becomes bigger","p":["yuè","dà"]},{"zh":"保持不变","en":"It stays the same","p":["bǎo","chí","bù","biàn"]},{"zh":"形状会改变","en":"Its shape changes","p":["xíng","zhuàng","huì","gǎi","biàn"]}],"c":0,"why":{"zh":"屏幕与物体的距离越近，影子的大小越小。","en":"The nearer the distance of an object to the screen, the smaller the shadow."},"qp":["wù","tǐ","yǔ","píng","mù","de","jù","lí","yuè","jìn","","yǐng","zi","de","dà","xiǎo","huì","zěn","yàng",""]},{"id":"5.1-12","sec":"5.1","d":3,"q":{"zh":"什么因素会影响影子的形状？","en":"What affects the shape of a shadow?"},"o":[{"zh":"光源照射的方向与物体的摆放方式","en":"The position of the light source and the orientation of the object","p":["guāng","yuán","zhào","shè","de","fāng","xiàng","yǔ","wù","tǐ","de","bǎi","fàng","fāng","shì"]},{"zh":"物体的颜色","en":"The colour of the object","p":["wù","tǐ","de","yán","sè"]},{"zh":"屏幕的大小","en":"The size of the screen","p":["píng","mù","de","dà","xiǎo"]},{"zh":"光线的颜色","en":"The colour of the light","p":["guāng","xiàn","de","yán","sè"]}],"c":0,"why":{"zh":"光源照射的方向与物体的摆放方式会影响影子的形状。","en":"The position of the light source and the orientation of the object affect the shape of the shadow."},"qp":["shén","me","yīn","sù","huì","yǐng","xiǎng","yǐng","zi","de","xíng","zhuàng",""]},{"id":"5.2-01","sec":"5.2","d":1,"q":{"zh":"什么是光的反射？","en":"What is reflection of light?"},"o":[{"zh":"光照射到物体上时改变传播方向","en":"Light hits a surface and bounces off, changing direction","p":["guāng","zhào","shè","dào","wù","tǐ","shàng","shí","gǎi","biàn","chuán","bō","fāng","xiàng"]},{"zh":"光被物体完全挡住","en":"Light is completely blocked by an object","p":["guāng","bèi","wù","tǐ","wán","quán","dǎng","zhù"]},{"zh":"光穿过物体后消失","en":"Light passes through an object and disappears","p":["guāng","chuān","guò","wù","tǐ","hòu","xiāo","shī"]},{"zh":"光从一种介质斜向进入另一种介质时改变方向","en":"Light changes direction when it enters another medium at a slant","adj":true,"p":["guāng","cóng","yī","zhǒng","jiè","zhì","xié","xiàng","jìn","rù","lìng","yī","zhǒng","jiè","zhì","shí","gǎi","biàn","fāng","xiàng"]}],"c":0,"why":{"zh":"当光照射到物体上时会改变传播方向，这种现象就是光的反射。最后一个选项说的是光的折射。","en":"Reflection occurs when a light ray hits a surface and bounces off. The last option describes refraction, not reflection."},"qp":["shén","me","shì","guāng","de","fǎn","shè",""]},{"id":"5.2-02","sec":"5.2","d":2,"q":{"zh":"当光线照射到表面平滑的物体上时，反射的光线会怎样？","en":"When light hits a flat, smooth surface, how is it reflected?"},"o":[{"zh":"有规律地反射","en":"It is reflected regularly","p":["yǒu","guī","lǜ","dì","fǎn","shè"]},{"zh":"被反射至不同的方向","en":"It is reflected in many different directions","p":["bèi","fǎn","shè","zhì","bù","tóng","de","fāng","xiàng"]},{"zh":"完全被吸收","en":"It is completely absorbed","p":["wán","quán","bèi","xī","shōu"]},{"zh":"停止传播","en":"It stops travelling","p":["tíng","zhǐ","chuán","bō"]}],"c":0,"why":{"zh":"当光线照射到表面平滑的物体上时，所反射的光线是有规律的。","en":"When light is directed onto a flat, smooth surface, it is reflected regularly."},"qp":["dāng","guāng","xiàn","zhào","shè","dào","biǎo","miàn","píng","huá","de","wù","tǐ","shàng","shí","","fǎn","shè","de","guāng","xiàn","huì","zěn","yàng",""]},{"id":"5.2-03","sec":"5.2","d":2,"q":{"zh":"当光线射到粗糙的表面时，会发生什么？","en":"What happens when light hits a rough surface?"},"o":[{"zh":"漫反射：被反射至不同的方向","en":"Irregular reflection: it scatters in different directions","p":["màn","fǎn","shè","","bèi","fǎn","shè","zhì","bù","tóng","de","fāng","xiàng"]},{"zh":"有规律地反射至同一个方向","en":"Regular reflection, all in one direction","p":["yǒu","guī","lǜ","dì","fǎn","shè","zhì","tóng","yī","gè","fāng","xiàng"]},{"zh":"完全穿过物体","en":"It passes straight through the object","p":["wán","quán","chuān","guò","wù","tǐ"]},{"zh":"变成七种颜色","en":"It splits into seven colours","p":["biàn","chéng","qī","zhǒng","yán","sè"]}],"c":0,"why":{"zh":"当光线射到粗糙的表面时，会被反射至不同的方向，这种反射叫漫反射。","en":"When light is directed onto an uneven, rough surface, it is reflected irregularly."},"qp":["dāng","guāng","xiàn","shè","dào","cū","cāo","de","biǎo","miàn","shí","","huì","fā","shēng","shén","me",""]},{"id":"5.2-04","sec":"5.2","d":1,"q":{"zh":"汽车的后视镜有什么作用？","en":"What is a car's side mirror for?"},"o":[{"zh":"反射车后的景象，让驾驶者注意后方路况","en":"It reflects the scene behind the car so the driver can watch the road behind","p":["fǎn","shè","chē","hòu","de","jǐng","xiàng","","ràng","jià","shǐ","zhě","zhù","yì","hòu","fāng","lù","kuàng"]},{"zh":"让车后的人看清楚驾驶者","en":"It lets people behind the car see the driver clearly","p":["ràng","chē","hòu","de","rén","kàn","qīng","chǔ","jià","shǐ","zhě"]},{"zh":"让车内变得更明亮","en":"It makes the inside of the car brighter","p":["ràng","chē","nèi","biàn","dé","gèng","míng","liàng"]},{"zh":"把阳光挡在车外","en":"It blocks sunlight from entering the car","p":["bǎ","yáng","guāng","dǎng","zài","chē","wài"]}],"c":0,"why":{"zh":"后视镜反射了车后的景象，让驾驶者能随时注意车后方的路况。","en":"The side mirror reflects the scene behind the car so that the driver can pay attention to the road conditions behind."},"qp":["qì","chē","de","hòu","shì","jìng","yǒu","shén","me","zuò","yòng",""]},{"id":"5.2-05","sec":"5.2","d":2,"q":{"zh":"海军在潜水艇中用什么来观察海面上的情况？","en":"What do navy personnel in a submarine use to see the surface of the sea?"},"o":[{"zh":"潜望镜","en":"A periscope","p":["qián","wàng","jìng"]},{"zh":"凸面镜","en":"A convex mirror","p":["tū","miàn","jìng"]},{"zh":"口腔镜","en":"A dental mirror","p":["kǒu","qiāng","jìng"]},{"zh":"后视镜","en":"A side mirror","p":["hòu","shì","jìng"]}],"c":0,"why":{"zh":"海军使用潜望镜观察海面上的情况。潜望镜利用镜子反射光线。","en":"Navy personnel in a submarine use a periscope, which uses mirrors to reflect light, to see the surface of the sea."},"qp":["hǎi","jūn","zài","qián","shuǐ","tǐng","zhōng","yòng","shén","me","lái","guān","chá","hǎi","miàn","shàng","de","qíng","kuàng",""]},{"id":"5.2-06","sec":"5.2","d":2,"q":{"zh":"道路拐角处的凸面镜有什么作用？","en":"What is a convex mirror at a road corner for?"},"o":[{"zh":"帮助司机看到拐角对面的物体","en":"It helps drivers see objects around the corner","p":["bāng","zhù","sī","jī","kàn","dào","guǎi","jiǎo","duì","miàn","de","wù","tǐ"]},{"zh":"帮助牙医看见牙齿的内侧","en":"It helps a dentist see the inner side of teeth","p":["bāng","zhù","yá","yī","kàn","jiàn","yá","chǐ","de","nèi","cè"]},{"zh":"让潜水艇看到海面","en":"It lets a submarine see the sea surface","p":["ràng","qián","shuǐ","tǐng","kàn","dào","hǎi","miàn"]},{"zh":"让道路在晚上发光","en":"It makes the road glow at night","p":["ràng","dào","lù","zài","wǎn","shàng","fā","guāng"]}],"c":0,"why":{"zh":"在道路拐角处的凸面镜可以帮助司机看到拐角处对面的物体，以便及时作出反应。","en":"Convex mirrors at road corners help drivers see objects on the opposite side of the corner so they can react in time."},"qp":["dào","lù","guǎi","jiǎo","chù","de","tū","miàn","jìng","yǒu","shén","me","zuò","yòng",""]},{"id":"5.2-07","sec":"5.2","d":1,"q":{"zh":"口腔镜帮助牙医做什么？","en":"What does a dental mirror help the dentist do?"},"o":[{"zh":"看见病人牙齿的内侧","en":"See the inner side of the patient's teeth","p":["kàn","jiàn","bìng","rén","yá","chǐ","de","nèi","cè"]},{"zh":"看见车后方的路况","en":"See the road behind a car","p":["kàn","jiàn","chē","hòu","fāng","de","lù","kuàng"]},{"zh":"看见拐角对面的车辆","en":"See vehicles around a corner","p":["kàn","jiàn","guǎi","jiǎo","duì","miàn","de","chē","liàng"]},{"zh":"看见海面上的船只","en":"See ships on the sea surface","p":["kàn","jiàn","hǎi","miàn","shàng","de","chuán","zhī"]}],"c":0,"why":{"zh":"口腔镜让牙医能看见病人牙齿的内侧。","en":"A dental mirror helps the dentist to see the inner side of the patient's teeth."},"qp":["kǒu","qiāng","jìng","bāng","zhù","yá","yī","zuò","shén","me",""]},{"id":"5.3-01","sec":"5.3","d":1,"q":{"zh":"什么是光的折射？","en":"What is refraction of light?"},"o":[{"zh":"光从一种介质斜向进入另一种介质时改变方向","en":"Light changes direction when it travels at a slant from one medium into another","p":["guāng","cóng","yī","zhǒng","jiè","zhì","xié","xiàng","jìn","rù","lìng","yī","zhǒng","jiè","zhì","shí","gǎi","biàn","fāng","xiàng"]},{"zh":"光照射到物体上后弹回来","en":"Light bounces back after hitting a surface","adj":true,"p":["guāng","zhào","shè","dào","wù","tǐ","shàng","hòu","dàn","huí","lái"]},{"zh":"光被不透明的物体完全挡住","en":"Light is completely blocked by an opaque object","adj":true,"p":["guāng","bèi","bú","tòu","míng","de","wù","tǐ","wán","quán","dǎng","zhù"]},{"zh":"光在同一种介质中沿直线前进","en":"Light travels in a straight line within one medium","adj":true,"p":["guāng","zài","tóng","yī","zhǒng","jiè","zhì","zhōng","yán","zhí","xiàn","qián","jìn"]}],"c":0,"why":{"zh":"当光线从一种介质斜向进入另一种介质时，就会改变方向，这种现象称为光的折射。第二个选项说的是反射。","en":"When light travels at a slant from one medium into another, its direction changes. This is refraction. The second option describes reflection."},"qp":["shén","me","shì","guāng","de","zhé","shè",""]},{"id":"5.3-02","sec":"5.3","d":1,"q":{"zh":"加水后，水中的硬币看起来在什么位置？","en":"After water is added, where does a coin in the water appear to be?"},"o":[{"zh":"在较浅的位置","en":"At a shallower position","p":["zài","jiào","qiǎn","de","wèi","zhì"]},{"zh":"在较深的位置","en":"At a deeper position","p":["zài","jiào","shēn","de","wèi","zhì"]},{"zh":"在原来的位置","en":"Exactly where it really is","p":["zài","yuán","lái","de","wèi","zhì"]},{"zh":"完全看不见了","en":"It cannot be seen at all","p":["wán","quán","kàn","bú","jiàn","le"]}],"c":0,"why":{"zh":"加水后，光的折射让硬币看起来在较浅的位置。","en":"After adding water, the refraction of light makes the coin appear to be in a shallower position."},"qp":["jiā","shuǐ","hòu","","shuǐ","zhōng","de","yìng","bì","kàn","qǐ","lái","zài","shén","me","wèi","zhì",""]},{"id":"5.3-03","sec":"5.3","d":1,"q":{"zh":"把铅笔斜插在水中，它看起来会怎样？","en":"A pencil is placed at a slant in water. How does it look?"},"o":[{"zh":"弯曲了","en":"It looks bent","p":["wān","qū","le"]},{"zh":"变短了一半","en":"It looks half as short","p":["biàn","duǎn","le","yí","bàn"]},{"zh":"变成七种颜色","en":"It turns seven colours","p":["biàn","chéng","qī","zhǒng","yán","sè"]},{"zh":"完全没有改变","en":"It looks exactly the same","p":["wán","quán","méi","yǒu","gǎi","biàn"]}],"c":0,"why":{"zh":"光线从水进入空气会发生折射，使铅笔看起来弯曲了。","en":"Light is refracted as it passes from water into air, making the pencil appear bent."},"qp":["bǎ","qiān","bǐ","xié","chā","zài","shuǐ","zhōng","","tā","kàn","qǐ","lái","huì","zěn","yàng",""]},{"id":"5.3-04","sec":"5.3","d":2,"q":{"zh":"捕鱼时，为什么必须瞄准比看到的位置更低的地方？","en":"When spearing a fish, why must you aim lower than where you see it?"},"o":[{"zh":"因为光的折射，鱼并不在我们看到的位置","en":"Because of refraction, the fish is not where we see it","p":["yīn","wèi","guāng","de","zhé","shè","","yú","bìng","bù","zài","wǒ","men","kàn","dào","de","wèi","zhì"]},{"zh":"因为鱼一定会往下游走","en":"Because the fish always swims downwards","p":["yīn","wèi","yú","yí","dìng","huì","wǎng","xià","yóu","zǒu"]},{"zh":"因为水会把鱼推上来","en":"Because water pushes the fish upwards","p":["yīn","wèi","shuǐ","huì","bǎ","yú","tuī","shàng","lái"]},{"zh":"因为水里的光比较弱","en":"Because light is weaker inside water","p":["yīn","wèi","shuǐ","lǐ","de","guāng","bǐ","jiào","ruò"]}],"c":0,"why":{"zh":"在捕鱼时，鱼并不在我们所看到的位置，所以必须瞄准比看到的位置更低的地方。","en":"When fishing, the fish is not where we see it, so you must aim lower than you see it."},"qp":["bǔ","yú","shí","","wèi","shén","me","bì","xū","miáo","zhǔn","bǐ","kàn","dào","de","wèi","zhì","gèng","dī","de","dì","fāng",""]},{"id":"5.3-05","sec":"5.3","d":2,"q":{"zh":"站在水中时，我们的腿看起来会怎样？","en":"How do our legs look when we stand in water?"},"o":[{"zh":"比较短","en":"They look shorter","p":["bǐ","jiào","duǎn"]},{"zh":"比较长","en":"They look longer","p":["bǐ","jiào","cháng"]},{"zh":"比较粗但一样长","en":"Thicker but the same length","p":["bǐ","jiào","cū","dàn","yí","yàng","cháng"]},{"zh":"完全一样","en":"Exactly the same","p":["wán","quán","yī","yàng"]}],"c":0,"why":{"zh":"站在水中时，由于光的折射，我们的腿会看起来比较短。","en":"Our legs look shorter when standing in water, because of refraction."},"qp":["zhàn","zài","shuǐ","zhōng","shí","","wǒ","men","de","tuǐ","kàn","qǐ","lái","huì","zěn","yàng",""]},{"id":"5.3-06","sec":"5.3","d":2,"q":{"zh":"透过装有水的玻璃杯看字体，字体会怎样？","en":"How do letters look when viewed through a glass filled with water?"},"o":[{"zh":"变大","en":"They look larger","p":["biàn","dà"]},{"zh":"变小","en":"They look smaller","p":["biàn","xiǎo"]},{"zh":"变成彩色","en":"They turn colourful","p":["biàn","chéng","cǎi","sè"]},{"zh":"上下颠倒但大小不变","en":"Upside down but the same size","p":["shàng","xià","diān","dǎo","dàn","dà","xiǎo","bù","biàn"]}],"c":0,"why":{"zh":"透过装有水的玻璃杯所看到的字体会变大。","en":"Letters appear larger when viewed through a glass filled with water."},"qp":["tòu","guò","zhuāng","yǒu","shuǐ","de","bō","lí","bēi","kàn","zì","tǐ","","zì","tǐ","huì","zěn","yàng",""]},{"id":"5.3-07","sec":"5.3","d":2,"q":{"zh":"泳池看起来和实际的深度相比会怎样？","en":"How does a swimming pool look compared with its real depth?"},"o":[{"zh":"比实际的深度浅","en":"Shallower than it really is","p":["bǐ","shí","jì","de","shēn","dù","qiǎn"]},{"zh":"比实际的深度深","en":"Deeper than it really is","p":["bǐ","shí","jì","de","shēn","dù","shēn"]},{"zh":"和实际一样","en":"Exactly as deep as it really is","p":["hé","shí","jì","yī","yàng"]},{"zh":"早上浅，下午深","en":"Shallower in the morning, deeper in the afternoon","p":["zǎo","shàng","qiǎn","","xià","wǔ","shēn"]}],"c":0,"why":{"zh":"由于光的折射，泳池看起来比实际的深度来得浅。","en":"Because of refraction, the pool looks shallower than it is."},"qp":["yǒng","chí","kàn","qǐ","lái","hé","shí","jì","de","shēn","dù","xiāng","bǐ","huì","zěn","yàng",""]},{"id":"5.3-08","sec":"5.3","d":3,"q":{"zh":"雨后的彩虹是怎么形成的？","en":"How is a rainbow formed after rain?"},"o":[{"zh":"光透过雨滴时发生折射，并把光分散成七种颜色","en":"Light refracts through raindrops and is dispersed into seven colours","p":["guāng","tòu","guò","yǔ","dī","shí","fā","shēng","zhé","shè","","bìng","bǎ","guāng","fēn","sàn","chéng","qī","zhǒng","yán","sè"]},{"zh":"雨滴本身有七种颜色","en":"The raindrops themselves are seven different colours","p":["yǔ","dī","běn","shēn","yǒu","qī","zhǒng","yán","sè"]},{"zh":"太阳在雨后会发出彩色的光","en":"The Sun gives out coloured light after rain","p":["tài","yáng","zài","yǔ","hòu","huì","fā","chū","cǎi","sè","de","guāng"]},{"zh":"光被云朵完全挡住","en":"Light is completely blocked by the clouds","p":["guāng","bèi","yún","duǒ","wán","quán","dǎng","zhù"]}],"c":0,"why":{"zh":"当光透过雨滴时会产生折射，并将光分散成红、橙、黄、绿、蓝、靛、紫七种颜色，形成彩虹。","en":"When light passes through raindrops it refracts and disperses into seven colours, forming a rainbow."},"qp":["yǔ","hòu","de","cǎi","hóng","shì","zěn","me","xíng","chéng","de",""]},{"id":"5.3-09","sec":"5.3","d":3,"q":{"zh":"我们看到的白色光是由什么组成的？","en":"What is the white light we see made up of?"},"o":[{"zh":"七彩光线：红、橙、黄、绿、蓝、靛、紫","en":"Seven colours: red, orange, yellow, green, blue, indigo and violet","p":["qī","cǎi","guāng","xiàn","","hóng","","chéng","","huáng","","lǜ","","lán","","diàn","","zǐ"]},{"zh":"三种颜色：红、黄、蓝","en":"Three colours: red, yellow and blue","p":["sān","zhǒng","yán","sè","","hóng","","huáng","","lán"]},{"zh":"只有一种白色的光","en":"Only one colour — white","p":["zhǐ","yǒu","yī","zhǒng","bái","sè","de","guāng"]},{"zh":"雨滴中的水汽","en":"Water vapour from raindrops","p":["yǔ","dī","zhōng","de","shuǐ","qì"]}],"c":0,"why":{"zh":"我们所看到的白色光由红、橙、黄、绿、蓝、靛、紫七彩光线所组成。","en":"The white light we see is made up of seven colours: red, orange, yellow, green, blue, indigo and violet."},"qp":["wǒ","men","kàn","dào","de","bái","sè","guāng","shì","yóu","shén","me","zǔ","chéng","de",""]},{"id":"8.1-01","sec":"8.1","d":1,"r":{"LOG":5},"q":{"zh":"木材来自哪一种来源？","en":"Where does wood come from?"},"o":[{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"木材来自植物，可以用来做家具、砧板和门。","en":"Wood comes from plants. It is used to make furniture, cutting boards and doors."},"qp":["mù","cái","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-02","sec":"8.1","d":1,"r":{"COTTON":5},"q":{"zh":"棉来自哪一种来源？","en":"Where does cotton come from?"},"o":[{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"棉来自植物，可以用来做手帕、毛巾和衣服。","en":"Cotton comes from plants. It is used to make handkerchiefs, towels and shirts."},"qp":["mián","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-03","sec":"8.1","d":1,"r":{"RUBBER":4},"q":{"zh":"橡胶来自哪一种来源？","en":"Where does rubber come from?"},"o":[{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"橡胶来自植物（橡胶树），可以用来做手套、鞋底和轮胎。","en":"Rubber comes from plants (the rubber tree). It is used to make gloves, shoe soles and tyres."},"qp":["xiàng","jiāo","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-04","sec":"8.1","d":1,"r":{"WOOL":4},"q":{"zh":"羊毛来自哪一种来源？","en":"Where does wool come from?"},"o":[{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"羊毛来自动物，可以用来做帽子、毛衣和手套。","en":"Wool comes from animals. It is used to make caps, sweaters and gloves."},"qp":["yáng","máo","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-05","sec":"8.1","d":1,"r":{"LEATHER":4},"q":{"zh":"皮革来自哪一种来源？","en":"Where does leather come from?"},"o":[{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"皮革来自动物的皮，可以用来做手提包、皮鞋和沙发。","en":"Leather comes from animal skin. It is used to make handbags, shoes and sofas."},"qp":["pí","gé","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-06","sec":"8.1","d":2,"r":{"WOOL":5},"q":{"zh":"丝（用来做丝巾和旗袍）来自哪里？","en":"Where does silk, used for scarves and the cheongsam, come from?"},"o":[{"zh":"动物：蚕茧","en":"Animals: the silkworm cocoon","p":["dòng","wù","","cán","jiǎn"]},{"zh":"植物：棉花","en":"Plants: the cotton flower","p":["zhí","wù","","mián","huā"]},{"zh":"岩石：金属","en":"Rocks: metal","p":["yán","shí","","jīn","shǔ"]},{"zh":"石油：人造布料","en":"Petroleum: synthetic cloth","p":["shí","yóu","","rén","zào","bù","liào"]}],"c":0,"why":{"zh":"丝来自蚕茧，属于动物来源，可以用来做丝巾、领带和旗袍。","en":"Silk comes from the silkworm cocoon, an animal source. It is used for silk scarves, neckties and the cheongsam."},"qp":["sī","","yòng","lái","zuò","sī","jīn","hé","qí","páo","","lái","zì","nǎ","lǐ",""]},{"id":"8.1-07","sec":"8.1","d":2,"r":{"METAL":5},"q":{"zh":"银、铜、铁、铝和锡等金属来自哪一种来源？","en":"Where do metals such as silver, copper, iron, aluminium and tin come from?"},"o":[{"zh":"岩石","en":"Rocks","p":["yán","shí"]},{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]}],"c":0,"why":{"zh":"银、铜、铁、铝、锡等金属来自岩石，可以用来做首饰、厨具和交通工具。","en":"Silver, copper, iron, aluminium and tin come from rocks. They are used for jewellery, kitchenware and transport."},"qp":["yín","","tóng","","tiě","","lǚ","hé","xī","děng","jīn","shǔ","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-08","sec":"8.1","d":2,"r":{"PLASTIC":5},"q":{"zh":"塑料瓶、塑料袋和塑料盒是用什么来源的材料做的？","en":"Plastic bottles, bags and containers are made from which source?"},"o":[{"zh":"石油","en":"Petroleum","p":["shí","yóu"]},{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]}],"c":0,"why":{"zh":"塑料来自石油。塑料瓶、塑料袋和塑料盒都是塑料制品。","en":"Plastic comes from petroleum. Plastic bottles, bags and containers are all made of plastic."},"qp":["sù","liào","píng","","sù","liào","dài","hé","sù","liào","hé","shì","yòng","shén","me","lái","yuán","de","cái","liào","zuò","de",""]},{"id":"8.1-09","sec":"8.1","d":2,"r":{"PLASTIC":4},"q":{"zh":"帐篷、雨伞和雨衣用的人造布料来自哪一种来源？","en":"The synthetic cloth used for tents, umbrellas and raincoats comes from which source?"},"o":[{"zh":"石油","en":"Petroleum","p":["shí","yóu"]},{"zh":"动物","en":"Animals","p":["dòng","wù"]},{"zh":"植物","en":"Plants","p":["zhí","wù"]},{"zh":"岩石","en":"Rocks","p":["yán","shí"]}],"c":0,"why":{"zh":"人造布料来自石油，可以用来做帐篷、雨伞和雨衣。","en":"Synthetic cloth comes from petroleum. It is used for tents, umbrellas and raincoats."},"qp":["zhàng","péng","","yǔ","sǎn","hé","yǔ","yī","yòng","de","rén","zào","bù","liào","lái","zì","nǎ","yī","zhǒng","lái","yuán",""]},{"id":"8.1-10","sec":"8.1","d":2,"r":{"BRICK":6},"q":{"zh":"砖块和瓷器是用什么做的？","en":"What are bricks and porcelain made from?"},"o":[{"zh":"土壤","en":"Soil","p":["tǔ","rǎng"]},{"zh":"动物的皮","en":"Animal skin","p":["dòng","wù","de","pí"]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]},{"zh":"蚕茧","en":"Silkworm cocoons","p":["cán","jiǎn"]}],"c":0,"why":{"zh":"砖块和瓷器是用土壤（黏土）烧制而成的。","en":"Bricks and porcelain are fired from soil (clay)."},"qp":["zhuān","kuài","hé","cí","qì","shì","yòng","shén","me","zuò","de",""]},{"id":"8.1-11","sec":"8.1","d":3,"r":{"GLASS":4},"q":{"zh":"玻璃瓶和镜子主要是用什么做的？","en":"What are glass bottles and mirrors mainly made from?"},"o":[{"zh":"沙（来自岩石）","en":"Sand, which comes from rock","p":["shā","","lái","zì","yán","shí",""]},{"zh":"石油","en":"Petroleum","p":["shí","yóu"]},{"zh":"橡胶树的汁液","en":"Sap from the rubber tree","p":["xiàng","jiāo","shù","de","zhī","yè"]},{"zh":"羊毛","en":"Wool","p":["yáng","máo"]}],"c":0,"why":{"zh":"玻璃是用沙（二氧化硅）高温熔化制成的，沙来自岩石。注意：课本把镜子和玻璃瓶列在「土壤」一栏，但玻璃的原料是沙，不是土壤。","en":"Glass is melted from sand (silica), which comes from rock. Note: the notes list mirrors and glass bottles under 'soil', but glass is made from sand, not soil."},"qp":["bō","lí","píng","hé","jìng","zi","zhǔ","yào","shì","yòng","shén","me","zuò","de",""]},{"id":"8.2-01","sec":"8.2","d":1,"q":{"zh":"棉和纸属于哪一种材料？","en":"Cotton and paper are which kind of material?"},"o":[{"zh":"会吸水的材料","en":"Water-absorbent materials","p":["huì","xī","shuǐ","de","cái","liào"]},{"zh":"不透水的材料","en":"Waterproof materials","p":["bù","tòu","shuǐ","de","cái","liào"]},{"zh":"有弹性的材料","en":"Elastic materials","p":["yǒu","tán","xìng","de","cái","liào"]},{"zh":"会导电的材料","en":"Materials that conduct electricity","p":["huì","dǎo","diàn","de","cái","liào"]}],"c":0,"why":{"zh":"棉、纸等是会吸水的材料。","en":"Cotton, paper and similar materials absorb water."},"qp":["mián","hé","zhǐ","shǔ","yú","nǎ","yī","zhǒng","cái","liào",""]},{"id":"8.2-02","sec":"8.2","d":1,"q":{"zh":"塑料、金属、橡胶和玻璃属于哪一种材料？","en":"Plastic, metal, rubber and glass are which kind of material?"},"o":[{"zh":"不透水的材料","en":"Waterproof materials","p":["bù","tòu","shuǐ","de","cái","liào"]},{"zh":"会吸水的材料","en":"Water-absorbent materials","p":["huì","xī","shuǐ","de","cái","liào"]},{"zh":"有弹性的材料","en":"Elastic materials","p":["yǒu","tán","xìng","de","cái","liào"]},{"zh":"半透明的材料","en":"Translucent materials","p":["bàn","tòu","míng","de","cái","liào"]}],"c":0,"why":{"zh":"塑料、金属、橡胶、玻璃等是不透水的材料。","en":"Plastic, metal, rubber and glass are waterproof materials."},"qp":["sù","liào","","jīn","shǔ","","xiàng","jiāo","hé","bō","lí","shǔ","yú","nǎ","yī","zhǒng","cái","liào",""]},{"id":"8.2-03","sec":"8.2","d":2,"q":{"zh":"哪些材料在水中会浮？","en":"Which materials float in water?"},"o":[{"zh":"木材和塑料","en":"Wood and plastic","p":["mù","cái","hé","sù","liào"]},{"zh":"金属和玻璃","en":"Metal and glass","p":["jīn","shǔ","hé","bō","lí"]},{"zh":"橡胶和金属","en":"Rubber and metal","p":["xiàng","jiāo","hé","jīn","shǔ"]},{"zh":"玻璃和橡胶","en":"Glass and rubber","p":["bō","lí","hé","xiàng","jiāo"]}],"c":0,"why":{"zh":"木材、塑料等材料在水中是浮的。","en":"Materials such as wood and plastic float in water."},"qp":["nǎ","xiē","cái","liào","zài","shuǐ","zhōng","huì","fú",""]},{"id":"8.2-04","sec":"8.2","d":2,"q":{"zh":"根据课本，哪些材料在水中会沉？","en":"According to the notes, which materials sink in water?"},"o":[{"zh":"金属、橡胶和玻璃","en":"Metal, rubber and glass","p":["jīn","shǔ","","xiàng","jiāo","hé","bō","lí"]},{"zh":"木材和塑料","en":"Wood and plastic","p":["mù","cái","hé","sù","liào"]},{"zh":"棉和纸","en":"Cotton and paper","p":["mián","hé","zhǐ"]},{"zh":"羊毛和丝","en":"Wool and silk","p":["yáng","máo","hé","sī"]}],"c":0,"why":{"zh":"课本说：金属、橡胶、玻璃等材料在水中是沉的。（实际上天然橡胶会浮，但考试以课本为准。）","en":"The notes say metal, rubber and glass sink in water. (Natural rubber actually floats, but follow the notes for the exam.)"},"qp":["gēn","jù","kè","běn","","nǎ","xiē","cái","liào","zài","shuǐ","zhōng","huì","chén",""]},{"id":"8.2-05","sec":"8.2","d":2,"q":{"zh":"哪一种材料是有弹性的？","en":"Which material is elastic?"},"o":[{"zh":"橡胶","en":"Rubber","p":["xiàng","jiāo"]},{"zh":"木材","en":"Wood","p":["mù","cái"]},{"zh":"玻璃","en":"Glass","p":["bō","lí"]},{"zh":"金属","en":"Metal","p":["jīn","shǔ"]}],"c":0,"why":{"zh":"橡胶是有弹性的材料。受到外力作用时会改变形状，外力消失后便会恢复原状。","en":"Rubber is elastic: it changes shape under a force and returns to its original shape when the force is removed."},"qp":["nǎ","yī","zhǒng","cái","liào","shì","yǒu","dàn","xìng","de",""]},{"id":"8.2-06","sec":"8.2","d":2,"q":{"zh":"哪一组全部都是没有弹性的材料？","en":"Which group are all non-elastic materials?"},"o":[{"zh":"木材、金属、玻璃、塑料","en":"Wood, metal, glass and plastic","p":["mù","cái","","jīn","shǔ","","bō","lí","","sù","liào"]},{"zh":"橡胶、氨纶","en":"Rubber and spandex","p":["xiàng","jiāo","","ān","lún"]},{"zh":"橡胶、木材","en":"Rubber and wood","p":["xiàng","jiāo","","mù","cái"]},{"zh":"氨纶、金属","en":"Spandex and metal","p":["ān","lún","","jīn","shǔ"]}],"c":0,"why":{"zh":"木材、金属、玻璃、塑料等是没有弹性的材料。","en":"Wood, metal, glass and plastic are non-elastic materials."},"qp":["nǎ","yī","zǔ","quán","bù","dōu","shì","méi","yǒu","dàn","xìng","de","cái","liào",""]},{"id":"8.2-07","sec":"8.2","d":3,"q":{"zh":"氨纶（spandex）最适合用来做什么？","en":"What is spandex best used to make?"},"o":[{"zh":"泳装、运动装和袜子","en":"Swimwear, sportswear and socks","p":["yǒng","zhuāng","","yùn","dòng","zhuāng","hé","wà","zi"]},{"zh":"厨具和交通工具","en":"Kitchenware and vehicles","p":["chú","jù","hé","jiāo","tōng","gōng","jù"]},{"zh":"砖块和瓷器","en":"Bricks and porcelain","p":["zhuān","kuài","hé","cí","qì"]},{"zh":"手提包和皮鞋","en":"Handbags and leather shoes","p":["shǒu","tí","bāo","hé","pí","xié"]}],"c":0,"why":{"zh":"氨纶是一种弹性纤维，具有十足的弹性，是制作泳装、运动装及袜子的最佳材料。","en":"Spandex is an elastic fibre with full elasticity, the best material for swimwear, sportswear and socks."},"qp":["ān","lún","","","","","","","","","","zuì","shì","hé","yòng","lái","zuò","shén","me",""]},{"id":"8.3-01","sec":"8.3","d":2,"q":{"zh":"哪一类材料容易传热？","en":"Which materials transfer heat easily?"},"o":[{"zh":"金属，它们是热导体","en":"Metals — they are heat conductors","p":["jīn","shǔ","","tā","men","shì","rè","dǎo","tǐ"]},{"zh":"非金属，它们是热导体","en":"Non-metals — they are heat conductors","p":["fēi","jīn","shǔ","","tā","men","shì","rè","dǎo","tǐ"]},{"zh":"金属，它们是热的绝缘体","en":"Metals — they are heat insulators","p":["jīn","shǔ","","tā","men","shì","rè","de","jué","yuán","tǐ"]},{"zh":"所有材料都一样容易传热","en":"All materials transfer heat equally well","p":["suǒ","yǒu","cái","liào","dōu","yī","yàng","róng","yì","chuán","rè"]}],"c":0,"why":{"zh":"金属是容易传热的材料，称为热导体。","en":"Metals transfer heat easily. They are heat conductors."},"qp":["nǎ","yī","lèi","cái","liào","róng","yì","chuán","rè",""]},{"id":"8.3-02","sec":"8.3","d":2,"q":{"zh":"熨斗的把手用非金属做成，这是因为非金属是什么？","en":"An iron's handle is made of non-metal because non-metals are what?"},"o":[{"zh":"热的绝缘体，不容易传热","en":"Heat insulators — they do not transfer heat easily","p":["rè","de","jué","yuán","tǐ","","bù","róng","yì","chuán","rè"]},{"zh":"热导体，容易传热","en":"Heat conductors — they transfer heat easily","p":["rè","dǎo","tǐ","","róng","yì","chuán","rè"]},{"zh":"电导体","en":"Electrical conductors","p":["diàn","dǎo","tǐ"]},{"zh":"会吸水的材料","en":"Water-absorbent materials","p":["huì","xī","shuǐ","de","cái","liào"]}],"c":0,"why":{"zh":"非金属是不容易传热的材料，称为热的绝缘体，所以适合用来做熨斗的把手。","en":"Non-metals do not transfer heat easily. They are heat insulators, which is why they suit an iron's handle."},"qp":["yùn","dòu","de","bǎ","shǒu","yòng","fēi","jīn","shǔ","zuò","chéng","","zhè","shì","yīn","wèi","fēi","jīn","shǔ","shì","shén","me",""]},{"id":"8.3-03","sec":"8.3","d":2,"q":{"zh":"哪一类材料能让电流通过？","en":"Which materials allow electric current to pass through?"},"o":[{"zh":"金属，它们是良好的电导体","en":"Metals — they are good electrical conductors","p":["jīn","shǔ","","tā","men","shì","liáng","hǎo","de","diàn","dǎo","tǐ"]},{"zh":"橡胶和塑料","en":"Rubber and plastic","p":["xiàng","jiāo","hé","sù","liào"]},{"zh":"木材和玻璃","en":"Wood and glass","p":["mù","cái","hé","bō","lí"]},{"zh":"棉和纸","en":"Cotton and paper","p":["mián","hé","zhǐ"]}],"c":0,"why":{"zh":"金属是能让电流通过的材料，是良好的电导体。","en":"Metals allow electricity to pass through them and are good conductors of electricity."},"qp":["nǎ","yī","lèi","cái","liào","néng","ràng","diàn","liú","tōng","guò",""]},{"id":"8.3-04","sec":"8.3","d":2,"q":{"zh":"橡胶、塑料、木材和玻璃属于哪一类？","en":"Rubber, plastic, wood and glass are which kind of material?"},"o":[{"zh":"电的绝缘体","en":"Electrical insulators","p":["diàn","de","jué","yuán","tǐ"]},{"zh":"电导体","en":"Electrical conductors","p":["diàn","dǎo","tǐ"]},{"zh":"热导体","en":"Heat conductors","p":["rè","dǎo","tǐ"]},{"zh":"会吸水的材料","en":"Water-absorbent materials","p":["huì","xī","shuǐ","de","cái","liào"]}],"c":0,"why":{"zh":"橡胶、塑料、木材、玻璃等是电的绝缘体，是不能让电流通过的材料。","en":"Rubber, plastic, wood and glass are electrical insulators — materials that do not let electric current pass through."},"qp":["xiàng","jiāo","","sù","liào","","mù","cái","hé","bō","lí","shǔ","yú","nǎ","yī","lèi",""]},{"id":"8.3-05","sec":"8.3","d":3,"q":{"zh":"为什么电线的外层要用橡胶或塑料包着？","en":"Why is an electric cable covered with rubber or plastic?"},"o":[{"zh":"因为它们是电的绝缘体，可以防止触电","en":"Because they are electrical insulators and prevent electric shock","p":["yīn","wèi","tā","men","shì","diàn","de","jué","yuán","tǐ","","kě","yǐ","fáng","zhǐ","chù","diàn"]},{"zh":"因为它们是电导体，可以帮助导电","en":"Because they are conductors and help carry the current","p":["yīn","wèi","tā","men","shì","diàn","dǎo","tǐ","","kě","yǐ","bāng","zhù","dǎo","diàn"]},{"zh":"因为它们容易传热","en":"Because they transfer heat easily","p":["yīn","wèi","tā","men","róng","yì","chuán","rè"]},{"zh":"因为它们会吸水","en":"Because they absorb water","p":["yīn","wèi","tā","men","huì","xī","shuǐ"]}],"c":0,"why":{"zh":"橡胶和塑料是电的绝缘体，不能让电流通过，所以用来包着电线可以防止触电。","en":"Rubber and plastic are electrical insulators, so covering a cable with them stops the current escaping and prevents electric shock."},"qp":["wèi","shén","me","diàn","xiàn","de","wài","céng","yào","yòng","xiàng","jiāo","huò","sù","liào","bāo","zhe",""]},{"id":"9.1-01","sec":"9.1","d":1,"q":{"zh":"被抛出的物体最后会怎样？","en":"What finally happens to an object that is thrown up?"},"o":[{"zh":"掉回地面","en":"It falls back to the ground","p":["diào","huí","dì","miàn"]},{"zh":"一直往上飞","en":"It keeps flying upwards","p":["yì","zhí","wǎng","shàng","fēi"]},{"zh":"停在半空中","en":"It stops in mid-air","p":["tíng","zài","bàn","kōng","zhōng"]},{"zh":"绕着地球转","en":"It orbits around the Earth","p":["rào","zhe","dì","qiú","zhuǎn"]}],"c":0,"why":{"zh":"地心引力让所有抛出的物体最终掉回地面。","en":"Gravity causes all thrown objects to eventually fall back to the ground."},"qp":["bèi","pāo","chū","de","wù","tǐ","zuì","hòu","huì","zěn","yàng",""]},{"id":"9.1-02","sec":"9.1","d":1,"q":{"zh":"我们能平稳地坐在椅子上和走路，是什么的效应？","en":"Being able to sit on a chair and walk steadily is the effect of what?"},"o":[{"zh":"地心引力","en":"The gravity of the Earth","p":["dì","xīn","yǐn","lì"]},{"zh":"地球的公转","en":"The revolution of the Earth","p":["dì","qiú","de","gōng","zhuàn"]},{"zh":"太阳的光","en":"Light from the Sun","p":["tài","yáng","de","guāng"]},{"zh":"空气的重量","en":"The weight of the air","p":["kōng","qì","de","zhòng","liàng"]}],"c":0,"why":{"zh":"我们能平稳地坐在椅子上和走路，都是地心引力的效应。","en":"Our ability to sit on a chair and walk smoothly is due to the effect of gravity."},"qp":["wǒ","men","néng","píng","wěn","dì","zuò","zài","yǐ","zi","shàng","hé","zǒu","lù","","shì","shén","me","de","xiào","yīng",""]},{"id":"9.1-03","sec":"9.1","d":2,"q":{"zh":"地心引力把物体拉向哪里？","en":"In which direction does gravity pull objects?"},"o":[{"zh":"地球的中心","en":"Towards the centre of the Earth","p":["dì","qiú","de","zhōng","xīn"]},{"zh":"太阳的方向","en":"Towards the Sun","p":["tài","yáng","de","fāng","xiàng"]},{"zh":"天空的方向","en":"Towards the sky","p":["tiān","kōng","de","fāng","xiàng"]},{"zh":"由西向东","en":"From west to east","p":["yóu","xī","xiàng","dōng"]}],"c":0,"why":{"zh":"地心引力向着地球中心，把所有生物和非生物牢牢地吸引在地球表面。","en":"Gravity pulls everything towards the centre of the Earth, holding living and non-living things to its surface."},"qp":["dì","xīn","yǐn","lì","bǎ","wù","tǐ","lā","xiàng","nǎ","lǐ",""]},{"id":"9.2-01","sec":"9.2","d":1,"q":{"zh":"地球自转一周需要多长时间？","en":"How long does one complete rotation of the Earth take?"},"o":[{"zh":"24 小时，也就是 1 天","en":"24 hours, that is 1 day","p":["","","","xiǎo","shí","","yě","jiù","shì","","","","tiān"]},{"zh":"365¼ 天，也就是 1 年","en":"365¼ days, that is 1 year","p":["","","","","","tiān","","yě","jiù","shì","","","","nián"]},{"zh":"12 小时","en":"12 hours","p":["","","","xiǎo","shí"]},{"zh":"30 天，也就是 1 个月","en":"30 days, that is 1 month","p":["","","","tiān","","yě","jiù","shì","","","","gè","yuè"]}],"c":0,"why":{"zh":"地球自转（绕着轴心转）完成一周需 24 小时／1 天。","en":"One complete rotation of the Earth around its axis takes 24 hours, or 1 day."},"qp":["dì","qiú","zì","zhuǎn","yī","zhōu","xū","yào","duō","zhǎng","shí","jiān",""]},{"id":"9.2-02","sec":"9.2","d":1,"q":{"zh":"地球公转一周需要多长时间？","en":"How long does one complete revolution of the Earth take?"},"o":[{"zh":"365¼ 天，也就是 1 年","en":"365¼ days, that is 1 year","p":["","","","","","tiān","","yě","jiù","shì","","","","nián"]},{"zh":"24 小时，也就是 1 天","en":"24 hours, that is 1 day","p":["","","","xiǎo","shí","","yě","jiù","shì","","","","tiān"]},{"zh":"7 天，也就是 1 个星期","en":"7 days, that is 1 week","p":["","","tiān","","yě","jiù","shì","","","","gè","xīng","qī"]},{"zh":"100 天","en":"100 days","p":["","","","","tiān"]}],"c":0,"why":{"zh":"地球公转（绕着太阳转）完成一周需 365¼ 天／1 年。","en":"One complete revolution of the Earth around the Sun takes 365¼ days, or 1 year."},"qp":["dì","qiú","gōng","zhuǎn","yī","zhōu","xū","yào","duō","zhǎng","shí","jiān",""]},{"id":"9.2-03","sec":"9.2","d":1,"q":{"zh":"地球自转的方向是什么？","en":"In which direction does the Earth rotate?"},"o":[{"zh":"由西向东","en":"From west to east","p":["yóu","xī","xiàng","dōng"]},{"zh":"由东向西","en":"From east to west","p":["yóu","dōng","xiàng","xī"]},{"zh":"由北向南","en":"From north to south","p":["yóu","běi","xiàng","nán"]},{"zh":"由南向北","en":"From south to north","p":["yóu","nán","xiàng","běi"]}],"c":0,"why":{"zh":"地球由西向东自转，所以太阳看起来总是从东边升起，西边落下。","en":"The Earth rotates from west to east, which is why the Sun always appears to rise in the east and set in the west."},"qp":["dì","qiú","zì","zhuǎn","de","fāng","xiàng","shì","shén","me",""]},{"id":"9.2-04","sec":"9.2","d":2,"q":{"zh":"昼夜是怎样形成的？","en":"What causes day and night?"},"o":[{"zh":"地球的自转","en":"The rotation of the Earth on its axis","p":["dì","qiú","de","zì","zhuàn"]},{"zh":"地球的公转","en":"The revolution of the Earth around the Sun","p":["dì","qiú","de","gōng","zhuàn"]},{"zh":"太阳绕着地球转","en":"The Sun moving around the Earth","p":["tài","yáng","rào","zhe","dì","qiú","zhuǎn"]},{"zh":"月亮挡住了太阳","en":"The Moon blocking the Sun","p":["yuè","liàng","dǎng","zhù","le","tài","yáng"]}],"c":0,"why":{"zh":"昼夜是地球自转形成的自然现象。当我们居住的地方被阳光照射时就是白昼，没有被照射时就是黑夜。","en":"Day and night are caused by the Earth's rotation on its axis. When the Sun shines where we live it is daytime; when it does not, it is night."},"qp":["zhòu","yè","shì","zěn","yàng","xíng","chéng","de",""]},{"id":"9.2-05","sec":"9.2","d":2,"q":{"zh":"太阳看起来从哪一边升起？","en":"On which side does the Sun appear to rise?"},"o":[{"zh":"东边","en":"The east","p":["dōng","biān"]},{"zh":"西边","en":"The west","p":["xī","biān"]},{"zh":"北边","en":"The north","p":["běi","biān"]},{"zh":"南边","en":"The south","p":["nán","biān"]}],"c":0,"why":{"zh":"由于地球由西向东自转，太阳看起来总是从东边升起，西边落下。","en":"Because the Earth rotates from west to east, the Sun always appears to rise in the east and set in the west."},"qp":["tài","yáng","kàn","qǐ","lái","cóng","nǎ","yī","biān","shēng","qǐ",""]},{"id":"9.2-06","sec":"9.2","d":2,"q":{"zh":"上午时，树的影子是怎样的？","en":"What is a tree's shadow like in the morning?"},"o":[{"zh":"较长，并偏向西边","en":"Longer, and pointing towards the west","p":["jiào","zhǎng","","bìng","piān","xiàng","xī","biān"]},{"zh":"较长，并偏向东边","en":"Longer, and pointing towards the east","p":["jiào","zhǎng","","bìng","piān","xiàng","dōng","biān"]},{"zh":"最短","en":"At its shortest","p":["zuì","duǎn"]},{"zh":"完全看不见","en":"Not visible at all","p":["wán","quán","kàn","bú","jiàn"]}],"c":0,"why":{"zh":"上午时太阳在东边，所以树的影子较长并偏向西边。","en":"In the morning the Sun is in the east, so tree shadows are longer and point towards the west."},"qp":["shàng","wǔ","shí","","shù","de","yǐng","zi","shì","zěn","yàng","de",""]},{"id":"9.2-07","sec":"9.2","d":2,"q":{"zh":"中午时，树的影子是怎样的？","en":"What is a tree's shadow like at noon?"},"o":[{"zh":"最短","en":"At its shortest","p":["zuì","duǎn"]},{"zh":"最长，偏向西边","en":"At its longest, pointing west","p":["zuì","zhǎng","","piān","xiàng","xī","biān"]},{"zh":"最长，偏向东边","en":"At its longest, pointing east","p":["zuì","zhǎng","","piān","xiàng","dōng","biān"]},{"zh":"和上午一样长","en":"The same length as in the morning","p":["hé","shàng","wǔ","yí","yàng","cháng"]}],"c":0,"why":{"zh":"中午时太阳在正上方，树的影子最短。","en":"At noon the Sun is overhead, so tree shadows are shortest."},"qp":["zhōng","wǔ","shí","","shù","de","yǐng","zi","shì","zěn","yàng","de",""]},{"id":"9.2-08","sec":"9.2","d":2,"q":{"zh":"下午时，树的影子是怎样的？","en":"What is a tree's shadow like in the afternoon?"},"o":[{"zh":"再度变长，并偏向东边","en":"Longer again, and pointing towards the east","p":["zài","dù","biàn","zhǎng","","bìng","piān","xiàng","dōng","biān"]},{"zh":"再度变长，并偏向西边","en":"Longer again, and pointing towards the west","p":["zài","dù","biàn","zhǎng","","bìng","piān","xiàng","xī","biān"]},{"zh":"变得最短","en":"It becomes the shortest","p":["biàn","dé","zuì","duǎn"]},{"zh":"一直保持不变","en":"It stays exactly the same all day","p":["yì","zhí","bǎo","chí","bù","biàn"]}],"c":0,"why":{"zh":"下午时太阳在西边，树的影子再度变长并偏向东边。","en":"In the afternoon the Sun is in the west, so the shadow becomes longer again and shifts to the east."},"qp":["xià","wǔ","shí","","shù","de","yǐng","zi","shì","zěn","yàng","de",""]}]};
+
+  if (typeof THREE === 'undefined') {
+    document.getElementById('loadmsg').textContent = 'Could not load the 3D library. Check the connection and reload.';
+    return;
+  }
+
+  /* ======================================================================
+     1. WORLD CONSTANTS
+     ====================================================================== */
+  const WX = 96, WY = 48, WZ = 96;
+  const CS = 16;
+  const CXN = WX / CS, CYN = WY / CS, CZN = WZ / CS;
+  const SEA = 13;
+  const SAVE_KEY = 'voxel-island.world.v1';
+  const CFG_KEY  = 'voxel-island.config.v1';
+
+  const AIR=0, GRASS=1, DIRT=2, STONE=3, SAND=4, WATER=5, LOG=6, LEAVES=7, PLANK=8,
+        COBBLE=9, SNOW=10, GRAVEL=11, ICE=12, GLASS=13, FROST=14, METAL=15,
+        RUBBER=16, COTTON=17, PLASTIC=18, WOOL=19, LEATHER=20, BRICK=21;
+
+  const NAMED = { GRASS,DIRT,STONE,SAND,WATER,LOG,LEAVES,PLANK,COBBLE,SNOW,GRAVEL,
+                  ICE,GLASS,FROST,METAL,RUBBER,COTTON,PLASTIC,WOOL,LEATHER,BRICK };
+
+  const T = { GRASS_TOP:0, GRASS_SIDE:1, DIRT:2, STONE:3, SAND:4, WATER:5, LOG_SIDE:6,
+              LOG_TOP:7, LEAVES:8, PLANK:9, COBBLE:10, SNOW:11, GRAVEL:12, ICE:13,
+              GLASS:14, FROST:15, METAL:16, RUBBER:17, COTTON:18, PLASTIC:19,
+              WOOL:20, LEATHER:21, BRICK:22 };
+
+  // opaque: hides neighbour faces and stops light.  op: light lost per block.
+  // buoy: what happens when the block is placed into water.  Facts, not decoration.
+  const BLOCKS = [
+    null,
+    { zh:'草块',   en:'Grass',      top:T.GRASS_TOP, side:T.GRASS_SIDE, bottom:T.DIRT,   opaque:1, solid:1 },
+    { zh:'泥土',   en:'Dirt',       top:T.DIRT,      side:T.DIRT,       bottom:T.DIRT,   opaque:1, solid:1 },
+    { zh:'石头',   en:'Stone',      top:T.STONE,     side:T.STONE,      bottom:T.STONE,  opaque:1, solid:1 },
+    { zh:'沙',     en:'Sand',       top:T.SAND,      side:T.SAND,       bottom:T.SAND,   opaque:1, solid:1, falls:1 },
+    { zh:'水',     en:'Water',      top:T.WATER,     side:T.WATER,      bottom:T.WATER,  opaque:0, solid:0, op:2, trans:'water', fluid:1 },
+    { zh:'木材',   en:'Wood',       top:T.LOG_TOP,   side:T.LOG_SIDE,   bottom:T.LOG_TOP,opaque:1, solid:1, buoy:'float' },
+    { zh:'树叶',   en:'Leaves',     top:T.LEAVES,    side:T.LEAVES,     bottom:T.LEAVES, opaque:1, solid:1 },
+    { zh:'木板',   en:'Planks',     top:T.PLANK,     side:T.PLANK,      bottom:T.PLANK,  opaque:1, solid:1, buoy:'float' },
+    { zh:'鹅卵石', en:'Cobblestone',top:T.COBBLE,    side:T.COBBLE,     bottom:T.COBBLE, opaque:1, solid:1, buoy:'sink' },
+    { zh:'雪',     en:'Snow',       top:T.SNOW,      side:T.SNOW,       bottom:T.SNOW,   opaque:1, solid:1 },
+    { zh:'砂砾',   en:'Gravel',     top:T.GRAVEL,    side:T.GRAVEL,     bottom:T.GRAVEL, opaque:1, solid:1, falls:1 },
+    { zh:'冰',     en:'Ice',        top:T.ICE,       side:T.ICE,        bottom:T.ICE,    opaque:0, solid:1, op:2, trans:'glass' },
+    { zh:'透明玻璃',en:'Clear glass',top:T.GLASS,    side:T.GLASS,      bottom:T.GLASS,  opaque:0, solid:1, op:0, trans:'glass', buoy:'sink' },
+    { zh:'毛玻璃', en:'Frosted glass',top:T.FROST,   side:T.FROST,      bottom:T.FROST,  opaque:0, solid:1, op:6, trans:'frost', buoy:'sink' },
+    { zh:'金属',   en:'Metal',      top:T.METAL,     side:T.METAL,      bottom:T.METAL,  opaque:1, solid:1, buoy:'sink' },
+    { zh:'橡胶',   en:'Rubber',     top:T.RUBBER,    side:T.RUBBER,     bottom:T.RUBBER, opaque:1, solid:1, bouncy:1, buoy:'sink' },
+    { zh:'棉',     en:'Cotton',     top:T.COTTON,    side:T.COTTON,     bottom:T.COTTON, opaque:1, solid:1, absorbs:1 },
+    { zh:'塑料',   en:'Plastic',    top:T.PLASTIC,   side:T.PLASTIC,    bottom:T.PLASTIC,opaque:1, solid:1, buoy:'float' },
+    { zh:'羊毛',   en:'Wool',       top:T.WOOL,      side:T.WOOL,       bottom:T.WOOL,   opaque:1, solid:1 },
+    { zh:'皮革',   en:'Leather',    top:T.LEATHER,   side:T.LEATHER,    bottom:T.LEATHER,opaque:1, solid:1 },
+    { zh:'砖块',   en:'Brick',      top:T.BRICK,     side:T.BRICK,      bottom:T.BRICK,  opaque:1, solid:1, buoy:'sink' }
+  ];
+
+  const isOpaque = id => id !== AIR && BLOCKS[id].opaque === 1;
+  const isSolid  = id => id !== AIR && BLOCKS[id].solid === 1;
+  const canMine  = id => id !== AIR && id !== WATER;
+
+  /* ======================================================================
+     2. SETTINGS
+     ====================================================================== */
+  const cfg = { sens:1, mouseLook:1, arrow:1, invert:0, fov:75, scale:1, sound:1, telemetry:1, lang:1 };
+  try { const raw = localStorage.getItem(CFG_KEY); if (raw) Object.assign(cfg, JSON.parse(raw)); }
+  catch (e) {}
+  function saveCfg(){ try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch(e){} }
+
+  /* ======================================================================
+     3. PROCEDURAL TEXTURE ATLAS
+     ====================================================================== */
+  const TS = 32, ATLAS_N = 8, ATLAS_PX = TS * ATLAS_N;
+  function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function buildAtlas(){
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = ATLAS_PX;
+    const ctx = cv.getContext('2d');
+    const img = ctx.createImageData(ATLAS_PX, ATLAS_PX);
+    const d = img.data;
+    function put(tile, x, y, r, g, b){
+      const cx = (tile % ATLAS_N) * TS, cy = ((tile / ATLAS_N) | 0) * TS;
+      const i = (((cy + y) * ATLAS_PX) + (cx + x)) * 4;
+      d[i]   = r < 0 ? 0 : r > 255 ? 255 : r;
+      d[i+1] = g < 0 ? 0 : g > 255 ? 255 : g;
+      d[i+2] = b < 0 ? 0 : b > 255 ? 255 : b;
+      d[i+3] = 255;
+    }
+    function grain(tile, r, g, b, amt, seed){
+      const rand = rng(seed);
+      for (let y = 0; y < TS; y++) for (let x = 0; x < TS; x++){
+        const n = (rand() - 0.5) * 2 * amt;
+        put(tile, x, y, r + n, g + n * 0.95, b + n * 0.9);
+      }
+    }
+
+    grain(T.GRASS_TOP, 92, 138, 62, 20, 11);
+    (function(){ const rand = rng(77);
+      for (let i = 0; i < 90; i++){ const x=(rand()*TS)|0, y=(rand()*TS)|0, k = rand()<0.5?-24:16;
+        put(T.GRASS_TOP, x, y, 92+k, 138+k, 62+k*0.7); } })();
+
+    grain(T.DIRT, 124, 94, 66, 18, 22);
+    (function(){ const rand = rng(5);
+      for (let i = 0; i < 40; i++) put(T.DIRT, (rand()*TS)|0, (rand()*TS)|0, 96, 72, 50); })();
+
+    grain(T.GRASS_SIDE, 124, 94, 66, 18, 22);
+    (function(){ const rand = rng(31);
+      for (let x = 0; x < TS; x++){ const h = 7 + ((rand()*3)|0);
+        for (let y = 0; y < h; y++){ const n = (rand()-0.5)*28;
+          put(T.GRASS_SIDE, x, y, 92+n, 138+n, 62+n*0.7); } } })();
+
+    grain(T.STONE, 126, 128, 132, 16, 3);
+    (function(){ const rand = rng(91);
+      for (let c = 0; c < 5; c++){ let x=(rand()*TS)|0, y=(rand()*TS)|0;
+        for (let s = 0; s < 12; s++){ put(T.STONE, (x+TS)%TS, (y+TS)%TS, 96, 98, 102);
+          x += (rand()*3|0)-1; y += (rand()*3|0)-1; } } })();
+
+    grain(T.SAND, 214, 198, 152, 12, 44);
+    grain(T.SNOW, 231, 238, 245, 7, 55);
+
+    (function(){ const rand = rng(66);
+      for (let y = 0; y < TS; y++){ const band = Math.sin(y*0.7)*10;
+        for (let x = 0; x < TS; x++){ const n = (rand()-0.5)*10;
+          put(T.WATER, x, y, 42+n+band*0.4, 98+n+band*0.6, 158+n+band); } } })();
+
+    (function(){ const rand = rng(13);
+      for (let x = 0; x < TS; x++){ const st = (rand()-0.5)*26;
+        for (let y = 0; y < TS; y++){ const n = (rand()-0.5)*8;
+          put(T.LOG_SIDE, x, y, 108+st+n, 80+st*0.8+n, 50+st*0.5+n); } } })();
+
+    (function(){ const rand = rng(17);
+      for (let y = 0; y < TS; y++) for (let x = 0; x < TS; x++){
+        const dx=x-15.5, dy=y-15.5, r=Math.sqrt(dx*dx+dy*dy);
+        const ring = Math.sin(r*1.5)*14 + (rand()-0.5)*8;
+        put(T.LOG_TOP, x, y, 150+ring, 116+ring, 74+ring*0.8); } })();
+
+    grain(T.LEAVES, 54, 100, 48, 22, 29);
+    (function(){ const rand = rng(101);
+      for (let i = 0; i < 150; i++){ const x=(rand()*TS)|0, y=(rand()*TS)|0;
+        if (rand() < 0.4) put(T.LEAVES, x, y, 26, 52, 26);
+        else put(T.LEAVES, x, y, 74, 126, 62); } })();
+
+    (function(){ const rand = rng(7);
+      for (let y = 0; y < TS; y++) for (let x = 0; x < TS; x++){
+        const seam = (y % 11 === 0) ? -40 : 0;
+        const n = (rand()-0.5)*14 + Math.sin(x*0.9 + (y/11|0)*3)*6;
+        put(T.PLANK, x, y, 162+n+seam, 126+n+seam, 82+n+seam); } })();
+
+    (function(){ const rand = rng(202);
+      const pts = []; for (let i=0;i<14;i++) pts.push([rand()*TS, rand()*TS, 108+rand()*44]);
+      for (let y = 0; y < TS; y++) for (let x = 0; x < TS; x++){
+        let best=1e9, second=1e9, v=120;
+        for (const p of pts){ const dx=x-p[0], dy=y-p[1], dd=dx*dx+dy*dy;
+          if (dd<best){ second=best; best=dd; v=p[2]; } else if (dd<second) second=dd; }
+        const edge = (Math.sqrt(second)-Math.sqrt(best)) < 1.6 ? -42 : 0;
+        const n = (rand()-0.5)*10;
+        put(T.COBBLE, x, y, v+n+edge, v+n+edge, v+4+n+edge); } })();
+
+    (function(){ const rand = rng(303);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){ const v=96+rand()*54;
+        put(T.GRAVEL, x, y, v, v-4, v-10); } })();
+
+    grain(T.ICE, 156, 204, 232, 9, 404);
+    (function(){ const rand = rng(505);
+      for (let c=0;c<4;c++){ let x=(rand()*TS)|0, y=(rand()*TS)|0;
+        for (let s=0;s<20;s++){ put(T.ICE,(x+TS)%TS,(y+TS)%TS,208,236,250);
+          x += (rand()*3|0)-1; y += 1; } } })();
+
+    // --- clear glass: near-white pane with a frame and two highlight streaks
+    (function(){ const rand = rng(606);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){
+        const edge = (x<2||y<2||x>TS-3||y>TS-3);
+        const n = (rand()-0.5)*5;
+        if (edge) put(T.GLASS, x, y, 196+n, 216+n, 226+n);
+        else put(T.GLASS, x, y, 226+n, 240+n, 246+n); }
+      for (let i=0;i<TS;i++){
+        const a = Math.min(TS-1, i+4), b = Math.min(TS-1, i+5);
+        put(T.GLASS, i, a, 252, 254, 255); put(T.GLASS, i, b, 246, 250, 253); } })();
+
+    // --- frosted glass: milky, fine speckle, softer frame
+    (function(){ const rand = rng(707);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){
+        const edge = (x<2||y<2||x>TS-3||y>TS-3);
+        const n = (rand()-0.5)*16;
+        const base = edge ? 198 : 220;
+        put(T.FROST, x, y, base+n, base+6+n, base+10+n); } })();
+
+    // --- metal: brushed horizontal streaks
+    (function(){ const rand = rng(808);
+      for (let y=0;y<TS;y++){ const band = (rand()-0.5)*22;
+        for (let x=0;x<TS;x++){ const n=(rand()-0.5)*7;
+          put(T.METAL, x, y, 158+band+n, 164+band+n, 172+band+n); } }
+      for (let x=0;x<TS;x++){ put(T.METAL, x, 0, 96, 100, 108); put(T.METAL, x, TS-1, 96,100,108); }
+      for (let y=0;y<TS;y++){ put(T.METAL, 0, y, 104,108,116); put(T.METAL, TS-1, y, 104,108,116); } })();
+
+    // --- rubber: dark matte with fine grain
+    grain(T.RUBBER, 44, 44, 48, 9, 909);
+    (function(){ const rand = rng(910);
+      for (let i=0;i<70;i++) put(T.RUBBER,(rand()*TS)|0,(rand()*TS)|0,62,62,66); })();
+
+    // --- cotton: soft off-white tufts
+    (function(){ const rand = rng(1010);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){ const n=(rand()-0.5)*10;
+        put(T.COTTON, x, y, 238+n, 236+n, 228+n); }
+      for (let i=0;i<26;i++){ const cx=(rand()*TS)|0, cy=(rand()*TS)|0, r=2+rand()*2;
+        for (let y=-3;y<=3;y++) for (let x=-3;x<=3;x++){
+          if (x*x+y*y > r*r) continue;
+          put(T.COTTON, (cx+x+TS)%TS, (cy+y+TS)%TS, 250, 249, 244); } } })();
+
+    // --- plastic: saturated teal, smooth, slight sheen
+    (function(){ const rand = rng(1111);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){
+        const sheen = Math.max(0, 26 - Math.abs(x - y) * 2);
+        const n = (rand()-0.5)*4;
+        put(T.PLASTIC, x, y, 42+sheen+n, 148+sheen+n, 156+sheen+n); }
+      for (let x=0;x<TS;x++){ put(T.PLASTIC, x, 0, 26,104,112); put(T.PLASTIC, x, TS-1, 26,104,112); }
+      for (let y=0;y<TS;y++){ put(T.PLASTIC, 0, y, 26,104,112); put(T.PLASTIC, TS-1, y, 26,104,112); } })();
+
+    // --- wool: cream knit
+    (function(){ const rand = rng(1212);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){
+        const knit = ((x + (y%8<4 ? 0 : 4)) % 8 < 4) ? 8 : -8;
+        const n = (rand()-0.5)*12;
+        put(T.WOOL, x, y, 226+knit+n, 214+knit+n, 190+knit+n); } })();
+
+    // --- leather: mid brown, pebbled
+    (function(){ const rand = rng(1313);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){ const n=(rand()-0.5)*14;
+        put(T.LEATHER, x, y, 122+n, 78+n, 48+n); }
+      for (let i=0;i<60;i++){ const cx=(rand()*TS)|0, cy=(rand()*TS)|0;
+        for (let y=-1;y<=1;y++) for (let x=-1;x<=1;x++)
+          put(T.LEATHER,(cx+x+TS)%TS,(cy+y+TS)%TS, 100, 62, 38); } })();
+
+    // --- brick: red courses with mortar
+    (function(){ const rand = rng(1414);
+      for (let y=0;y<TS;y++) for (let x=0;x<TS;x++){
+        const row = (y/8)|0;
+        const off = (row % 2) * 8;
+        const mortar = (y % 8 < 2) || ((x + off) % 16 < 2);
+        const n = (rand()-0.5)*12;
+        if (mortar) put(T.BRICK, x, y, 186+n, 180+n, 170+n);
+        else put(T.BRICK, x, y, 158+n, 74+n, 54+n); } })();
+
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.LinearMipMapLinearFilter;
+    tex.generateMipmaps = true;
+    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+    return { texture: tex, canvas: cv };
+  }
+  const atlas = buildAtlas();
+
+  const INSET = 0.5 / ATLAS_PX;
+  function tileUV(t){
+    const c = t % ATLAS_N, r = (t / ATLAS_N) | 0;
+    return [ c/ATLAS_N + INSET, 1 - (r+1)/ATLAS_N + INSET,
+             (c+1)/ATLAS_N - INSET, 1 - r/ATLAS_N - INSET ];
+  }
+
+  /* ======================================================================
+     4. VOXEL STORAGE + TERRAIN
+     ====================================================================== */
+  const world = new Uint8Array(WX * WY * WZ);
+  const edits = new Map();
+  const IDX = (x, y, z) => (y * WZ + z) * WX + x;
+
+  function getBlock(x, y, z){
+    if (y < 0) return STONE;
+    if (y >= WY) return AIR;
+    if (x < 0 || z < 0 || x >= WX || z >= WZ) return y <= SEA ? WATER : AIR;
+    return world[IDX(x, y, z)];
+  }
+  function setRaw(x, y, z, id){
+    if (x < 0 || y < 0 || z < 0 || x >= WX || y >= WY || z >= WZ) return;
+    world[IDX(x, y, z)] = id;
+  }
+
+  function hash2(x, z, s){
+    let h = Math.imul(x|0, 374761393) ^ Math.imul(z|0, 668265263) ^ Math.imul(s|0, 2246822519);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+  const smooth = t => t * t * (3 - 2 * t);
+  function vnoise(x, z, s){
+    const xi = Math.floor(x), zi = Math.floor(z);
+    const xf = smooth(x - xi), zf = smooth(z - zi);
+    const a = hash2(xi, zi, s),     b = hash2(xi+1, zi, s);
+    const c = hash2(xi, zi+1, s),   d = hash2(xi+1, zi+1, s);
+    return (a + (b-a)*xf) * (1-zf) + (c + (d-c)*xf) * zf;
+  }
+  function fbm(x, z, s){
+    let v = 0, amp = 0.5, f = 1;
+    for (let o = 0; o < 4; o++){ v += vnoise(x*f, z*f, s + o*17) * amp; amp *= 0.5; f *= 2; }
+    return v;
+  }
+
+  function generateTerrain(seed){
+    world.fill(AIR);
+    const cx = WX/2, cz = WZ/2, R = WX * 0.46;
+    const height = new Int16Array(WX * WZ);
+    for (let z = 0; z < WZ; z++) for (let x = 0; x < WX; x++){
+      const dx = (x + 0.5 - cx)/R, dz = (z + 0.5 - cz)/R;
+      let d = Math.sqrt(dx*dx + dz*dz);
+      d += (fbm(x/22, z/22, seed+500) - 0.5) * 0.22;
+      const fall = 1 - smooth(Math.max(0, Math.min(1, (d - 0.42)/0.52)));
+      const base = fbm(x/30, z/30, seed)*22 + fbm(x/11, z/11, seed+90)*6;
+      let h = Math.round((base + 4)*fall + SEA*fall - 3);
+      if (h < 1) h = 1;
+      if (h > WY - 6) h = WY - 6;
+      height[z*WX + x] = h;
+      for (let y = 0; y <= h; y++){
+        let id = STONE;
+        if (y > h - 4) id = DIRT;
+        if (y === h){
+          if (h <= SEA + 1) id = SAND;
+          else if (h > 30) id = (h > 33 ? SNOW : STONE);
+          else id = GRASS;
+        }
+        if (y === 0) id = STONE;
+        setRaw(x, y, z, id);
+      }
+      for (let y = h + 1; y <= SEA; y++) setRaw(x, y, z, WATER);
+      if (h <= SEA - 2 && hash2(x, z, seed+4242) < 0.12) setRaw(x, h, z, GRAVEL);
+    }
+    for (let z = 3; z < WZ-3; z++) for (let x = 3; x < WX-3; x++){
+      const h = height[z*WX + x];
+      if (h <= SEA + 1 || h > 29) continue;
+      if (getBlock(x, h, z) !== GRASS) continue;
+      if (hash2(x, z, seed+999) > 0.015) continue;
+      let clear = true;
+      for (let dz=-2; dz<=2 && clear; dz++) for (let dx=-2; dx<=2; dx++)
+        if (getBlock(x+dx, h+5, z+dz) === LOG){ clear = false; break; }
+      if (!clear) continue;
+      const trunk = 4 + ((hash2(x, z, seed+12)*3)|0);
+      for (let i = 1; i <= trunk; i++) setRaw(x, h+i, z, LOG);
+      const topY = h + trunk;
+      for (let dy=-2; dy<=1; dy++) for (let dz=-2; dz<=2; dz++) for (let dx=-2; dx<=2; dx++){
+        const r = Math.abs(dx) + Math.abs(dz) + Math.abs(dy)*1.4;
+        if (r > 3.2) continue;
+        if (dx === 0 && dz === 0 && dy <= 0) continue;
+        const yy = topY + dy;
+        if (yy >= WY) continue;
+        if (getBlock(x+dx, yy, z+dz) === AIR) setRaw(x+dx, yy, z+dz, LEAVES);
+      }
+    }
+  }
+
+  /* ======================================================================
+     5. SUNLIGHT  —  the mechanic that carries chapter 5 and 9.2
+     Light is swept along the sun's direction: opaque blocks stop it dead,
+     frosted glass costs 6 of 15, clear glass costs nothing. Shadows are
+     therefore a real consequence of what the child built.
+     ====================================================================== */
+  const skyLight = new Uint8Array(WX * WY * WZ);
+  const tmpLight = new Uint8Array(WX * WY * WZ);
+
+  // east is +X. Morning sun in the east -> light travels west, shadows point west.
+  const SUNS = [
+    { key:'morning',   zh:'上午', en:'morning',   fdx: 1, sky:0xa9bdcb, tint:[1.00,0.94,0.86] },
+    { key:'noon',      zh:'中午', en:'noon',      fdx: 0, sky:0x8fb2cf, tint:[1.00,1.00,1.00] },
+    { key:'afternoon', zh:'下午', en:'afternoon', fdx:-1, sky:0xc9a184, tint:[1.00,0.90,0.78] }
+  ];
+  let tod = 1;                                  // index into SUNS
+  let sunUnlocked = { noon:1, morning:0, afternoon:0 };
+
+  function computeLight(){
+    const fdx = SUNS[tod].fdx;
+    // 1. sweep along the sun direction, from the top down
+    for (let y = WY - 1; y >= 0; y--){
+      for (let z = 0; z < WZ; z++){
+        const row = (y * WZ + z) * WX, above = ((y + 1) * WZ + z) * WX;
+        for (let x = 0; x < WX; x++){
+          let src;
+          if (y === WY - 1) src = 15;
+          else {
+            const fx = x + fdx;
+            src = (fx < 0 || fx >= WX) ? 15 : tmpLight[above + fx];
+          }
+          const id = world[row + x];
+          tmpLight[row + x] = id === AIR ? src
+            : (BLOCKS[id].opaque === 1 ? 0 : Math.max(0, src - (BLOCKS[id].op || 0)));
+        }
+      }
+    }
+    // 2. one forward and one backward in-place pass, so light bends a little
+    //    into the shade instead of leaving knife-edged black
+    const PLANE = WX * WZ;
+    for (let pass = 0; pass < 2; pass++){
+      const back = pass === 1;
+      for (let yi = 0; yi < WY; yi++){
+        const y = back ? WY - 1 - yi : yi;
+        for (let zi = 0; zi < WZ; zi++){
+          const z = back ? WZ - 1 - zi : zi;
+          const row = (y * WZ + z) * WX;
+          for (let xi = 0; xi < WX; xi++){
+            const x = back ? WX - 1 - xi : xi;
+            const i = row + x;
+            const id = world[i];
+            if (id !== AIR && BLOCKS[id].opaque === 1) continue;
+            const v = tmpLight[i];
+            if (v >= 10) continue;
+            let m = 0, n;
+            if (x > 0    && (n = tmpLight[i-1])     > m) m = n;
+            if (x < WX-1 && (n = tmpLight[i+1])     > m) m = n;
+            if (z > 0    && (n = tmpLight[i-WX])    > m) m = n;
+            if (z < WZ-1 && (n = tmpLight[i+WX])    > m) m = n;
+            if (y > 0    && (n = tmpLight[i-PLANE]) > m) m = n;
+            if (y < WY-1 && (n = tmpLight[i+PLANE]) > m) m = n;
+            if (m - 5 > v) tmpLight[i] = m - 5;
+          }
+        }
+      }
+    }
+    // 3. adopt, marking exactly the chunks whose light actually moved
+    let changed = 0;
+    for (let y = 0; y < WY; y++){
+      const cy = (y / CS) | 0;
+      for (let z = 0; z < WZ; z++){
+        const row = (y * WZ + z) * WX, cz = (z / CS) | 0;
+        for (let x = 0; x < WX; x++){
+          const i = row + x;
+          if (skyLight[i] === tmpLight[i]) continue;
+          skyLight[i] = tmpLight[i];
+          changed++;
+          const cx = (x / CS) | 0;
+          chunkAt(cx, cy, cz).dirty = true;
+          if (x % CS === 0 && cx > 0) chunkAt(cx-1, cy, cz).dirty = true;
+          if (x % CS === CS-1 && cx < CXN-1) chunkAt(cx+1, cy, cz).dirty = true;
+          if (y % CS === 0 && cy > 0) chunkAt(cx, cy-1, cz).dirty = true;
+          if (y % CS === CS-1 && cy < CYN-1) chunkAt(cx, cy+1, cz).dirty = true;
+          if (z % CS === 0 && cz > 0) chunkAt(cx, cy, cz-1).dirty = true;
+          if (z % CS === CS-1 && cz < CZN-1) chunkAt(cx, cy, cz+1).dirty = true;
+        }
+      }
+    }
+    return changed;
+  }
+
+  function getLight(x, y, z){
+    if (y < 0) return 0;
+    if (y >= WY) return 15;
+    if (x < 0 || z < 0 || x >= WX || z >= WZ) return 15;
+    return skyLight[IDX(x, y, z)];
+  }
+
+  let lightDirty = false, lightDue = 0;
+  function markLightDirty(){ lightDirty = true; lightDue = performance.now() + 110; }
+
+  /* ======================================================================
+     6. CHUNK MESHING
+     ====================================================================== */
+  const FACES = [
+    { dir:[ 1, 0, 0], shade:0.80, corners:[[1,0,1],[1,0,0],[1,1,0],[1,1,1]] },
+    { dir:[-1, 0, 0], shade:0.80, corners:[[0,0,0],[0,0,1],[0,1,1],[0,1,0]] },
+    { dir:[ 0, 1, 0], shade:1.00, corners:[[0,1,1],[1,1,1],[1,1,0],[0,1,0]] },
+    { dir:[ 0,-1, 0], shade:0.52, corners:[[0,0,0],[1,0,0],[1,0,1],[0,0,1]] },
+    { dir:[ 0, 0, 1], shade:0.90, corners:[[0,0,1],[1,0,1],[1,1,1],[0,1,1]] },
+    { dir:[ 0, 0,-1], shade:0.90, corners:[[1,0,0],[0,0,0],[0,1,0],[1,1,0]] }
+  ];
+  const CORNER_UV = [[0,0],[1,0],[1,1],[0,1]];
+  const AO_LEVEL  = [0.52, 0.70, 0.85, 1.00];
+  const AMB = 0.34;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(SUNS[tod].sky);
+  scene.fog = new THREE.Fog(SUNS[tod].sky, 46, 165);
+
+  const matOpaque = new THREE.MeshBasicMaterial({ map: atlas.texture, vertexColors:true, fog:true });
+  const TRANS_MAT = {
+    water: new THREE.MeshBasicMaterial({ map:atlas.texture, vertexColors:true, fog:true,
+              transparent:true, opacity:0.76, depthWrite:false }),
+    glass: new THREE.MeshBasicMaterial({ map:atlas.texture, vertexColors:true, fog:true,
+              transparent:true, opacity:0.34 }),
+    frost: new THREE.MeshBasicMaterial({ map:atlas.texture, vertexColors:true, fog:true,
+              transparent:true, opacity:0.66 })
+  };
+  const TRANS_KEYS = ['water','glass','frost'];
+
+  const chunks = [];
+  for (let cy = 0; cy < CYN; cy++) for (let cz = 0; cz < CZN; cz++) for (let cx = 0; cx < CXN; cx++)
+    chunks.push({ cx, cy, cz, meshes:{}, dirty:true });
+  const chunkAt = (cx, cy, cz) => chunks[(cy * CZN + cz) * CXN + cx];
+
+  function newBuf(){ return { pos:[], uv:[], col:[], idx:[] }; }
+
+  function buildChunk(ch){
+    const ox = ch.cx*CS, oy = ch.cy*CS, oz = ch.cz*CS;
+    const bufs = { solid:newBuf(), water:newBuf(), glass:newBuf(), frost:newBuf() };
+    const tint = SUNS[tod].tint;
+
+    for (let ly = 0; ly < CS; ly++){
+      const y = oy + ly;
+      for (let lz = 0; lz < CS; lz++){
+        const z = oz + lz;
+        for (let lx = 0; lx < CS; lx++){
+          const x = ox + lx;
+          const id = world[IDX(x, y, z)];
+          if (id === AIR) continue;
+          const def = BLOCKS[id];
+          const target = bufs[def.trans || 'solid'];
+
+          for (let f = 0; f < 6; f++){
+            const F = FACES[f];
+            const nx = x+F.dir[0], ny = y+F.dir[1], nz = z+F.dir[2];
+            const nb = getBlock(nx, ny, nz);
+            if (nb === id) continue;
+            if (isOpaque(nb)) continue;
+
+            const tile = F.dir[1] === 1 ? def.top : F.dir[1] === -1 ? def.bottom : def.side;
+            const uv = tileUV(tile);
+            const base = target.pos.length / 3;
+            const lit = AMB + (1 - AMB) * (getLight(nx, ny, nz) / 15);
+            const ao = [0,0,0,0];
+
+            for (let c = 0; c < 4; c++){
+              const co = F.corners[c];
+              target.pos.push(x+co[0], y+co[1], z+co[2]);
+              const cu = CORNER_UV[c];
+              target.uv.push(cu[0] ? uv[2] : uv[0], cu[1] ? uv[3] : uv[1]);
+
+              let occ = 1;
+              if (def.opaque === 1){
+                let A = -1, B = -1;
+                for (let a = 0; a < 3; a++){ if (F.dir[a] !== 0) continue; if (A < 0) A = a; else B = a; }
+                const oA = [0,0,0]; oA[A] = co[A]*2 - 1;
+                const oB = [0,0,0]; oB[B] = co[B]*2 - 1;
+                const n1 = isOpaque(getBlock(nx+oA[0], ny+oA[1], nz+oA[2])) ? 1 : 0;
+                const n2 = isOpaque(getBlock(nx+oB[0], ny+oB[1], nz+oB[2])) ? 1 : 0;
+                const n3 = isOpaque(getBlock(nx+oA[0]+oB[0], ny+oA[1]+oB[1], nz+oA[2]+oB[2])) ? 1 : 0;
+                occ = AO_LEVEL[(n1 && n2) ? 0 : 3 - (n1 + n2 + n3)];
+              }
+              ao[c] = occ;
+              const v = F.shade * occ * lit;
+              target.col.push(v * tint[0], v * tint[1], v * tint[2]);
+            }
+            if (ao[0] + ao[2] > ao[1] + ao[3])
+              target.idx.push(base, base+1, base+2, base, base+2, base+3);
+            else
+              target.idx.push(base+1, base+2, base+3, base+1, base+3, base);
+          }
+        }
+      }
+    }
+
+    function finish(key, data, material){
+      const prev = ch.meshes[key];
+      if (prev){ prev.geometry.dispose(); scene.remove(prev); ch.meshes[key] = null; }
+      if (!data.idx.length) return;
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(data.pos, 3));
+      g.setAttribute('uv',       new THREE.Float32BufferAttribute(data.uv, 2));
+      g.setAttribute('color',    new THREE.Float32BufferAttribute(data.col, 3));
+      g.setIndex(data.idx);
+      g.computeBoundingSphere();
+      const m = new THREE.Mesh(g, material);
+      m.matrixAutoUpdate = false;
+      m.updateMatrix();
+      scene.add(m);
+      ch.meshes[key] = m;
+    }
+    finish('solid', bufs.solid, matOpaque);
+    for (const k of TRANS_KEYS) finish(k, bufs[k], TRANS_MAT[k]);
+    ch.dirty = false;
+  }
+
+  function markDirty(x, y, z){
+    const cx = (x/CS)|0, cy = (y/CS)|0, cz = (z/CS)|0;
+    if (cx < 0 || cy < 0 || cz < 0 || cx >= CXN || cy >= CYN || cz >= CZN) return;
+    chunkAt(cx, cy, cz).dirty = true;
+  }
+
+  function setBlock(x, y, z, id, record){
+    if (x < 0 || y < 1 || z < 0 || x >= WX || y >= WY || z >= WZ) return false;
+    const i = IDX(x, y, z);
+    if (world[i] === id) return false;
+    world[i] = id;
+    if (record !== false){ edits.set(i, id); dirtySave = true; }
+    markDirty(x, y, z);
+    markDirty(x-1, y, z); markDirty(x+1, y, z);
+    markDirty(x, y-1, z); markDirty(x, y+1, z);
+    markDirty(x, y, z-1); markDirty(x, y, z+1);
+    markLightDirty();
+    // 9.1 地心引力 — whatever changed here, anything unsupported now falls
+    if (id !== AIR && BLOCKS[id].falls) scheduleFall(x, y, z);
+    scheduleFall(x, y + 1, z);
+    return true;
+  }
+
+  /* ======================================================================
+     7. FALLING BLOCKS  —  9.1 地心引力
+     ====================================================================== */
+  const fallQueue = [];
+  let fallDue = 0;
+  function scheduleFall(x, y, z){
+    if (y < 1 || y >= WY) return;
+    fallQueue.push((y * WZ + z) * WX + x);
+    if (fallQueue.length > 4000) fallQueue.splice(0, 2000);
+  }
+  function stepFalls(now){
+    if (now < fallDue || !fallQueue.length) return;
+    fallDue = now + 90;
+    const batch = fallQueue.splice(0, 220);
+    for (const i of batch){
+      const x = i % WX, z = ((i / WX) | 0) % WZ, y = (i / (WX * WZ)) | 0;
+      const id = world[i];
+      if (id === AIR || !BLOCKS[id].falls) continue;
+      const below = getBlock(x, y-1, z);
+      if (below !== AIR && below !== WATER) continue;
+      setBlock(x, y, z, below === WATER ? WATER : AIR, true);
+      setBlock(x, y-1, z, id, true);
+      scheduleFall(x, y-1, z);
+      scheduleFall(x, y+1, z);
+    }
+  }
+
+  /* ======================================================================
+     8. RENDERER + CAMERA
+     ====================================================================== */
+  const canvas = document.getElementById('view');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:false, powerPreference:'high-performance' });
+  renderer.setClearColor(SUNS[tod].sky, 1);
+  const camera = new THREE.PerspectiveCamera(cfg.fov, 1, 0.1, 400);
+
+  function applyScale(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    renderer.setPixelRatio(dpr * cfg.scale);
+  }
+  function resize(){
+    const w = window.innerWidth, h = window.innerHeight;
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    applyScale();
+  }
+  window.addEventListener('resize', resize);
+
+  const outline = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(1.002, 1.002, 1.002)),
+    new THREE.LineBasicMaterial({ color:0x0b0e11, transparent:true, opacity:0.55, fog:false })
+  );
+  outline.visible = false;
+  scene.add(outline);
+
+  function applySky(){
+    const c = new THREE.Color(SUNS[tod].sky);
+    scene.background = c;
+    scene.fog.color = c;
+    renderer.setClearColor(c, 1);
+    const el = document.getElementById('t-tod');
+    el.innerHTML = SUNS[tod].zh + ' <small>' + SUNS[tod].en + '</small>';
+  }
+
+  /* ======================================================================
+     9. PLAYER
+     ====================================================================== */
+  const PW = 0.3, PH = 1.8, EYE = 1.62;
+  const player = { x: WX/2+0.5, y: 30, z: WZ/2+0.5, vx:0, vy:0, vz:0, yaw:0, pitch:0, ground:false };
+
+  function spawn(){
+    for (let y = WY-1; y > 1; y--)
+      if (isSolid(getBlock(WX/2|0, y, WZ/2|0))){ player.y = y + 1.01; break; }
+    player.x = (WX/2|0) + 0.5; player.z = (WZ/2|0) + 0.5;
+    player.vx = player.vy = player.vz = 0;
+  }
+  function boxCollides(px, py, pz){
+    const x0=Math.floor(px-PW), x1=Math.floor(px+PW);
+    const y0=Math.floor(py),    y1=Math.floor(py+PH);
+    const z0=Math.floor(pz-PW), z1=Math.floor(pz+PW);
+    for (let y=y0; y<=y1; y++) for (let z=z0; z<=z1; z++) for (let x=x0; x<=x1; x++)
+      if (isSolid(getBlock(x, y, z))) return true;
+    return false;
+  }
+  function moveAxis(axis, d){
+    if (d === 0) return;
+    const EPS = 1e-3;
+    if (axis === 0) player.x += d; else if (axis === 1) player.y += d; else player.z += d;
+    if (!boxCollides(player.x, player.y, player.z)) return;
+    if (axis === 0){
+      player.x = d > 0 ? Math.floor(player.x+PW)-PW-EPS : Math.floor(player.x-PW)+1+PW+EPS;
+      player.vx = 0;
+    } else if (axis === 1){
+      if (d > 0){ player.y = Math.floor(player.y+PH)-PH-EPS; player.vy = 0; }
+      else {
+        player.y = Math.floor(player.y)+1+EPS;
+        const under = getBlock(Math.floor(player.x), Math.floor(player.y)-1, Math.floor(player.z));
+        // 8.2 有弹性 — rubber returns the force it was given
+        if (under === RUBBER && player.vy < -7){ player.vy = -player.vy * 0.62; blip(220, 0.12, 'place'); }
+        else { player.vy = 0; player.ground = true; }
+      }
+    } else {
+      player.z = d > 0 ? Math.floor(player.z+PW)-PW-EPS : Math.floor(player.z-PW)+1+PW+EPS;
+      player.vz = 0;
+    }
+  }
+
+  const keys = Object.create(null);
+  function updatePlayer(dt){
+    const GRAV = 30, JUMP = 8.6;
+    let fx = 0, fz = 0;
+    if (keys['KeyW']) fz -= 1;
+    if (keys['KeyS']) fz += 1;
+    if (keys['KeyA']) fx -= 1;
+    if (keys['KeyD']) fx += 1;
+    const len = Math.hypot(fx, fz);
+    const speed = (keys['ShiftLeft'] || keys['ShiftRight']) ? 7.2 : 4.5;
+    let wx = 0, wz = 0;
+    if (len > 0){
+      fx /= len; fz /= len;
+      const s = Math.sin(player.yaw), c = Math.cos(player.yaw);
+      wx = ( fx*c + fz*s) * speed;
+      wz = (-fx*s + fz*c) * speed;
+    }
+    const blend = player.ground ? 1 : 0.22;
+    player.vx += (wx - player.vx) * blend;
+    player.vz += (wz - player.vz) * blend;
+
+    if (keys['Space'] && player.ground){ player.vy = JUMP; player.ground = false; }
+    player.vy -= GRAV * dt;
+    if (player.vy < -48) player.vy = -48;
+
+    player.ground = false;
+    const steps = Math.max(1, Math.ceil(Math.max(Math.abs(player.vx), Math.abs(player.vy), Math.abs(player.vz)) * dt / 0.35));
+    const sdt = dt / steps;
+    for (let i = 0; i < steps; i++){
+      moveAxis(1, player.vy * sdt);
+      moveAxis(0, player.vx * sdt);
+      moveAxis(2, player.vz * sdt);
+    }
+    if (player.y < -12) spawn();
+
+    const ar = cfg.arrow * 2.1 * dt;
+    if (keys['ArrowLeft'])  player.yaw += ar;
+    if (keys['ArrowRight']) player.yaw -= ar;
+    if (keys['ArrowUp'])    player.pitch += ar * (cfg.invert ? -1 : 1);
+    if (keys['ArrowDown'])  player.pitch -= ar * (cfg.invert ? -1 : 1);
+    clampPitch();
+
+    camera.position.set(player.x, player.y + EYE, player.z);
+    camera.rotation.set(player.pitch, player.yaw, 0, 'YXZ');
+  }
+  function clampPitch(){
+    const L = Math.PI/2 - 0.02;
+    if (player.pitch > L) player.pitch = L;
+    if (player.pitch < -L) player.pitch = -L;
+  }
+  // +X east, -X west, -Z north, +Z south
+  function facing(){
+    const fx = -Math.sin(player.yaw), fz = -Math.cos(player.yaw);
+    if (Math.abs(fx) > Math.abs(fz)) return fx > 0 ? '东 E' : '西 W';
+    return fz > 0 ? '南 S' : '北 N';
+  }
+
+  /* ======================================================================
+     10. PICKING + EDITING
+     ====================================================================== */
+  const REACH = 5.5;
+  function pick(){
+    const o = new THREE.Vector3(player.x, player.y + EYE, player.z);
+    const dir = new THREE.Vector3(0, 0, -1).applyEuler(camera.rotation).normalize();
+    let x = Math.floor(o.x), y = Math.floor(o.y), z = Math.floor(o.z);
+    const sx = dir.x > 0 ? 1 : -1, sy = dir.y > 0 ? 1 : -1, sz = dir.z > 0 ? 1 : -1;
+    const tDX = Math.abs(1/dir.x), tDY = Math.abs(1/dir.y), tDZ = Math.abs(1/dir.z);
+    let tMX = (dir.x > 0 ? x+1-o.x : o.x-x) * tDX;
+    let tMY = (dir.y > 0 ? y+1-o.y : o.y-y) * tDY;
+    let tMZ = (dir.z > 0 ? z+1-o.z : o.z-z) * tDZ;
+    let nx=0, ny=0, nz=0, t=0;
+    while (t <= REACH){
+      const id = getBlock(x, y, z);
+      if (id !== AIR && id !== WATER) return { x, y, z, nx, ny, nz, id };
+      if (tMX < tMY && tMX < tMZ){ x += sx; t = tMX; tMX += tDX; nx = -sx; ny = 0; nz = 0; }
+      else if (tMY < tMZ)        { y += sy; t = tMY; tMY += tDY; nx = 0; ny = -sy; nz = 0; }
+      else                       { z += sz; t = tMZ; tMZ += tDZ; nx = 0; ny = 0; nz = -sz; }
+      if (y < -1 || y > WY+1) break;
+    }
+    return null;
+  }
+  let aim = null;
+  function updateAim(){
+    aim = pick();
+    if (aim){ outline.visible = true; outline.position.set(aim.x+0.5, aim.y+0.5, aim.z+0.5); }
+    else outline.visible = false;
+  }
+  function playerOverlaps(x, y, z){
+    return (player.x+PW > x && player.x-PW < x+1 &&
+            player.y+PH > y && player.y      < y+1 &&
+            player.z+PW > z && player.z-PW < z+1);
+  }
+
+  function breakBlock(){
+    if (!running || !aim) return;
+    if (aim.y <= 0){ toast('基岩打不破。Bedrock will not break.'); return; }
+    const id = getBlock(aim.x, aim.y, aim.z);
+    if (!canMine(id)) return;
+    if (setBlock(aim.x, aim.y, aim.z, AIR, true)){
+      give(id, 1, true);
+      scheduleFall(aim.x, aim.y+1, aim.z);
+      blip(150, 0.07, 'break');
+    }
+  }
+
+  function placeBlock(){
+    if (!running || !aim) return;
+    const id = bar[selected];
+    if (!id || (inv[id] || 0) <= 0){ toast('这个格子是空的。That slot is empty — mine something, or earn it in the Lab.'); return; }
+    tryPlace(aim.x + aim.nx, aim.y + aim.ny, aim.z + aim.nz, id);
+  }
+
+  // Placement is where three of the material facts actually happen:
+  // 会浮 / 会沉 in water, and 会吸水 for cotton.
+  function tryPlace(x, y, z, id){
+    if ((inv[id] || 0) <= 0) return false;
+    if (y < 1 || y >= WY) return false;
+    const here = getBlock(x, y, z);
+    if (here !== AIR && here !== WATER) return false;
+    if (playerOverlaps(x, y, z)){ toast('那里放不下。Not enough room there.'); return false; }
+
+    const def = BLOCKS[id];
+    let msg = '';
+    // 8.2 会浮或会沉 — placing into water shows which it is
+    if (here === WATER && def.buoy === 'float'){
+      let ny = y;
+      while (ny + 1 < WY && getBlock(x, ny+1, z) === WATER) ny++;
+      if (ny !== y){ y = ny; msg = def.zh + '会浮 — it floated to the surface'; }
+    } else if (here === WATER && def.buoy === 'sink'){
+      let ny = y;
+      while (ny - 1 > 0){ const b = getBlock(x, ny-1, z); if (b !== WATER && b !== AIR) break; ny--; }
+      if (ny !== y){ y = ny; msg = def.zh + '会沉 — it sank to the bottom'; }
+    }
+    if (!setBlock(x, y, z, id, true)) return false;
+    take(id, 1);
+
+    // 8.2 会吸水 — cotton and wool soak up the water they touch
+    if (def.absorbs){
+      let soaked = 0;
+      const around = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+      for (const a of around){
+        if (getBlock(x+a[0], y+a[1], z+a[2]) === WATER){
+          setBlock(x+a[0], y+a[1], z+a[2], AIR, true); soaked++;
+        }
+      }
+      if (soaked) msg = def.zh + '会吸水 — it absorbed ' + soaked + ' water';
+    }
+    if (def.falls) scheduleFall(x, y, z);
+    if (msg) toast(msg);
+    blip(320, 0.06, 'place');
+    return true;
+  }
+
+  /* ======================================================================
+     11. SOUND
+     ====================================================================== */
+  let actx = null;
+  function audio(){
+    if (!cfg.sound) return null;
+    if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ return null; } }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  function blip(freq, dur, kind){
+    const a = audio(); if (!a) return;
+    const t0 = a.currentTime;
+    const g = a.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(kind === 'break' ? 0.16 : 0.11, t0 + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    g.connect(a.destination);
+    const o = a.createOscillator();
+    o.type = kind === 'break' ? 'square' : 'triangle';
+    o.frequency.setValueAtTime(freq, t0);
+    o.frequency.exponentialRampToValueAtTime(Math.max(60, freq*0.55), t0 + dur);
+    o.connect(g); o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  function chime(ok){
+    const a = audio(); if (!a) return;
+    const notes = ok ? [523.25, 659.25, 783.99] : [311.13, 233.08];
+    notes.forEach((f, i) => {
+      const t0 = a.currentTime + i * 0.09;
+      const g = a.createGain();
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.09, t0 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+      g.connect(a.destination);
+      const o = a.createOscillator();
+      o.type = 'triangle'; o.frequency.setValueAtTime(f, t0);
+      o.connect(g); o.start(t0); o.stop(t0 + 0.32);
+    });
+  }
+
+  /* ======================================================================
+     12. INVENTORY
+     ====================================================================== */
+  const inv = Object.create(null);      // block id -> count
+  const bar = new Array(9).fill(0);     // hotbar slot -> block id
+  let selected = 0;
+
+  function give(id, n, quiet){
+    if (!id || !BLOCKS[id]) return;
+    inv[id] = (inv[id] || 0) + n;
+    if (bar.indexOf(id) < 0){
+      const free = bar.indexOf(0);
+      if (free >= 0) bar[free] = id;
+    }
+    dirtySave = true;
+    renderHotbar();
+    if (!quiet) showBlockName(id);
+  }
+  function take(id, n){
+    inv[id] = Math.max(0, (inv[id] || 0) - n);
+    if (inv[id] === 0){ delete inv[id]; const s = bar.indexOf(id); if (s >= 0) bar[s] = 0; }
+    dirtySave = true;
+    renderHotbar();
+  }
+
+  /* ======================================================================
+     13. UI
+     ====================================================================== */
+  const el = id => document.getElementById(id);
+  const screens = { loading:el('loading'), start:el('start'), pause:el('pause'),
+                    settings:el('settings'), lab:el('lab'), inv:el('inv') };
+  let running = false, backTo = 'start';
+
+  function show(name){ for (const k in screens) screens[k].classList.toggle('on', k === name); }
+  function hideAll(){ for (const k in screens) screens[k].classList.remove('on'); }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function ruby(zh, py){
+    let s = '';
+    for (let i = 0; i < zh.length; i++){
+      const p = py && py[i];
+      s += p ? '<ruby>' + esc(zh[i]) + '<rt>' + esc(p) + '</rt></ruby>' : esc(zh[i]);
+    }
+    return s;
+  }
+
+  let toastTimer = 0;
+  function toast(msg){
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function tileThumb(tile, px){
+    const c = document.createElement('canvas');
+    c.width = c.height = TS;
+    const g = c.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.drawImage(atlas.canvas, (tile % ATLAS_N)*TS, ((tile/ATLAS_N)|0)*TS, TS, TS, 0, 0, TS, TS);
+    if (px){ c.style.width = px + 'px'; c.style.height = px + 'px'; }
+    return c;
+  }
+
+  function renderHotbar(){
+    const b = el('hotbar');
+    b.innerHTML = '';
+    for (let i = 0; i < 9; i++){
+      const s = document.createElement('div');
+      s.className = 'slot' + (i === selected ? ' sel' : '');
+      const id = bar[i];
+      if (id){
+        s.appendChild(tileThumb(BLOCKS[id].side));
+        const q = document.createElement('span');
+        q.className = 'qty'; q.textContent = inv[id] || 0;
+        s.appendChild(q);
+      }
+      const n = document.createElement('span');
+      n.className = 'num'; n.textContent = i + 1;
+      s.appendChild(n);
+      b.appendChild(s);
+    }
+  }
+  let nameTimer = 0;
+  function showBlockName(id){
+    const bn = el('blockname');
+    if (!id){ bn.classList.remove('show'); return; }
+    bn.innerHTML = esc(BLOCKS[id].zh) + '<em>' + esc(BLOCKS[id].en) + '</em>';
+    bn.classList.add('show');
+    clearTimeout(nameTimer);
+    nameTimer = setTimeout(() => bn.classList.remove('show'), 1500);
+  }
+  function selectSlot(i){
+    selected = (i + 9) % 9;
+    renderHotbar();
+    showBlockName(bar[selected]);
+    dirtySave = true;
+  }
+
+  /* ---------- inventory screen ---------- */
+  function openInv(){
+    if (running) running = false;
+    if (document.pointerLockElement) document.exitPointerLock();
+    el('inv-slot').textContent = selected + 1;
+    const grid = el('inv-grid');
+    grid.innerHTML = '';
+    const ids = Object.keys(inv).map(Number).filter(id => inv[id] > 0).sort((a,b) => a-b);
+    if (!ids.length){
+      grid.innerHTML = '<div class="empty">还没有材料。Nothing yet — break a block to collect it, or press <b>L</b> to earn materials in the Lab.</div>';
+    } else {
+      grid.className = 'invgrid';
+      for (const id of ids){
+        const cell = document.createElement('button');
+        cell.className = 'invcell';
+        cell.appendChild(tileThumb(BLOCKS[id].side));
+        const t = document.createElement('div');
+        t.className = 't';
+        t.innerHTML = esc(BLOCKS[id].zh) + '<em>' + esc(BLOCKS[id].en) + '</em>';
+        cell.appendChild(t);
+        const n = document.createElement('div');
+        n.className = 'n'; n.textContent = inv[id];
+        cell.appendChild(n);
+        cell.addEventListener('click', () => {
+          const existing = bar.indexOf(id);
+          if (existing >= 0 && existing !== selected) bar[existing] = 0;
+          bar[selected] = id;
+          renderHotbar(); dirtySave = true; openInv();
+        });
+        grid.appendChild(cell);
+      }
+    }
+    show('inv');
+  }
+
+  /* ======================================================================
+     14. THE LAB
+     ====================================================================== */
+  const answered = Object.create(null);   // question id -> times correct
+  let currentQ = null, lastSec = null;
+
+  function secQuestions(sec){ return BANK.questions.filter(q => q.sec === sec); }
+  function secProgress(sec){
+    const qs = secQuestions(sec);
+    return { done: qs.filter(q => answered[q.id]).length, total: qs.length };
+  }
+
+  function rewardFor(q){
+    if (q.r) return q.r;
+    const bySec = BANK.rewards[q.sec];
+    return (bySec && bySec[String(q.d)]) || { GRAVEL: 3 };
+  }
+
+  function openLab(sec){
+    if (running) running = false;
+    if (document.pointerLockElement) document.exitPointerLock();
+    show('lab');
+    if (sec) startQuestion(sec); else labMenu();
+  }
+
+  function labMenu(){
+    el('lab-title').textContent = '选一个课题 · Choose a topic';
+    el('lab-lede').textContent = 'A right answer pays out the material that answer is about. Harder questions pay rarer materials.';
+    el('lab-quiz').hidden = true;
+    el('btn-next').hidden = true;
+    el('btn-lab-menu').hidden = true;
+    const menu = el('lab-menu');
+    menu.hidden = false;
+    menu.innerHTML = '';
+
+    let lastCh = null;
+    const secs = Object.keys(BANK.sections).sort();
+    let grid = null;
+    for (const key of secs){
+      const s = BANK.sections[key];
+      if (s.ch !== lastCh){
+        lastCh = s.ch;
+        const h = document.createElement('div');
+        h.className = 'chaptag';
+        h.textContent = '第 ' + s.ch + ' 章 · Chapter ' + s.ch + ' — ' + s.chZh + ' / ' + s.chEn;
+        menu.appendChild(h);
+        grid = document.createElement('div');
+        grid.className = 'secgrid';
+        menu.appendChild(grid);
+      }
+      const p = secProgress(key);
+      const card = document.createElement('button');
+      card.className = 'seccard';
+      card.innerHTML =
+        '<div class="cn">' + key + ' ' + ruby(s.zh, s.p) + '</div>' +
+        '<div class="en">' + esc(s.en) + '</div>' +
+        '<div class="meter"><i style="width:' + (p.total ? p.done/p.total*100 : 0) + '%"></i></div>' +
+        '<div class="cnt">' + p.done + ' / ' + p.total + ' 答对 correct</div>';
+      card.addEventListener('click', () => startQuestion(key));
+      grid.appendChild(card);
+    }
+    const any = document.createElement('div');
+    any.className = 'btnrow';
+    const rnd = document.createElement('button');
+    rnd.className = 'primary';
+    rnd.textContent = '随机一题 · Random question';
+    rnd.addEventListener('click', () => startQuestion(null));
+    any.appendChild(rnd);
+    menu.appendChild(any);
+  }
+
+  function pickQuestion(sec){
+    const pool = sec ? secQuestions(sec) : BANK.questions;
+    const fresh = pool.filter(q => !answered[q.id]);
+    const from = fresh.length ? fresh : pool;
+    return from[(Math.random() * from.length) | 0];
+  }
+
+  function startQuestion(sec){
+    lastSec = sec;
+    currentQ = pickQuestion(sec);
+    const q = currentQ, s = BANK.sections[q.sec];
+    el('lab-menu').hidden = true;
+    el('lab-quiz').hidden = false;
+    el('btn-lab-menu').hidden = false;
+    el('btn-next').hidden = true;
+    el('verdict').hidden = true;
+    el('lab-title').textContent = '第 ' + s.ch + ' 章 · ' + s.chEn;
+    el('lab-lede').textContent = 'Answer correctly and the material is yours.';
+    el('q-sec').textContent = q.sec + ' ' + s.zh + ' · ' + s.en + '   ·   难度 difficulty ' + q.d;
+    el('qtext').innerHTML = ruby(q.q.zh, q.qp);
+    el('qtext-en').textContent = cfg.lang ? q.q.en : '';
+
+    const wrap = el('q-answers');
+    wrap.innerHTML = '';
+    const order = q.o.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--){
+      const j = (Math.random() * (i + 1)) | 0;
+      const t = order[i]; order[i] = order[j]; order[j] = t;
+    }
+    order.forEach((oi, shown) => {
+      const o = q.o[oi];
+      const b = document.createElement('button');
+      b.className = 'ans';
+      b.dataset.i = oi;
+      b.innerHTML = '<span class="mark">' + 'ABCD'[shown] + '</span><span class="body">' +
+                    ruby(o.zh, o.p) + (cfg.lang ? '<span class="en">' + esc(o.en) + '</span>' : '') + '</span>';
+      b.addEventListener('click', () => answer(oi));
+      wrap.appendChild(b);
+    });
+  }
+
+  function answer(chosen){
+    const q = currentQ;
+    if (!q) return;
+    const right = chosen === q.c;
+    const buttons = el('q-answers').querySelectorAll('.ans');
+    buttons.forEach(b => {
+      b.disabled = true;
+      const i = +b.dataset.i;
+      if (i === q.c) b.classList.add('right');
+      else if (i === chosen) b.classList.add('wrong');
+    });
+
+    const v = el('verdict');
+    v.hidden = false;
+    v.className = right ? 'right' : 'wrong';
+    let html = '<div class="head ' + (right ? 'right' : 'wrong') + '">' +
+               (right ? '答对了！Correct.' : '答错了。Not this time.') + '</div>' +
+               '<div class="why">' + esc(q.why.zh) + '</div>' +
+               (cfg.lang ? '<div class="why-en">' + esc(q.why.en) + '</div>' : '');
+    v.innerHTML = html;
+
+    if (right){
+      answered[q.id] = (answered[q.id] || 0) + 1;
+      const reward = rewardFor(q);
+      const payout = document.createElement('div');
+      payout.id = 'payout';
+      let gave = false;
+      for (const name in reward){
+        if (name === 'SUN'){
+          const next = SUNS.map(s => s.key).find(k => !sunUnlocked[k]);
+          if (next){
+            sunUnlocked[next] = 1;
+            const sd = SUNS.find(s => s.key === next);
+            const p = document.createElement('div');
+            p.className = 'prize';
+            p.innerHTML = '<span>解锁太阳位置 · Sun position unlocked: <b>' + sd.zh + ' ' + sd.en + '</b></span>';
+            payout.appendChild(p);
+            gave = true;
+            renderSunSeg();
+            continue;
+          }
+        }
+        const id = NAMED[name];
+        if (!id) continue;
+        const n = reward[name];
+        give(id, n, true);
+        const p = document.createElement('div');
+        p.className = 'prize';
+        p.appendChild(tileThumb(BLOCKS[id].side, 26));
+        const sp = document.createElement('span');
+        sp.innerHTML = '<b>+' + n + '</b> ' + esc(BLOCKS[id].zh) + ' <span style="color:var(--ink-dim)">' + esc(BLOCKS[id].en) + '</span>';
+        p.appendChild(sp);
+        payout.appendChild(p);
+        gave = true;
+      }
+      if (!gave){
+        const id = GRAVEL; give(id, 3, true);
+        const p = document.createElement('div');
+        p.className = 'prize';
+        p.appendChild(tileThumb(BLOCKS[id].side, 26));
+        const sp = document.createElement('span');
+        sp.innerHTML = '<b>+3</b> ' + esc(BLOCKS[id].zh);
+        p.appendChild(sp);
+        payout.appendChild(p);
+      }
+      v.appendChild(payout);
+    }
+    chime(right);
+    el('btn-next').hidden = false;
+    dirtySave = true;
+  }
+
+  function renderSunSeg(){
+    const seg = el('sunseg');
+    seg.innerHTML = '';
+    SUNS.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.textContent = s.zh + ' ' + s.en;
+      b.className = (i === tod ? 'on' : '');
+      b.disabled = !sunUnlocked[s.key];
+      if (!sunUnlocked[s.key]) b.title = 'Answer 9.2 in the Lab to unlock';
+      b.addEventListener('click', () => setTod(i));
+      seg.appendChild(b);
+    });
+  }
+  function setTod(i){
+    if (!sunUnlocked[SUNS[i].key]){
+      toast('还没解锁。Answer 9.2 地球的转动 in the Lab to move the sun.');
+      return;
+    }
+    if (i === tod) return;
+    tod = i;
+    applySky();
+    computeLight();
+    for (const ch of chunks) ch.dirty = true;   // the day tint touches every vertex
+    renderSunSeg();
+    dirtySave = true;
+    toast(SUNS[tod].zh + ' — ' + (tod === 1 ? '影子最短 shadows are shortest'
+      : tod === 0 ? '影子较长，偏向西边 shadows are long, towards the west'
+                  : '影子较长，偏向东边 shadows are long, towards the east'));
+  }
+  function shiftTod(d){
+    for (let i = tod + d; i >= 0 && i < SUNS.length; i += d)
+      if (sunUnlocked[SUNS[i].key]){ setTod(i); return; }
+    toast('还没解锁。Answer 9.2 地球的转动 in the Lab to move the sun.');
+  }
+
+  /* ======================================================================
+     15. SETTINGS WIRING
+     ====================================================================== */
+  function refreshSettings(){
+    el('s-sens').value = cfg.sens;   el('v-sens').textContent = (+cfg.sens).toFixed(2) + '×';
+    el('s-arrow').value = cfg.arrow; el('v-arrow').textContent = (+cfg.arrow).toFixed(2) + '×';
+    el('s-fov').value = cfg.fov;     el('v-fov').textContent = cfg.fov + '°';
+    const card = screens.settings;
+    card.querySelectorAll('.seg button').forEach(b => b.classList.remove('on'));
+    el('s-mouselook-' + (cfg.mouseLook ? 'on' : 'off')).classList.add('on');
+    el('s-inv-' + (cfg.invert ? 'on' : 'off')).classList.add('on');
+    el('s-snd-' + (cfg.sound ? 'on' : 'off')).classList.add('on');
+    el('s-tel-' + (cfg.telemetry ? 'full' : 'lean')).classList.add('on');
+    el('s-lang-' + (cfg.lang ? 'both' : 'zh')).classList.add('on');
+    card.querySelectorAll('button[data-scale]').forEach(b =>
+      b.classList.toggle('on', Math.abs(parseFloat(b.dataset.scale) - cfg.scale) < 0.01));
+    el('telemetry').classList.toggle('lean', !cfg.telemetry);
+  }
+  el('s-sens').addEventListener('input', e => { cfg.sens = +e.target.value; el('v-sens').textContent = cfg.sens.toFixed(2)+'×'; saveCfg(); });
+  el('s-arrow').addEventListener('input', e => { cfg.arrow = +e.target.value; el('v-arrow').textContent = cfg.arrow.toFixed(2)+'×'; saveCfg(); });
+  el('s-fov').addEventListener('input', e => { cfg.fov = +e.target.value; el('v-fov').textContent = cfg.fov+'°'; camera.fov = cfg.fov; camera.updateProjectionMatrix(); saveCfg(); });
+  el('s-mouselook-on').addEventListener('click', () => { cfg.mouseLook=1; saveCfg(); refreshSettings(); });
+  el('s-mouselook-off').addEventListener('click', () => { cfg.mouseLook=0; saveCfg(); refreshSettings(); });
+  el('s-inv-on').addEventListener('click',  () => { cfg.invert=1; saveCfg(); refreshSettings(); });
+  el('s-inv-off').addEventListener('click', () => { cfg.invert=0; saveCfg(); refreshSettings(); });
+  el('s-snd-on').addEventListener('click',  () => { cfg.sound=1; saveCfg(); refreshSettings(); });
+  el('s-snd-off').addEventListener('click', () => { cfg.sound=0; saveCfg(); refreshSettings(); });
+  el('s-tel-full').addEventListener('click',() => { cfg.telemetry=1; saveCfg(); refreshSettings(); });
+  el('s-tel-lean').addEventListener('click',() => { cfg.telemetry=0; saveCfg(); refreshSettings(); });
+  el('s-lang-both').addEventListener('click',() => { cfg.lang=1; saveCfg(); refreshSettings(); });
+  el('s-lang-zh').addEventListener('click', () => { cfg.lang=0; saveCfg(); refreshSettings(); });
+  screens.settings.querySelectorAll('button[data-scale]').forEach(b =>
+    b.addEventListener('click', () => { cfg.scale = parseFloat(b.dataset.scale); applyScale(); saveCfg(); refreshSettings(); }));
+
+  el('btn-settings-1').addEventListener('click', () => { backTo='start'; show('settings'); refreshSettings(); });
+  el('btn-settings-2').addEventListener('click', () => { backTo='pause'; show('settings'); refreshSettings(); });
+  el('btn-back').addEventListener('click',       () => show(backTo));
+  el('btn-play').addEventListener('click', enterWorld);
+  el('btn-resume').addEventListener('click', enterWorld);
+  el('btn-lab-2').addEventListener('click', () => openLab(null));
+  el('btn-save').addEventListener('click', () => toast(saveWorld() ? '已保存。World saved.' : 'This browser is blocking saving.'));
+  el('opt-reset').addEventListener('click', () => { resetWorld(); show('start'); });
+  el('btn-next').addEventListener('click', () => startQuestion(lastSec));
+  el('btn-lab-menu').addEventListener('click', labMenu);
+  el('btn-lab-close').addEventListener('click', enterWorld);
+  el('btn-inv-close').addEventListener('click', enterWorld);
+
+  /* ======================================================================
+     16. INPUT
+     ====================================================================== */
+  let lockOK = true, dragging = false, dragBtn = -1, dragDist = 0, lastMX = 0, lastMY = 0;
+  const wantLock = () => cfg.mouseLook && lockOK;
+
+  function setCursor(){ canvas.style.cursor = (running && !document.pointerLockElement) ? 'crosshair' : 'default'; }
+  function dragMode(){
+    lockOK = false;
+    setCursor();
+    el('lookhint').textContent =
+      'Looking around: hold down a mouse button and drag, or use the arrow keys. ' +
+      'A single click still breaks a block, right-click places one.';
+  }
+
+  function enterWorld(){
+    hideAll();
+    running = true;
+    worstWindow.length = 0;
+    audio();
+    if (wantLock()){ try { canvas.requestPointerLock(); } catch(e){ dragMode(); } }
+    setCursor();
+  }
+  function leaveWorld(){
+    running = false;
+    dragging = false;
+    if (document.pointerLockElement) document.exitPointerLock();
+    show('pause');
+    renderSunSeg();
+    setCursor();
+    saveWorld();
+  }
+
+  document.addEventListener('pointerlockchange', () => {
+    setCursor();
+    if (!document.pointerLockElement && running && wantLock()) leaveWorld();
+  });
+  document.addEventListener('pointerlockerror', () => { dragMode(); toast('Hold the mouse button and drag to look around.'); });
+
+  function applyLook(dx, dy, mul){
+    const k = 0.0022 * cfg.sens * (mul || 1);
+    player.yaw   -= dx * k;
+    player.pitch -= dy * k * (cfg.invert ? -1 : 1);
+    clampPitch();
+  }
+  document.addEventListener('mousemove', e => {
+    if (!running || !cfg.mouseLook) return;
+    if (document.pointerLockElement){ applyLook(e.movementX||0, e.movementY||0, 1); return; }
+    if (!dragging) return;
+    const dx = e.clientX - lastMX, dy = e.clientY - lastMY;
+    lastMX = e.clientX; lastMY = e.clientY;
+    dragDist += Math.abs(dx) + Math.abs(dy);
+    applyLook(dx, dy, 2.2);
+  });
+  canvas.addEventListener('mousedown', e => {
+    if (!running) return;
+    e.preventDefault();
+    if (document.pointerLockElement){
+      if (e.button === 0) breakBlock(); else if (e.button === 2) placeBlock();
+      return;
+    }
+    if (wantLock()){ try { canvas.requestPointerLock(); } catch(err){ dragMode(); } return; }
+    dragging = true; dragBtn = e.button; dragDist = 0;
+    lastMX = e.clientX; lastMY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (dragDist < 6){ if (dragBtn === 0) breakBlock(); else if (dragBtn === 2) placeBlock(); }
+  });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+  canvas.addEventListener('wheel', e => {
+    if (!running) return;
+    e.preventDefault();
+    selectSlot(selected + (e.deltaY > 0 ? 1 : -1));
+  }, { passive:false });
+
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Escape'){
+      if (running) leaveWorld();
+      else if (screens.lab.classList.contains('on') || screens.inv.classList.contains('on')) enterWorld();
+      return;
+    }
+    if (!running) return;
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Tab'].indexOf(e.code) >= 0) e.preventDefault();
+    keys[e.code] = true;
+    if (e.code.indexOf('Digit') === 0){
+      const n = +e.code.slice(5);
+      if (n >= 1 && n <= 9) selectSlot(n - 1);
+    }
+    if (e.code === 'KeyQ') breakBlock();
+    if (e.code === 'KeyE') placeBlock();
+    if (e.code === 'KeyL'){ openLab(null); }
+    if (e.code === 'Tab'){ openInv(); }
+    if (e.code === 'BracketLeft')  shiftTod(-1);
+    if (e.code === 'BracketRight') shiftTod(1);
+    if (e.code === 'F3'){ e.preventDefault(); cfg.telemetry = cfg.telemetry ? 0 : 1; saveCfg(); refreshSettings(); }
+  });
+  window.addEventListener('keyup', e => { keys[e.code] = false; });
+  window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+  window.addEventListener('beforeunload', () => { if (dirtySave) saveWorld(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && dirtySave) saveWorld(); });
+
+  /* ======================================================================
+     17. SAVE / LOAD
+     ====================================================================== */
+  let dirtySave = false, seed = 20260913;
+
+  function saveWorld(){
+    try {
+      const arr = new Array(edits.size * 2);
+      let i = 0;
+      edits.forEach((v, k) => { arr[i++] = k; arr[i++] = v; });
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        v: 2, seed, e: arr,
+        p: [+player.x.toFixed(2), +player.y.toFixed(2), +player.z.toFixed(2),
+            +player.yaw.toFixed(3), +player.pitch.toFixed(3)],
+        h: selected, inv, bar, ans: answered, tod, sun: sunUnlocked
+      }));
+      dirtySave = false;
+      return true;
+    } catch (e) { return false; }
+  }
+  function loadWorld(){
+    let data = null;
+    try { const raw = localStorage.getItem(SAVE_KEY); if (raw) data = JSON.parse(raw); }
+    catch (e) { data = null; }
+    if (!data || (data.v !== 1 && data.v !== 2)) return null;
+    if (typeof data.seed === 'number') seed = data.seed;
+    return data;
+  }
+  function applySave(data){
+    if (!data) return;
+    if (Array.isArray(data.e)){
+      for (let i = 0; i + 1 < data.e.length; i += 2){
+        const k = data.e[i]|0, v = data.e[i+1]|0;
+        if (k >= 0 && k < world.length && v >= 0 && v < BLOCKS.length){ world[k] = v; edits.set(k, v); }
+      }
+    }
+    if (Array.isArray(data.p) && data.p.length === 5){
+      player.x = data.p[0]; player.y = data.p[1]; player.z = data.p[2];
+      player.yaw = data.p[3]; player.pitch = data.p[4];
+      clampPitch();
+      if (boxCollides(player.x, player.y, player.z)) spawn();
+    }
+    if (typeof data.h === 'number' && data.h >= 0 && data.h < 9) selected = data.h;
+    if (data.inv && typeof data.inv === 'object'){
+      for (const k in data.inv){
+        const id = +k, n = +data.inv[k];
+        if (id > 0 && id < BLOCKS.length && n > 0) inv[id] = n;
+      }
+    }
+    if (Array.isArray(data.bar)){
+      for (let i = 0; i < 9; i++){
+        const id = +data.bar[i] || 0;
+        bar[i] = (id > 0 && id < BLOCKS.length && inv[id] > 0) ? id : 0;
+      }
+    }
+    if (data.ans && typeof data.ans === 'object')
+      for (const k in data.ans) answered[k] = +data.ans[k] || 0;
+    if (data.sun && typeof data.sun === 'object')
+      for (const k in sunUnlocked) if (data.sun[k]) sunUnlocked[k] = 1;
+    if (typeof data.tod === 'number' && SUNS[data.tod] && sunUnlocked[SUNS[data.tod].key]) tod = data.tod;
+  }
+  function resetWorld(){
+    try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+    edits.clear();
+    for (const k in inv) delete inv[k];
+    for (const k in answered) delete answered[k];
+    bar.fill(0);
+    sunUnlocked = { noon:1, morning:0, afternoon:0 };
+    tod = 1;
+    generateTerrain(seed);
+    spawn();
+    applySky();
+    computeLight();
+    for (const ch of chunks) ch.dirty = true;
+    renderHotbar(); renderSunSeg();
+    toast('世界已重置。World reset.');
+  }
+
+  /* ======================================================================
+     18. BOOT + MAIN LOOP
+     ====================================================================== */
+  resize();
+  const saved = loadWorld();
+  el('loadmsg').textContent = 'carving the island…';
+
+  let booted = false, buildIndex = 0, lastSave = 0, lit = false;
+
+  function bootStep(){
+    if (!booted){
+      generateTerrain(seed);
+      applySave(saved);
+      if (!saved || !Array.isArray(saved.p)) spawn();
+      applySky();
+      renderHotbar(); renderSunSeg(); refreshSettings();
+      camera.fov = cfg.fov; camera.updateProjectionMatrix();
+      booted = true;
+      el('loadmsg').textContent = 'tracing the sunlight…';
+      return false;
+    }
+    if (!lit){
+      computeLight();
+      for (const ch of chunks) ch.dirty = true;
+      lit = true;
+      el('loadmsg').textContent = 'building chunk meshes…';
+      return false;
+    }
+    const t0 = performance.now();
+    while (buildIndex < chunks.length && performance.now() - t0 < 12) buildChunk(chunks[buildIndex++]);
+    el('barfill').style.width = Math.round(buildIndex / chunks.length * 100) + '%';
+    if (buildIndex >= chunks.length){
+      el('loadmsg').textContent = 'ready';
+      show('start');
+      return true;
+    }
+    return false;
+  }
+
+  let frames = 0, fpsAcc = 0, fps = 0;
+  const worstWindow = [];
+  let prev = performance.now(), loaded = false;
+
+  function tick(now){
+    requestAnimationFrame(tick);
+    const rawMs = now - prev;
+    const dt = Math.min(0.05, rawMs / 1000);
+    prev = now;
+
+    if (!loaded){
+      loaded = bootStep();
+      renderer.render(scene, camera);
+      return;
+    }
+
+    if (running){ updatePlayer(dt); updateAim(); }
+    stepFalls(now);
+
+    if (lightDirty && now >= lightDue){ lightDirty = false; computeLight(); }
+
+    let rebuilt = 0;
+    for (let i = 0; i < chunks.length && rebuilt < 3; i++)
+      if (chunks[i].dirty){ buildChunk(chunks[i]); rebuilt++; }
+
+    renderer.render(scene, camera);
+
+    const frameMs = rawMs;
+    worstWindow.push([now, frameMs]);
+    while (worstWindow.length && now - worstWindow[0][0] > 3000) worstWindow.shift();
+    frames++; fpsAcc += rawMs / 1000;
+    if (fpsAcc >= 0.5){
+      fps = Math.round(frames / fpsAcc);
+      frames = 0; fpsAcc = 0;
+      el('t-fps').textContent = fps;
+      el('t-face').textContent = facing();
+      if (cfg.telemetry){
+        let worst = 0;
+        for (const w of worstWindow) if (w[1] > worst) worst = w[1];
+        el('t-ms').textContent = frameMs.toFixed(1);
+        el('t-worst').textContent = worst.toFixed(1);
+        const info = renderer.info.render;
+        el('t-tris').textContent = info.triangles > 9999 ? (info.triangles/1000).toFixed(0)+'k' : info.triangles;
+        el('t-calls').textContent = info.calls;
+        el('t-pos').textContent = player.x.toFixed(0)+' '+player.y.toFixed(0)+' '+player.z.toFixed(0);
+      }
+    }
+    if (dirtySave && now - lastSave > 6000){ saveWorld(); lastSave = now; }
+  }
+  requestAnimationFrame(tick);
+
+  // inspection handle used by the build's automated checks
+  window.VoxelIsland = {
+    player, keys, cfg, chunks, BLOCKS, NAMED, inv, bar, answered, BANK,
+    get state(){ return { running, loaded, buildIndex, fps, tod, edits:edits.size,
+                          sun:Object.assign({}, sunUnlocked),
+                          screens:Object.keys(screens).filter(k => screens[k].classList.contains('on')) }; },
+    totals(){ let t = 0, m = 0;
+      for (const c of chunks) for (const k in c.meshes){
+        const mesh = c.meshes[k];
+        if (mesh){ m++; t += mesh.geometry.index.count / 3; } }
+      return { meshes:m, triangles:t }; },
+    getBlock, setBlock, getLight, computeLight, spawn, give, setTod, openLab, startQuestion,
+    tryPlace, breakBlock, placeBlock, stepFallsNow(){ fallDue = 0; stepFalls(performance.now()); },
+    answerCurrent(i){ answer(i); },
+    get currentQuestion(){ return currentQ; }
+  };
+})();
+</script>
+
+</body>
+</html>

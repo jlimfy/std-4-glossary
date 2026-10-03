@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>时间与时刻 Time Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 4 单元 · pp. 118–155</div>
+    <h1><span class="zh">时间与时刻</span>Time</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 世纪, shiji, century…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 4 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019) and the EPH workbook (Workbook pp. 51–52). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+const F={
+  shijian:()=>timeline([{x:30,label:'8:00'},{x:170,label:'11:00'}],[{x1:30,x2:170,label:'3 小时',h:50}],'经过的时间 = 3 小时'),
+  shike:()=>clock(8,0,null,'8:00 a.m. 是一个时刻'),
+  face:()=>clock(null,0,'face','钟面上有 1 至 12'),
+  hourhand:()=>clock(10,10,'h','短的是时针'),
+  minhand:()=>clock(10,10,'m','长的是分针'),
+  am:()=>dayBar('am'), pm:()=>dayBar('pm'), noon:()=>dayBar('noon'), midnight:()=>dayBar('mid'),
+  h12:()=>digital('3:45','数字 1–12，加 a.m./p.m.','3:45 p.m.'),
+  h24:()=>digital('1545','3:45 p.m. = 1545 时','3 + 12 = 15'),
+  gap:()=>timeline([{x:24,label:'11:50',sub:'a.m.',on:1},{x:120,label:'12:50',sub:'p.m.'},{x:176,label:'1:35',sub:'p.m.',on:1}],[{x1:24,x2:120,label:'1 小时'},{x1:120,x2:176,label:'45 分钟',h:28}],'相隔 1 小时 45 分钟'),
+  axis:()=>timeline([{x:24,label:'8:00'},{x:74,label:'9:00'},{x:125,label:'10:00'},{x:176,label:'11:00'}],[{x1:24,x2:74,label:'1',h:26},{x1:74,x2:125,label:'1',h:26},{x1:125,x2:176,label:'1',h:26}],'一格代表 1 小时'),
+  depart:()=>timeline([{x:30,label:'8:00',sub:'a.m.',on:1},{x:170,label:'10:25',sub:'a.m.'}],[{x1:30,x2:170,label:'路程',h:40}],'8:00 a.m. 出发')+PA('M30 20 l0 18 M30 20 l14 5 l-14 5','a'),
+  arrive:()=>timeline([{x:30,label:'8:00',sub:'a.m.'},{x:170,label:'10:25',sub:'a.m.',on:1}],[{x1:30,x2:170,label:'路程',h:40}],'10:25 a.m. 抵达')+PA('M170 20 l0 18 M170 20 l14 5 l-14 5','a'),
+  trip:()=>timeline([{x:20,label:'家',sub:'出发',on:1},{x:120,label:'机场',sub:'办手续',on:1},{x:180,label:'登机',on:1}],[{x1:20,x2:120,label:'约 3 小时'},{x1:120,x2:180,label:'2 小时',h:28}],'行程：先后要做的事'),
+  estimate:()=>L(20,46,180,46,'s')+DOT(20,46,6,'ink')+DOT(100,46,5)+DOT(180,46,6,'ink')+T(60,36,'90 km','t')+T(140,36,'90 km','t')+T(60,64,'1 小时 10 分钟','tn')+T(140,64,'1 小时 10 分钟','tn')+T(100,98,'2 × 1 小时 10 分钟','t')+T(100,128,'≈ 大约 2 小时半','ta'),
+  about:()=>T(100,74,'≈','tb').replace('class="tb"','class="tb" style="font-size:64px"')+T(100,108,'2 小时 20 分钟','t')+T(100,132,'≈ 大约 2 小时半','ta'),
+  minute:()=>clock(10,10,'m','分针走 1 小格 = 1 分钟')+PA('M'+f1(100+50*Math.cos(rad(-30)))+' '+f1(64+50*Math.sin(rad(-30)))+' A50 50 0 0 1 '+f1(100+50*Math.cos(rad(-24)))+' '+f1(64+50*Math.sin(rad(-24))),'a'),
+  hour:()=>cells(12,6,{w:168,ch:26,y:34,lab:i=>(i+1)*5})+T(100,20,'每格 5 分钟','tn')+T(100,110,'12 × 5 = 60 分钟','t')+T(100,134,'1 小时 = 60 分钟','ta'),
+  day:()=>cells(24,12,{w:180,ch:24,y:34,lab:i=>i+1,hi:i=>i>=6&&i<18})+T(100,22,'白天 + 晚上','tn')+T(100,110,'共 24 小时','t')+T(100,134,'1 天 = 24 小时','ta'),
+  week:()=>cal(21,i=>i<7)+T(100,112,'一行 7 天','t')+T(100,134,'1 个星期 = 7 天','ta'),
+  month:()=>cells(12,6,{w:168,ch:28,y:28,lab:i=>(i+1)+'月',hi:i=>i===10})+T(100,108,'这是 11 月','t')+T(100,134,'12 个月 = 1 年','ta'),
+  year:()=>cells(12,6,{w:168,ch:28,y:28,lab:i=>(i+1)+'月'})+T(100,108,'1 月至 12 月','t')+T(100,134,'1 年 = 12 个月','ta'),
+  decade:()=>cells(10,5,{w:160,ch:28,y:26,lab:i=>2011+i})+T(100,108,'10 个年','t')+T(100,134,'1 个年代 = 10 年','ta'),
+  century:()=>{let o='';for(let r=0;r<10;r++)for(let c=0;c<10;c++)o+=R(50+c*10,14+r*9,10,9,r===0?'fa':'fs');return o+T(100,120,'1 行 = 1 个年代 = 10 年','t')+T(100,138,'1 个世纪 = 100 年','ta');},
+  millennium:()=>{let o='';for(let i=0;i<10;i++){const x=16+(i%5)*36,y=14+Math.floor(i/5)*44;o+=R(x,y,32,40,i===0?'fa':'fs',3)+T(x+16,y+25,'100',i===0?'tw':'tn');}return o+T(100,120,'10 个世纪','t')+T(100,138,'1 个千禧年 = 1 000 年','ta');},
+  calendar:()=>cal(30,null,25)+T(100,136,'月历：一个月的日子','ta'),
+  date:()=>R(20,34,160,56,'fp',10)+T(100,72,'25.11.2019','tb')+T(52,110,'日','ta')+T(100,110,'月','ta')+T(150,110,'年','ta')+T(100,134,'2019 年 11 月 25 日','t'),
+  age:()=>R(50,78,100,40,'fs',6)+R(40,114,120,8,'fp',4)+[70,90,110,130].map(x=>R(x-3,56,6,22,'fa',2)+PA(`M${x} 44 q5 6 0 11 q-5 -5 0 -11 z`,'fa')).join('')+T(100,103,'10 岁','t')+T(100,138,'我今年 10 岁','ta'),
+  convert:()=>bars([{y:22,label:'3 天',parts:[{w:40,text:'1 天'},{w:40,text:'1 天'},{w:40,text:'1 天'}]},{y:62,label:'小时',parts:[{w:40,text:'24',on:1},{w:40,text:'24',on:1},{w:40,text:'24',on:1}]}])+T(100,112,'3 × 24 = 72','t')+T(100,134,'3 天 = 72 小时','ta'),
+  compound:()=>T(100,58,'2 天 15 小时','tb')+PA('M40 68 q0 10 16 10 h6 q6 0 8 8 q2 -8 8 -8 h6 q16 0 16 -10','a')+PA('M104 68 q0 10 18 10 h8 q6 0 8 8 q2 -8 8 -8 h8 q18 0 18 -10','a')+T(64,106,'天','ta')+T(132,106,'小时','ta')+T(100,134,'两个单位，一个数量','t'),
+  carry:()=>vcalc(['天','小时'],'+',[['2','12'],['1','18']],['3','30'],[['满 24 小时进 1 天'],['→ 4 天 6 小时','t']]),
+  borrow:()=>vcalc(['天','小时'],'−',[['2','12'],['1','18']],['0','18'],[['借 1 天 = 24 小时']],T(82,24,'1','ta')+L(92,40,108,24,'a','stroke-width:2')+T(174,24,'36','ta')+L(140,40,160,24,'a','stroke-width:2')),
+  add:()=>vcalc(['星期','天'],'+',[['3','1'],['2','6']],['5','7'],[['7 天 = 1 个星期'],['→ 6 个星期','t']]),
+  sub:()=>vcalc(['年','月'],'−',[['7','9'],['6','5']],['1','4'],[['1 年 4 个月']]),
+  mul:()=>vcalc(['天','小时'],'×',[['2','4'],['','5']],['10','20'],[['10 天 20 小时']]),
+  div:()=>T(100,30,'6 天 9 小时 ÷ 3','t')+bars([{y:44,label:'',parts:[{w:40,text:'2天3时',on:1},{w:40,text:'2天3时',on:1},{w:40,text:'2天3时',on:1}]}])+T(100,100,'分成 3 份','t')+T(100,128,'= 2 天 3 小时','ta'),
+  times:()=>bars([{y:30,label:'羽毛球',parts:[{w:40,text:'1 份',on:1}]},{y:72,label:'足球',parts:[{w:40,text:'1 份'},{w:40,text:'1 份'},{w:40,text:'1 份'}]}])+T(100,124,'足球是羽毛球的 3 倍','ta'),
+  remainder:()=>T(100,26,'15 天 ÷ 12','tb')+T(100,56,'= 1 天，余 3 天','t')+T(100,80,'3 天 = 72 小时','t')+T(100,104,'72 ÷ 12 = 6 小时','t')+T(100,132,'答案：1 天 6 小时','ta'),
+  average:()=>bars([{y:26,label:'全部',parts:[{w:120,text:'6 个星期 2 天'}]},{y:70,label:'每份',parts:[{w:60,text:'3星期1天',on:1},{w:60,text:'3星期1天',on:1}]}])+T(100,124,'平均分成 2 份','ta'),
+  column:()=>vcalc(['年','月'],'+',[['4','10'],['2','6'],['3','5']],['9','21'],[['21 个月 = 1 年 9 个月','t']]),
+  hatch:()=>`<ellipse class="fs" cx="100" cy="66" rx="42" ry="52"/>`+PA('M60 62 l12 -8 l10 10 l12 -12 l10 10 l12 -10 l12 10 l12 -6','a')+T(100,96,'约 21 天','t')+T(100,136,'鸡蛋要孵 3 个星期','ta')
+};
+
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'clock',zh:'读时刻',py:'dú shí kè',en:'Telling the time',color:'--c1',pg:'pp. 118–119'},
+  {id:'dur',zh:'相隔与估算',py:'xiāng gé yǔ gū suàn',en:'How long & estimating',color:'--c2',pg:'pp. 120–121'},
+  {id:'unit',zh:'时间单位',py:'shí jiān dān wèi',en:'Units of time',color:'--c3',pg:'pp. 122–124'},
+  {id:'calc',zh:'换算与运算',py:'huàn suàn yǔ yùn suàn',en:'Converting & calculating',color:'--c4',pg:'pp. 123–147'}
+];
+const TERMS=[
+ // telling time
+ {s:'clock',zh:'时间',py:'shí jiān',en:'time (how long)',bm:'masa',pg:118,f:'shijian',def:'How long something takes, from start to finish.',tip:'<b>时间</b> is an amount (3 hours). <b>时刻</b> is a point on the clock (8:00 a.m.).'},
+ {s:'clock',zh:'时刻',py:'shí kè',en:'time of day',bm:'waktu',pg:118,f:'shike',def:'The exact time shown on a clock, such as 8:00 a.m.'},
+ {s:'clock',zh:'钟面',py:'zhōng miàn',en:'clock face',bm:'muka jam',pg:120,f:'face',def:'The round front of a clock with the numbers 1 to 12.'},
+ {s:'clock',zh:'时针',py:'shí zhēn',en:'hour hand',bm:'jarum jam',pg:120,f:'hourhand',def:'The short hand on a clock. It shows the hour.'},
+ {s:'clock',zh:'分针',py:'fēn zhēn',en:'minute hand',bm:'jarum minit',pg:120,f:'minhand',def:'The long hand on a clock. It shows the minutes.'},
+ {s:'clock',zh:'上午',py:'shàng wǔ',en:'morning (a.m.)',say:'morning, A M',bm:'pagi (a.m.)',pg:119,f:'am',def:'The time from 12 midnight until just before 12 noon. We write a.m.'},
+ {s:'clock',zh:'下午',py:'xià wǔ',en:'afternoon & evening (p.m.)',say:'afternoon, P M',bm:'petang (p.m.)',pg:119,f:'pm',def:'The time from 12 noon until just before 12 midnight. We write p.m.'},
+ {s:'clock',zh:'正午',py:'zhèng wǔ',en:'noon (12 noon)',bm:'tengah hari',pg:119,f:'noon',def:'12 o’clock in the middle of the day. In the 24-hour system it is 1200 hours.'},
+ {s:'clock',zh:'午夜',py:'wǔ yè',en:'midnight (12 midnight)',bm:'tengah malam',pg:119,f:'midnight',def:'12 o’clock in the middle of the night, when a new day starts. In the 24-hour system it is 0000 hours.'},
+ {s:'clock',zh:'12 时计时法',py:'shí’èr shí jì shí fǎ',en:'12-hour system',say:'twelve hour system',bm:'sistem 12 jam',pg:119,f:'h12',def:'Telling time with the numbers 1 to 12, adding a.m. or p.m.',tip:'Write a.m. and p.m. in small letters, with a dot after each letter.'},
+ {s:'clock',zh:'24 时计时法',py:'èr shí sì shí jì shí fǎ',en:'24-hour system',say:'twenty four hour system',bm:'sistem 24 jam',pg:119,f:'h24',def:'Telling time with four digits and no a.m. or p.m. For p.m. times, add 12 to the hour.',tip:'1:00 p.m. → 1300 时 · 10:05 p.m. → 2205 时 · 12:59 a.m. → 0059 时'},
+ // duration & estimating
+ {s:'dur',zh:'相隔',py:'xiāng gé',en:'time between (duration)',bm:'tempoh masa',pg:120,f:'gap',def:'How much time passes between a start time and an end time.',tip:'End time − start time. If it goes from a.m. to p.m., change the p.m. time to 24-hour time first.'},
+ {s:'dur',zh:'时间轴',py:'shí jiān zhóu',en:'timeline',bm:'garis masa',pg:120,f:'axis',def:'A line marked with times. It helps you count how much time has passed.'},
+ {s:'dur',zh:'出发',py:'chū fā',en:'depart / set off',bm:'bertolak',pg:118,f:'depart',def:'To leave and start a journey.'},
+ {s:'dur',zh:'抵达',py:'dǐ dá',en:'arrive',bm:'tiba',pg:121,f:'arrive',def:'To reach the place you were going to.'},
+ {s:'dur',zh:'行程',py:'xíng chéng',en:'trip plan / itinerary',bm:'jadual perjalanan',pg:118,f:'trip',def:'The plan of a journey: where you go and at what times.'},
+ {s:'dur',zh:'估算',py:'gū suàn',en:'estimate',bm:'menganggar',pg:121,f:'estimate',def:'To make a sensible guess about how long something will take.',tip:'Twice the distance takes about twice the time.'},
+ {s:'dur',zh:'大约',py:'dà yuē',en:'about / roughly',bm:'kira-kira',pg:121,f:'about',def:'Close to the amount, but not exact. The sign ≈ means “about”.'},
+ // units
+ {s:'unit',zh:'分钟',py:'fēn zhōng',en:'minute',bm:'minit',pg:120,f:'minute',def:'A short unit of time. The minute hand moves one small mark every minute.',tip:'60 分钟 = 1 小时'},
+ {s:'unit',zh:'小时',py:'xiǎo shí',en:'hour',bm:'jam',pg:120,f:'hour',def:'A unit of time equal to 60 minutes.'},
+ {s:'unit',zh:'天',py:'tiān',en:'day',bm:'hari',pg:122,f:'day',def:'A unit of time equal to 24 hours — one day and one night.'},
+ {s:'unit',zh:'星期',py:'xīng qī',en:'week',bm:'minggu',pg:122,f:'week',def:'A unit of time equal to 7 days.',tip:'We say 3 <b>个</b>星期 (3 weeks).'},
+ {s:'unit',zh:'月',py:'yuè',en:'month',bm:'bulan',pg:122,f:'month',def:'One of the 12 parts of a year. A month has about 30 days.'},
+ {s:'unit',zh:'年',py:'nián',en:'year',bm:'tahun',pg:122,f:'year',def:'A unit of time equal to 12 months.'},
+ {s:'unit',zh:'年代',py:'nián dài',en:'decade',bm:'dekad',pg:122,f:'decade',def:'A unit of time equal to 10 years.',tip:'23 年 = 2 个年代 3 年'},
+ {s:'unit',zh:'世纪',py:'shì jì',en:'century',bm:'abad',pg:122,f:'century',def:'A unit of time equal to 100 years, or 10 decades.',tip:'1 个世纪 = 100 年, not 10 年!'},
+ {s:'unit',zh:'千禧年',py:'qiān xǐ nián',en:'millennium',bm:'milenium',pg:122,f:'millennium',def:'A unit of time equal to 1 000 years, or 10 centuries.'},
+ {s:'unit',zh:'月历',py:'yuè lì',en:'calendar',bm:'kalendar',pg:128,f:'calendar',def:'A chart that shows all the days of a month, arranged in weeks.'},
+ {s:'unit',zh:'日期',py:'rì qī',en:'date',bm:'tarikh',pg:120,f:'date',def:'The day, month and year, such as 25.11.2019.'},
+ {s:'unit',zh:'岁',py:'suì',en:'years old (age)',bm:'umur (tahun)',pg:131,f:'age',def:'Used to say how old someone is.',tip:'10 岁 1 个月 = 10 years and 1 month old.'},
+ // converting & calculating
+ {s:'calc',zh:'换算',py:'huàn suàn',en:'convert (change units)',bm:'tukar unit',pg:123,f:'convert',def:'To change an amount of time from one unit to another, like days into hours.'},
+ {s:'calc',zh:'复名数',py:'fù míng shù',en:'amount with two units',bm:'unit campuran',pg:123,f:'compound',def:'One amount written with two units together, like 2 days 15 hours.',tip:'1 个星期 2 天 = 9 天'},
+ {s:'calc',zh:'进位',py:'jìn wèi',en:'carry over (regroup)',bm:'mengumpul semula',pg:126,f:'carry',def:'When adding, once you have a full set (24 hours, 7 days, 12 months…), change it into 1 of the bigger unit.'},
+ {s:'calc',zh:'借',py:'jiè',en:'borrow (regroup)',bm:'pinjam',pg:127,f:'borrow',def:'When subtracting and the small unit is not enough, take 1 from the big unit and change it into small units.',tip:'Borrow 1 天 = 24 小时 · 1 个星期 = 7 天 · 1 年 = 12 个月'},
+ {s:'calc',zh:'加法',py:'jiā fǎ',en:'addition',bm:'tambah',pg:126,f:'add',def:'Putting amounts together (+). Add each unit separately, then regroup.'},
+ {s:'calc',zh:'减法',py:'jiǎn fǎ',en:'subtraction',bm:'tolak',pg:127,f:'sub',def:'Taking one amount away from another (−).'},
+ {s:'calc',zh:'乘法',py:'chéng fǎ',en:'multiplication',bm:'darab',pg:136,f:'mul',def:'Adding the same amount many times (×). Multiply each unit, then regroup.'},
+ {s:'calc',zh:'除法',py:'chú fǎ',en:'division',bm:'bahagi',pg:137,f:'div',def:'Sharing an amount into equal groups (÷).'},
+ {s:'calc',zh:'倍',py:'bèi',en:'times (as much as)',bm:'kali ganda',pg:136,f:'times',def:'Tells how many times bigger one amount is than another.',tip:'“比……多 3 倍” means “4 倍”, i.e. 4 times as much.'},
+ {s:'calc',zh:'余数',py:'yú shù',en:'remainder',bm:'baki',pg:137,f:'remainder',def:'What is left over after dividing. Change it into a smaller unit and keep dividing.'},
+ {s:'calc',zh:'平均',py:'píng jūn',en:'equally / on average',bm:'sama rata',pg:138,f:'average',def:'Shared into parts that are all the same size.'},
+ {s:'calc',zh:'竖式',py:'shù shì',en:'column method',bm:'bentuk lazim',pg:130,f:'column',def:'Writing a sum in columns, one column for each unit, then working it out.'},
+ {s:'calc',zh:'孵化期',py:'fū huà qī',en:'hatching time (incubation)',bm:'tempoh pengeraman',pg:128,f:'hatch',def:'How long an egg takes to hatch. Used in the word problems in this unit.'}
+];
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+Object.assign(F,{
+  second:()=>clock(10,10,null,'60 秒 = 1 分钟')+qL(100,64,54,64,'a','stroke-width:2'),
+  history:()=>qLine([[30,'建成',1],[170,'今天']],[30,170,'3 个世纪 68 年',30],'历史：从建成到今天'),
+  solve:()=>qText('解答',[['读题 → 计算 → 写答案'],['答：……','ta']]),
+  wordprob:()=>qText('应用题',[['用文字写的数学题'],['有故事，要自己列算式','ta']]),
+  table:()=>qTable(),
+  inunits:()=>qText('以……为单位',[['以天和小时为单位'],['→ 2 天 12 小时','ta']],22),
+  writeout:()=>qText('写出',[['写出 3:45 p.m. 的 24 时时刻'],['→ 1545 时','ta']]),
+  calc:()=>qText('计算',[['用加减乘除算出答案'],['2 × 1 天 6 小时 = 2 天 12 小时','ta']]),
+  more:()=>qCmp('more'), less:()=>qCmp('less'), diff:()=>qCmp('diff'),
+  earlier:()=>qLine([[40,'清真寺',1],[150,'印度庙']],[40,150,'早 75 年',34],'清真寺比印度庙早'),
+  total:()=>qR(20,40,60,26,'fa',0)+qR(80,40,50,26,'fs',0)+qR(130,40,50,26,'fa',0)+qT(50,58,'1 分','tw')+qT(105,58,'1 分','tn')+qT(155,58,'1 分','tw')+qP('M20 76 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+qT(100,116,'总时长 3 分钟','ta')+qT(100,138,'全部加起来'),
+  each:()=>[0,1,2,3].map(i=>qR(14+i*44,40,40,40,'fs',6)+qT(34+i*44,65,'45 秒','tn')).join('')+qT(100,106,'每次 45 秒','ta')+qT(100,134,'每一次都一样'),
+  altogether:()=>[0,1,2,3,4].map(i=>qC(30+i*35,56,13,'fa')).join('')+qP('M16 80 q0 10 10 10 h64 q10 0 10 10 q0 -10 10 -10 h64 q10 0 10 -10','a')+qT(100,120,'共 5 次','ta'),
+  untilnow:()=>qLine([[30,'以前'],[170,'今天',1]],[30,170,'至今',34],'从以前到现在'),
+  stillleft:()=>qLine([[30,'今天',1],[170,'下一次']],[30,170,'还有 5 年',34],'还要等多久'),
+  needed:()=>qLine([[30,'开始',1],[170,'完成',1]],[30,170,'所需的时间',34],'做完要用多少时间'),
+  howmany:()=>qText('多少？',[['多少次？多少年？'],['问数量或时间','ta']],30),
+  lasting:()=>qR(20,50,160,26,'fa',4)+qT(100,68,'1 小时 45 分钟','tw')+qT(100,108,'长达：时间很长','ta')+qT(100,134,'播放时间长达 1 小时 45 分钟','tn'),
+  timesof:()=>qBar(30,'美美',50,'fs','1 份')+qBar(72,'姐姐',100,'fa','2 份')+qT(100,132,'姐姐是美美的 2 倍','ta')
+});
+SECTIONS.push({id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'Workbook pp. 51–52'});
+TERMS.push(
+ {s:'unit',zh:'秒',py:'miǎo',en:'second',bm:'saat',pg:'Workbook p. 51',f:'second',def:'A very short unit of time. 60 seconds make 1 minute.',tip:'例：每次广告的播放时间是 45 秒。'},
+ {s:'unit',zh:'历史',py:'lì shǐ',en:'history (how old)',bm:'sejarah',pg:'Workbook p. 52',f:'history',def:'How long ago something was built or started, up to today.',tip:'例：印度庙的历史是 3 个世纪 68 年。'},
+ {s:'q',zh:'解答',py:'jiě dá',en:'solve / answer',bm:'selesaikan',pg:'Workbook p. 51',f:'solve',def:'To work out a question and write the answer.',tip:'例：解答应用题。'},
+ {s:'q',zh:'应用题',py:'yìng yòng tí',en:'word problem',bm:'soalan penyelesaian masalah',pg:'Workbook p. 51',f:'wordprob',def:'A maths question written as a short story. You decide which sum to use.'},
+ {s:'q',zh:'下表显示',py:'xià biǎo xiǎn shì',en:'the table below shows',bm:'jadual di bawah menunjukkan',pg:'Workbook p. 51',f:'table',def:'Look at the table under the sentence — the numbers you need are there.'},
+ {s:'q',zh:'以……为单位',py:'yǐ … wéi dān wèi',en:'give the answer in (units)',say:'give the answer in these units',bm:'dalam unit',pg:'Workbook p. 52',f:'inunits',def:'Tells you which units to write your answer in.',tip:'例：以天和小时为单位 → write the answer in days and hours.'},
+ {s:'q',zh:'写出',py:'xiě chū',en:'write down',bm:'tuliskan',pg:'Workbook p. 51',f:'writeout',def:'Write the answer. Usually no long working is needed.',tip:'例：以 24 时计时法写出……的时刻。'},
+ {s:'q',zh:'计算',py:'jì suàn',en:'calculate / work out',bm:'hitung',pg:'Workbook p. 52',f:'calc',def:'Use +, −, × or ÷ to find the answer. Show your working.'},
+ {s:'q',zh:'比……多',py:'bǐ … duō',en:'more than',bm:'lebih daripada',pg:'Workbook p. 52',f:'more',def:'Compares two amounts: the first one is bigger.',tip:'例：三号炭窑比一号炭窑多 2 天 20 小时 → add.'},
+ {s:'q',zh:'比……小',py:'bǐ … xiǎo',en:'less than / younger than',bm:'kurang daripada / lebih muda',pg:'Workbook p. 51',f:'less',def:'Compares two amounts: the first one is smaller. For age, it means younger.',tip:'例：哥哥比姐姐小 2 岁 3 个月 → subtract. Also 比……少 (fewer than).'},
+ {s:'q',zh:'比……早',py:'bǐ … zǎo',en:'earlier than',bm:'lebih awal daripada',pg:'Workbook p. 52',f:'earlier',def:'Happened before something else.',tip:'例：清真寺比印度庙早 75 年 → the mosque is 75 years older.'},
+ {s:'q',zh:'……的 2 倍',py:'… de liǎng bèi',en:'twice as much as',bm:'2 kali ganda',pg:'Workbook p. 51',f:'timesof',def:'Two times the amount. Multiply by 2.',tip:'例：姐姐的年龄是美美的 2 倍。'},
+ {s:'q',zh:'相差',py:'xiāng chà',en:'difference between',bm:'beza',pg:'Workbook p. 52',f:'diff',def:'How much bigger one amount is than the other. Subtract the smaller from the bigger.',tip:'例：……所需的时间相差多少小时？'},
+ {s:'q',zh:'总',py:'zǒng',en:'total',bm:'jumlah',pg:'Workbook p. 51',f:'total',def:'Everything added together.',tip:'例：广告的总时长是 3 分钟。'},
+ {s:'q',zh:'每',py:'měi',en:'each / every',bm:'setiap',pg:'Workbook p. 51',f:'each',def:'Every single one is the same amount.',tip:'例：每次广告 45 秒 · 每 20 年粉刷一次'},
+ {s:'q',zh:'共',py:'gòng',en:'altogether / in total',bm:'kesemuanya',pg:'Workbook p. 51',f:'altogether',def:'Counting everything together. Also 一共.',tip:'例：共播放了多少次广告？'},
+ {s:'q',zh:'至今',py:'zhì jīn',en:'until now / so far',bm:'sehingga kini',pg:'Workbook p. 52',f:'untilnow',def:'From a time in the past up to today.',tip:'例：该印度庙至今已粉刷了多少次？'},
+ {s:'q',zh:'还有',py:'hái yǒu',en:'still / how much more',bm:'masih ada',pg:'Workbook p. 52',f:'stillleft',def:'How much is left, or how long until something happens.',tip:'例：距离下一次粉刷还有多少年？'},
+ {s:'q',zh:'所需的时间',py:'suǒ xū de shí jiān',en:'time needed',bm:'masa yang diperlukan',pg:'Workbook p. 52',f:'needed',def:'How long it takes to finish something.'},
+ {s:'q',zh:'长达',py:'cháng dá',en:'lasting as long as',bm:'selama',pg:'Workbook p. 51',f:'lasting',def:'Tells how long something goes on for.'},
+ {s:'q',zh:'多少',py:'duō shǎo',en:'how many / how much',bm:'berapa',pg:'Workbook p. 51',f:'howmany',def:'The question word. Look at what comes after it to know what to find.',tip:'多少次 (how many times) · 多少年 (how many years)'}
+);
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “shiji”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>
