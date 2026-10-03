@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据处理 Data Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.g{stroke:color-mix(in srgb,var(--ink) 16%,transparent);stroke-width:1}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 8 单元 · pp. 237–248</div>
+    <h1><span class="zh">数据处理</span>Data Handling</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 统计图, tongjitu, chart…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 8 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+const star=(x,y,r,k='fa')=>{let p=[];for(let i=0;i<10;i++){const a=rad(i*36-90),rr=i%2?r*0.45:r;p.push(f1(x+rr*Math.cos(a))+','+f1(y+rr*Math.sin(a)));}return `<polygon class="${k}" points="${p.join(' ')}"/>`;};
+function tally(x,y,n){let o='';for(let g=0;g*5<n;g++){const m=Math.min(5,n-g*5),x0=x+g*34;for(let i=0;i<Math.min(4,m);i++)o+=L(x0+i*6,y,x0+i*6,y+24,'s','stroke-width:2.5');if(m===5)o+=L(x0-4,y+18,x0+22,y+4,'a','stroke-width:2.5');}return o;}
+function picto(rows,opt={}){
+  let o=opt.title?T(100,16,opt.title,'t'):'';const y0=opt.title?26:12,rh=opt.rh||22;
+  rows.forEach((r,i)=>{const y=y0+i*rh;o+=R(10,y,50,rh,'fp',0)+R(60,y,132,rh,'fp',0)+T(35,y+rh/2+4,r[0],opt.hiRow===i?'ta':'t');for(let j=0;j<r[1];j++)o+=star(72+j*18,y+rh/2,7,opt.hiRow===i?'fa':'fs');if(r[2])o+=`<path class="fs" d="M${72+r[1]*18} ${y+rh/2-7} A7 7 0 0 0 ${72+r[1]*18} ${y+rh/2+7} Z"/>`;});
+  return o;
+}
+function bars(vals,opt={}){
+  const ox=36,oy=100,w=150,h=76,mx=opt.max||50,step=opt.step||10;let o='';
+  for(let v=0;v<=mx;v+=step){const y=oy-v/mx*h;o+=L(ox,y,ox+w,y,'g')+L(ox-4,y,ox,y,'s','stroke-width:1.5')+T(ox-14,y+4,v,opt.hiScale?'ta':'tn');}
+  const bw=w/vals.length;vals.forEach((v,i)=>{o+=R(ox+i*bw+bw*0.2,oy-v[1]/mx*h,bw*0.6,v[1]/mx*h,opt.hi===i?'fa':'fs',0)+T(ox+i*bw+bw/2,oy+14,v[0],'tn');});
+  o+=L(ox,oy,ox+w+6,oy,opt.hiX?'a':'s',opt.hiX?'stroke-width:4':'stroke-width:2.5')+L(ox,oy,ox,oy-h-8,opt.hiY?'a':'s',opt.hiY?'stroke-width:4':'stroke-width:2.5');
+  if(opt.title)o+=T(110,16,opt.title,opt.hiTitle?'ta':'t');
+  return o;
+}
+const DATA=[['日本',40],['中国',30],['美国',20],['韩国',35]];
+const PDATA=[['鸭',3],['鸡',6],['牛',2],['羊',4]];
+const F={
+  data:()=>['8','12','5','9','6','12','3'].map((s,i)=>R(14+(i%4)*46,24+Math.floor(i/4)*44,38,34,'fs',6)+T(33+(i%4)*46,46+Math.floor(i/4)*44,s,'t')).join('')+T(100,130,'数据：收集到的数字和信息','ta'),
+  collect:()=>R(30,26,80,96,'fp',4)+R(58,20,24,12,'fa',3)+[0,1,2,3].map(i=>L(42,50+i*18,98,50+i*18,'s','stroke-width:1.5')).join('')+PA('M124 70 l12 12 l24 -30','a')+T(150,120,'调查','ta')+T(70,138,'收集数据','t'),
+  organize:()=>['🟠','🔵','🟠','🔵','🟠'].map((c,i)=>`<circle class="${i%2?'fs':'fa'}" cx="${24+i*14+(i%2)*6}" cy="${40+(i%3)*18}" r="7"/>`).join('')+PA('M92 64 H110','a')+PA('M104 58 L112 64 L104 70','a')+[0,1,2].map(i=>`<circle class="fa" cx="${130+i*18}" cy="46" r="7"/>`).join('')+[0,1].map(i=>`<circle class="fs" cx="${130+i*18}" cy="80" r="7"/>`).join('')+T(100,124,'整理：分类、排好','ta'),
+  analyse:()=>bars(DATA,{hi:0})+`<circle class="fx" cx="${36+150/8}" cy="30" r="14" style="stroke-width:3"/>`+T(100,138,'分析：从数据找出信息','ta'),
+  info:()=>picto(PDATA,{hiRow:1,rh:22})+T(100,122,'鸡有 6 × 2 = 12 只','ta')+T(100,138,'信息：图告诉我们的事','t'),
+  tally:()=>tally(30,40,12)+T(150,58,'= 12','tb')+T(100,108,'每 5 画一组','t')+T(100,132,'记数符号','ta'),
+  table:()=>R(30,20,140,88,'fp',0)+R(30,20,140,22,'fa',0)+T(70,36,'国家','tw')+T(140,36,'人数','tw')+L(110,20,110,108,'s','stroke-width:1.5')+[['日本',40],['中国',30],['美国',20]].map((r,i)=>T(70,60+i*22,r[0],'t')+T(140,60+i*22,r[1],'t')+L(30,64+i*22,170,64+i*22,'s','stroke-width:1')).join('')+T(100,132,'表格：用行和栏整理','ta'),
+  column:()=>R(30,20,140,88,'fp',0)+R(30,20,70,88,'fs',0)+L(100,20,100,108,'s','stroke-width:1.5')+[0,1,2].map(i=>L(30,42+i*22,170,42+i*22,'s','stroke-width:1')).join('')+T(65,36,'第一栏','ta')+T(100,132,'栏：竖的一格一格','t'),
+  category:()=>['金牌','银牌','铜牌'].map((s,i)=>`<circle class="${['fa','fs','fp'][i]}" cx="${46+i*54}" cy="56" r="20"/>`+T(46+i*54,94,s,'t')).join('')+T(100,128,'种类：不同的类别','ta'),
+  count:()=>[0,1,2,3,4,5,6].map(i=>`<circle class="fa" cx="${26+i*24}" cy="52" r="9"/>`+T(26+i*24,80,i+1,'tn')).join('')+T(100,120,'数量：有多少个','ta'),
+  // pictograph
+  pictograph:()=>picto(PDATA,{title:'动物的数量'})+star(80,130,6)+T(128,134,'代表 2 只动物','tn'),
+  symbol:()=>star(60,62,30)+BT(112,72,'=','tb')+T(152,72,'2 只','tb')+T(100,128,'象形标志：代表数量的图','ta'),
+  represent:()=>star(46,56,20)+T(118,62,'代表 10 面彩旗','ta')+T(100,112,'1 个标志 = 10','t'),
+  key:()=>picto([['金牌',3],['银牌',2,1]])+R(40,76,120,30,'fs',6)+star(62,91,8)+T(116,96,'代表 2 面奖牌','t')+T(100,130,'看清楚一个标志代表多少','tn'),
+  half:()=>star(60,60,26)+`<path class="fa" d="M140 34 A26 26 0 0 0 140 86 Z"/>`+PA('M140 34 V86','s')+T(60,112,'2 面','t')+T(140,112,'1 面','t')+T(100,136,'半个标志 = 一半的数','ta'),
+  title:()=>bars(DATA,{title:'希望去旅行的国家',hiTitle:1})+T(100,136,'标题：图的名字','ta'),
+  vertical:()=>{let o='';PDATA.forEach((r,i)=>{o+=R(20+i*42,14,38,96,'fp',0)+T(39+i*42,124,r[0],'t');for(let j=0;j<r[1]&&j<6;j++)o+=star(39+i*42,100-j*15,6,'fa');});return o+T(100,140,'竖式：由下往上排','ta');},
+  horizontal:()=>picto(PDATA)+T(100,122,'横式：由左往右排','ta'),
+  // bar
+  barchart:()=>bars(DATA)+T(100,136,'条形统计图','ta'),
+  bar:()=>bars(DATA,{hi:1})+T(100,136,'条形：长方形的柱','ta'),
+  xaxis:()=>bars(DATA,{hiX:1})+T(110,136,'横轴：国家','ta'),
+  yaxis:()=>bars(DATA,{hiY:1})+T(110,136,'纵轴：人数','ta'),
+  scale:()=>bars(DATA,{hiScale:1})+T(110,136,'刻度：0, 10, 20 …','ta'),
+  draw:()=>PA('M40 110 L150 30 L166 44 L56 124 Z','fs')+PA('M40 110 L56 124 L34 130 Z','fa')+T(100,20,'绘制','ta')+T(140,110,'画出统计图','t'),
+  colour:()=>R(40,40,40,70,'fa',0)+R(100,70,40,40,'fp',0)+PA('M150 30 l20 -14 l8 10 l-20 14 z','fa')+T(100,132,'上色：涂上颜色','ta'),
+  excel:()=>R(20,18,160,94,'fp',4)+R(20,18,160,16,'fa',4)+[0,1,2,3].map(i=>L(20,50+i*16,180,50+i*16,'g')).join('')+[60,100,140].map(x=>L(x,34,x,112,'g')).join('')+R(120,62,12,40,'fs',0)+R(140,78,12,24,'fs',0)+R(160,70,12,32,'fs',0)+T(100,134,'用 Excel 制作统计图','ta'),
+  // question words
+  most:()=>bars(DATA,{hi:0})+T(100,136,'最多：日本','ta'),
+  least:()=>bars(DATA,{hi:2})+T(100,136,'最少：美国','ta'),
+  tallest:()=>[['宇欣',60],['宇宁',70],['宇航',80]].map((r,i)=>R(40+i*48,110-r[1],30,r[1],i===2?'fa':'fs',0)+T(55+i*48,126,r[0],'tn')).join('')+T(100,20,'谁最高？谁最矮？','ta'),
+  diff:()=>qCmp('diff'),
+  sum:()=>qR(20,40,70,26,'fa',0)+qR(90,40,90,26,'fs',0)+qT(55,58,'120 cm','tw')+qT(135,58,'140 cm','tn')+qP('M20 76 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+qT(100,120,'总和 = 加起来','ta'),
+  greater:()=>BT(100,64,'2 m 20 cm > 2 m','tb',22)+T(100,98,'是否大于 2 m？','ta')+T(100,128,'比一比哪个大','t'),
+  times:()=>picto([['鸭',3],['鸡',6]],{rh:26})+T(100,86,'鸡是鸭的 2 倍','ta')+T(100,112,'6 ÷ 3 = 2','t'),
+  according:()=>bars(DATA)+PA('M150 22 l-10 10','a')+T(100,136,'根据统计图回答','ta'),
+  incomplete:()=>picto([['星期一',3],['星期二',0],['星期三',4]],{rh:26})+T(126,56,'?','ta')+T(100,112,'不完整：还缺一些','ta'),
+  average:()=>T(100,40,'平均每份 RM1.40','ta')+T(100,76,'每一份的价钱一样','t')+T(100,110,'份数 × RM1.40','t'),
+  period:()=>`<circle class="fs" cx="100" cy="60" r="34"/>`+PA('M100 20 A40 40 0 1 1 64 44','a')+PA('M58 36 L64 44 L72 38','a')+T(100,66,'自转','t')+T(100,120,'周期：转一圈要多久','ta'),
+  sales:()=>[0,1,2].map(i=>R(40+i*14,40-i*4,70,70,'fp',2)).join('')+[0,1,2,3].map(i=>L(60,60+i*10,120,60+i*10,'s','stroke-width:1.5')).join('')+T(100,132,'销量：卖出了多少','ta'),
+  statement:()=>T(100,44,'3/5 的动物是鸭。','t')+T(100,74,'这个说明正确吗？','ta')+T(60,106,'✓ 正确','t')+T(140,106,'✗ 不正确','tn')+T(100,134,'说明：一句关于数据的话','t')
+};
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'data',zh:'数据',py:'shù jù',en:'Data',color:'--c1',pg:'pp. 237–238'},
+  {id:'pict',zh:'象形统计图',py:'xiàng xíng tǒng jì tú',en:'Pictographs',color:'--c2',pg:'pp. 238–239'},
+  {id:'bar',zh:'条形统计图',py:'tiáo xíng tǒng jì tú',en:'Bar charts',color:'--c3',pg:'pp. 240–247'},
+  {id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'pp. 239–248'}
+];
+const TERMS=[
+ {s:'data',zh:'数据',py:'shù jù',en:'data',bm:'data',pg:237,f:'data',def:'Numbers and facts that we collect, like how many balls of each kind there are.'},
+ {s:'data',zh:'数据处理',py:'shù jù chǔ lǐ',en:'data handling',bm:'pengurusan data',pg:237,f:'organize',def:'Collecting, organising and showing data so it is easy to understand.'},
+ {s:'data',zh:'收集',py:'shōu jí',en:'collect',bm:'mengumpul',pg:238,f:'collect',def:'Gather information, for example by counting or asking people.',tip:'步骤 1：收集数据'},
+ {s:'data',zh:'整理',py:'zhěng lǐ',en:'organise / sort',bm:'menyusun',pg:237,f:'organize',def:'Put data in order or into groups so it is not messy.',tip:'不如先整理数据再分析。'},
+ {s:'data',zh:'分析',py:'fēn xī',en:'analyse',bm:'menganalisis',pg:237,f:'analyse',def:'Look closely at data to find out what it tells us.'},
+ {s:'data',zh:'信息',py:'xìn xī',en:'information',bm:'maklumat',pg:239,f:'info',def:'What you learn from reading a chart.',tip:'例：我能从统计图中获得哪些信息呢？'},
+ {s:'data',zh:'记数符号',py:'jì shù fú hào',en:'tally marks',bm:'ngiraan',pg:238,f:'tally',def:'Short lines used for counting. Every 5th line crosses the first four.'},
+ {s:'data',zh:'表格',py:'biǎo gé',en:'table',bm:'jadual',pg:238,f:'table',def:'A chart of rows and columns used to organise data.'},
+ {s:'data',zh:'栏',py:'lán',en:'column',bm:'lajur',pg:238,f:'column',def:'One of the up-and-down parts of a table.',tip:'在第一栏里列出奖牌的种类。'},
+ {s:'data',zh:'种类',py:'zhǒng lèi',en:'type / kind',bm:'jenis',pg:238,f:'category',def:'A group of things that are the same kind, like gold, silver and bronze medals.'},
+ {s:'data',zh:'数量',py:'shù liàng',en:'number / quantity',bm:'bilangan',pg:238,f:'count',def:'How many there are.'},
+ // pictograph
+ {s:'pict',zh:'统计图',py:'tǒng jì tú',en:'chart / graph',bm:'carta',pg:237,f:'barchart',def:'A picture that shows data so it is easy to compare.'},
+ {s:'pict',zh:'象形统计图',py:'xiàng xíng tǒng jì tú',en:'pictograph',bm:'piktograf',pg:238,f:'pictograph',def:'A chart that uses little pictures (symbols) to show amounts.'},
+ {s:'pict',zh:'象形标志',py:'xiàng xíng biāo zhì',en:'symbol / picture',bm:'simbol',pg:238,f:'symbol',def:'The small picture used in a pictograph. Each one stands for a number.'},
+ {s:'pict',zh:'代表',py:'dài biǎo',en:'stands for / represents',bm:'mewakili',pg:238,f:'represent',def:'Tells what one symbol is worth.',tip:'例：一个★代表 2 只动物。'},
+ {s:'pict',zh:'图例',py:'tú lì',en:'key',bm:'petunjuk',pg:238,f:'key',def:'The box that tells how much one symbol stands for. Always read it first!'},
+ {s:'pict',zh:'半个标志',py:'bàn gè biāo zhì',en:'half a symbol',bm:'separuh simbol',pg:238,f:'half',def:'Half a symbol stands for half the number. If ★ = 2, then half ★ = 1.'},
+ {s:'pict',zh:'标题',py:'biāo tí',en:'title',bm:'tajuk',pg:238,f:'title',def:'The name at the top of a chart. It tells what the chart is about.'},
+ {s:'pict',zh:'竖式',py:'shù shì',en:'vertical',bm:'menegak',pg:239,f:'vertical',def:'Going up and down. A vertical pictograph stacks symbols upwards.'},
+ {s:'pict',zh:'横式',py:'héng shì',en:'horizontal',bm:'mengufuk',pg:238,f:'horizontal',def:'Going across. A horizontal chart lines things up from left to right.'},
+ // bar
+ {s:'bar',zh:'条形统计图',py:'tiáo xíng tǒng jì tú',en:'bar chart',bm:'carta palang',pg:240,f:'barchart',def:'A chart that uses bars of different lengths to show amounts.'},
+ {s:'bar',zh:'条形',py:'tiáo xíng',en:'bar',bm:'palang',pg:240,f:'bar',def:'One rectangle in a bar chart. The longer the bar, the bigger the number.',tip:'All bars have the same width, with equal gaps.'},
+ {s:'bar',zh:'横轴',py:'héng zhóu',en:'horizontal axis',bm:'paksi mengufuk',pg:240,f:'xaxis',def:'The line along the bottom of the chart. Here it shows the countries.'},
+ {s:'bar',zh:'纵轴',py:'zòng zhóu',en:'vertical axis',bm:'paksi mencancang',pg:240,f:'yaxis',def:'The line up the side of the chart. It shows the numbers.'},
+ {s:'bar',zh:'刻度',py:'kè dù',en:'scale',bm:'skala',pg:240,f:'scale',def:'The numbers marked along the vertical axis, like 0, 10, 20 …',tip:'Read the top of each bar against the scale.'},
+ {s:'bar',zh:'绘制',py:'huì zhì',en:'draw (a chart)',bm:'melukis',pg:238,f:'draw',def:'To draw a chart carefully.',tip:'例：绘制条形统计图的步骤'},
+ {s:'bar',zh:'上色',py:'shàng sè',en:'colour in',bm:'mewarnakan',pg:240,f:'colour',def:'Fill in the bars with colour.'},
+ {s:'bar',zh:'制作',py:'zhì zuò',en:'make',bm:'membuat',pg:247,f:'excel',def:'To make something, like a chart in Microsoft Excel.'},
+ // question words
+ {s:'q',zh:'最多',py:'zuì duō',en:'the most',bm:'paling banyak',pg:248,f:'most',def:'The biggest amount — the longest bar or the most symbols.'},
+ {s:'q',zh:'最少',py:'zuì shǎo',en:'the least / fewest',bm:'paling sedikit',pg:248,f:'least',def:'The smallest amount — the shortest bar or the fewest symbols.'},
+ {s:'q',zh:'最高 / 最矮',py:'zuì gāo / zuì ǎi',en:'tallest / shortest',say:'tallest, shortest',bm:'paling tinggi / paling rendah',pg:241,f:'tallest',def:'For height: 最高 is the tallest, 最矮 is the shortest.',tip:'例：四兄弟姐妹里，谁最高？谁最矮？'},
+ {s:'q',zh:'相差',py:'xiāng chà',en:'difference between',bm:'beza',pg:241,f:'diff',def:'How much bigger one amount is than the other. Subtract.',tip:'例：宇恒和宇宁的身高相差多少 cm？'},
+ {s:'q',zh:'总和',py:'zǒng hé',en:'total / sum',bm:'jumlah',pg:241,f:'sum',def:'All the amounts added together.',tip:'例：宇航和宇恒的身高的总和'},
+ {s:'q',zh:'是否大于',py:'shì fǒu dà yú',en:'is it greater than',bm:'adakah lebih besar daripada',pg:241,f:'greater',def:'Asks you to check if one amount is bigger than another. Answer yes or no, with working.'},
+ {s:'q',zh:'……的多少倍',py:'… de duō shǎo bèi',en:'how many times',bm:'berapa kali ganda',pg:239,f:'times',def:'Divide the bigger amount by the smaller one.',tip:'例：牛的数量是羊的多少倍？'},
+ {s:'q',zh:'根据',py:'gēn jù',en:'based on / according to',bm:'berdasarkan',pg:239,f:'according',def:'Use the chart or data given to answer.',tip:'例：根据上面的统计图，回答以下问题。'},
+ {s:'q',zh:'说明',py:'shuō míng',en:'statement',bm:'pernyataan',pg:239,f:'statement',def:'A sentence about the data. Check the chart to see if it is 正确 (true).',tip:'例：这个说明正确吗？'},
+ {s:'q',zh:'不完整',py:'bù wán zhěng',en:'incomplete',bm:'tidak lengkap',pg:246,f:'incomplete',def:'Some parts are missing. You need to work them out and fill them in.'},
+ {s:'q',zh:'平均',py:'píng jūn',en:'on average / each',bm:'purata',pg:248,f:'average',def:'The same amount for each one.',tip:'例：平均每份报纸的售价是 RM1.40。'},
+ {s:'q',zh:'销量',py:'xiāo liàng',en:'number sold (sales)',bm:'jualan',pg:248,f:'sales',def:'How many were sold.'},
+ {s:'q',zh:'周期',py:'zhōu qī',en:'period (time for one turn)',bm:'tempoh',pg:246,f:'period',def:'How long something takes to go round once.',tip:'例：行星自转的周期'}
+];
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “tongjitu”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

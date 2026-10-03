@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四年级 Standard 4 · Glossaries &amp; Games</title>
+<meta name="description" content="Bilingual glossaries and revision games for the Malaysian Standard 4 SJKC curriculum.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --maths:#D9661A; --sci:#0F8079; --g1:#6B4FD8; --g2:#1F7AC0; --g3:#0E7490; --g4:#C2410C;
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --maths:#F08A42; --sci:#3DBDB3; --g1:#A18AF5; --g2:#5BA9E8; --g3:#3DAEC4; --g4:#F08A5B;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --maths:#F08A42; --sci:#3DBDB3; --g1:#A18AF5; --g2:#5BA9E8; --g3:#3DAEC4; --g4:#F08A5B;
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:900px;margin:0 auto;padding:48px 16px 56px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:4px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(32px,6vw,50px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:10px 0 36px;color:var(--muted);max-width:60ch}
+h2{margin:0 0 14px;font-family:var(--display);font-weight:600;font-size:22px;display:flex;align-items:baseline;gap:.5em}
+h2 .zh{font-family:var(--zh);font-weight:700}
+h2 .count{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+section{margin-bottom:40px}
+.cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:16px}
+.card{--c:var(--maths);display:flex;flex-direction:column;gap:4px;height:100%;padding:24px 22px 20px;border-radius:20px;background:var(--paper);border:2px solid var(--c);box-shadow:0 3px 0 var(--c);color:var(--ink);text-decoration:none;transition:transform .12s}
+.card:hover{transform:translateY(-4px)}
+.card:focus-visible{outline:3px solid var(--c);outline-offset:4px}
+.card .icon{width:48px;height:48px;margin-bottom:8px;color:var(--c)}
+.card .zh{font-family:var(--zh);font-weight:700;font-size:32px;line-height:1.2}
+.card .en{font-family:var(--display);font-weight:600;font-size:19px;color:var(--c)}
+.card .name{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.2}
+.card .tag{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.card .desc{margin-top:8px;font-size:14px;color:var(--muted)}
+.card .go{margin-top:auto;padding-top:16px;font-weight:700;font-size:14px;color:var(--c)}
+.sci{--c:var(--sci)} .p1{--c:var(--g1)} .p2{--c:var(--g2)} .p3{--c:var(--g3)} .p4{--c:var(--g4)}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:18px}
+footer p{margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Tahun 4 SJKC · 课本词汇与温习游戏</div>
+  <h1><span class="zh">四年级</span>Standard 4</h1>
+  <p class="sub">Glossaries and revision games built around the Malaysian Standard 4 SJKC syllabus. Everything runs in the browser — nothing to install, works on a phone.</p>
+
+  <section>
+    <h2><span class="zh">词典</span>Glossaries <span class="count">2 subjects</span></h2>
+    <ul class="cards">
+      <li><a class="card" href="glossary/Matematik/Std4_Maths_Glossary.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="5" y="5" width="38" height="38" rx="8"/><path d="M13 17h10M18 12v10M27 15h8M27 33h8M27 28h8M13 30l7 7M20 30l-7 7"/></svg>
+        <span class="zh">数学</span><span class="en">Mathematics</span>
+        <span class="desc">8 units plus a page of the words that turn up everywhere — comparing, totals, instruction words and counting words.</span>
+        <span class="go">Open →</span></a></li>
+      <li><a class="card sci" href="glossary/Science/Science_Glossary.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5h10M21 5v13L9 38a5 5 0 0 0 4 7h22a5 5 0 0 0 4-7L27 18V5"/><path d="M15 30h18"/><circle cx="21" cy="36" r="2.5"/><circle cx="29" cy="39" r="2"/></svg>
+        <span class="zh">科学</span><span class="en">Science</span>
+        <span class="desc">Chapters 1 and 5–10, from scientific skills to simple machines. Chapters 2–4 are still to come.</span>
+        <span class="go">Open →</span></a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="zh">游戏</span>Games <span class="count">4 games</span></h2>
+    <ul class="cards">
+      <li><a class="card p1" href="games/hanzi-interceptor/">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 4c6 6 9 13 9 21l4 7H11l4-7c0-8 3-15 9-21z"/><path d="M15 32l-5 9 8-3M33 32l5 9-8-3"/><circle cx="24" cy="20" r="3.5"/></svg>
+        <span class="name">Hanzi Interceptor</span><span class="tag">History · 历史</span>
+        <span class="desc">A Chinese prompt appears; its possible English meanings drift down the screen. Fly the ship and shoot the right one. 544 questions over Chapters 5–11.</span>
+        <span class="go">Play →</span></a></li>
+      <li><a class="card p2" href="games/voxel-island/">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 6l16 9-16 9-16-9 16-9z"/><path d="M8 15v14l16 9 16-9V15"/><path d="M24 24v14"/></svg>
+        <span class="name">Voxel Island</span><span class="tag">Science · 科学</span>
+        <span class="desc">Build a voxel world one correct answer at a time. Every KSSR Year 4 science question you get right adds to the island.</span>
+        <span class="go">Play →</span></a></li>
+      <li><a class="card p3" href="games/abyss-decoder/">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="19" width="28" height="14" rx="7"/><circle cx="15" cy="26" r="3"/><path d="M34 26h7M24 19v-5h5M8 36l3 4M30 36l-3 4"/></svg>
+        <span class="name">Abyss Decoder</span><span class="tag">Science · 科学</span>
+        <span class="desc">A term lights up in the beacon and its meanings sink past your submersible. Pulse the right one — ten clean reads clears the depth.</span>
+        <span class="go">Play →</span></a></li>
+      <li><a class="card p4" href="games/lab-blaster/">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5h10M21 5v12L10 36a4 4 0 0 0 3 6h22a4 4 0 0 0 3-6L27 17V5"/><path d="M24 24l2 5 5 1-4 4 1 5-4-3-4 3 1-5-4-4 5-1 2-5z"/></svg>
+        <span class="name">Lab Blaster</span><span class="tag">Science · 科学</span>
+        <span class="desc">A science-lab arcade run. Clear the questions, keep the lab in one piece.</span>
+        <span class="go">Play →</span></a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Built for one Standard 4 pupil, shared in case it helps someone else. Made with Claude.</p>
+    <p>Word lists follow the Standard 4 SJKC textbooks (Kementerian Pendidikan Malaysia), the EPH maths workbook and the KSSR science notes. Pinyin and Malay terms were added by hand and may contain mistakes — corrections welcome.</p>
+  </footer>
+</div>
+</body>
+</html>

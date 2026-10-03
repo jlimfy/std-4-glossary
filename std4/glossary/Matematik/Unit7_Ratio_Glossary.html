@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>坐标、比与比例 Ratio Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.g{stroke:color-mix(in srgb,var(--ink) 16%,transparent);stroke-width:1}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 7 单元 · pp. 218–236</div>
+    <h1><span class="zh">坐标、比与比例</span>Coordinates, Ratio &amp; Proportion</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 坐标, zuobiao, ratio…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 7 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+const OX=34,OY=106,U=17;
+const px=x=>OX+x*U, py=y=>OY-y*U;
+function plane(opt={}){
+  const mx=opt.mx||7,my=opt.my||5;let o='';
+  for(let i=1;i<=mx;i++)o+=L(px(i),py(0),px(i),py(my)-4,'g');
+  for(let j=1;j<=my;j++)o+=L(px(0),py(j),px(mx)+4,py(j),'g');
+  o+=L(px(0),py(0),px(mx)+10,py(0),opt.hx?'a':'s',opt.hx?'stroke-width:5':'stroke-width:2.5')+PA(`M${px(mx)+4} ${py(0)-5} L${px(mx)+11} ${py(0)} L${px(mx)+4} ${py(0)+5}`,opt.hx?'a':'s');
+  o+=L(px(0),py(0),px(0),py(my)-10,opt.hy?'a':'s',opt.hy?'stroke-width:5':'stroke-width:2.5')+PA(`M${px(0)-5} ${py(my)-4} L${px(0)} ${py(my)-11} L${px(0)+5} ${py(my)-4}`,opt.hy?'a':'s');
+  for(let i=1;i<=mx;i++)o+=T(px(i),py(0)+14,i,'tn');
+  for(let j=1;j<=my;j++)o+=T(px(0)-9,py(j)+4,j,'tn');
+  o+=T(px(0)-9,py(0)+14,'O',opt.ho?'ta':'tn')+T(px(mx)+14,py(0)+14,'x',opt.hx?'ta':'t')+T(px(0)-10,py(my)-6,'y',opt.hy?'ta':'t');
+  return o;
+}
+const pt=(x,y,lab,dx=0,dy=-10)=>DOT(px(x),py(y),5.5)+(lab?T(px(x)+dx,py(y)+dy,lab,'ta'):'');
+const arrow=(x1,y1,x2,y2)=>{const a=Math.atan2(y2-y1,x2-x1);return L(x1,y1,x2,y2,'a')+PA(`M${f1(x2-9*Math.cos(a-0.5))} ${f1(y2-9*Math.sin(a-0.5))} L${f1(x2)} ${f1(y2)} L${f1(x2-9*Math.cos(a+0.5))} ${f1(y2-9*Math.sin(a+0.5))}`,'a');};
+const big=(x,y,s,k='tb',sz=40)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+function ratioParts(h){
+  return big(66,76,'1',h==='a'?'tba':'tb')+big(100,74,':',h==='c'?'tba':'tb')+big(134,76,'3',h==='b'?'tba':'tb')+T(66,104,'前项',h==='a'?'ta':'tn')+T(134,104,'后项',h==='b'?'ta':'tn')+(h==='c'?T(100,104,'比号','ta'):'');
+}
+function propParts(h){
+  const xs=[24,60,124,164],v=['1','2','2','4'];let o='';
+  v.forEach((s,i)=>{const on=(h==='in'&&(i===1||i===2))||(h==='out'&&(i===0||i===3));o+=big(xs[i],74,s,on?'tba':'tb',34);});
+  o+=big(42,72,':','tb',34)+big(92,72,'=','tb',30)+big(144,72,':','tb',34);
+  if(h==='in')o+=PA('M60 84 Q92 104 124 84','a')+T(92,118,'内项','ta');
+  if(h==='out')o+=PA('M24 40 Q94 0 164 40','a')+T(94,14,'外项','ta');
+  return o;
+}
+function boxes(n,x,y,k,s=22){let o='';for(let i=0;i<n;i++)o+=R(x+i*(s+6),y,s,s,k,4);return o;}
+function car(x,y,s,k='fs'){
+  return PA(`M${x} ${y+14*s} q0 -8 8 -8 h${8*s} l${10*s} -${10*s} h${20*s} l${10*s} ${10*s} h${6*s} q8 0 8 8 v${6*s} h-${62*s+16} z`,k)+`<circle class="fp" cx="${x+14*s}" cy="${y+20*s}" r="${6*s}"/><circle class="fp" cx="${x+50*s}" cy="${y+20*s}" r="${6*s}"/>`;
+}
+function gear(cx,cy,r,n,k){
+  let d='';for(let i=0;i<n*2;i++){const a=i*Math.PI/n,rr=i%2?r:r+6;const a2=a+Math.PI/n*0.5;
+    d+=(i?'L':'M')+f1(cx+rr*Math.cos(a))+' '+f1(cy+rr*Math.sin(a))+'L'+f1(cx+rr*Math.cos(a2))+' '+f1(cy+rr*Math.sin(a2));}
+  return PA(d+'Z',k)+`<circle class="fp" cx="${cx}" cy="${cy}" r="${Math.max(4,r/4)}"/>`;
+}
+const F={
+  coord:()=>plane()+L(px(3),py(0),px(3),py(2),'d')+L(px(0),py(2),px(3),py(2),'d')+pt(3,2,'(3 , 2)',4,-10)+T(100,138,'坐标：点的位置','t'),
+  plane:()=>plane()+T(128,54,'笛卡尔平面','ta')+T(100,138,'x 轴 + y 轴 + 方格','t'),
+  xaxis:()=>plane({hx:1})+T(110,98,'横轴 = x 轴','ta')+T(100,138,'左右方向','t'),
+  yaxis:()=>plane({hy:1})+T(96,50,'纵轴 = y 轴','ta')+T(100,138,'上下方向','t'),
+  origin:()=>plane({ho:1})+DOT(px(0),py(0),7)+T(76,96,'(0 , 0)','ta')+T(100,138,'原点 O：从这里开始','t'),
+  xc:()=>plane()+arrow(px(0),py(0)-4,px(4),py(0)-4)+L(px(4),py(0),px(4),py(3),'d')+pt(4,3,'(4 , 3)',4,-10)+T(px(2),py(0)-10,'x = 4','ta')+T(100,138,'先读 x 坐标','t'),
+  yc:()=>plane()+arrow(px(4)+4,py(0),px(4)+4,py(3))+L(px(0),py(3),px(4),py(3),'d')+pt(4,3,'(4 , 3)',4,-10)+T(px(4)+26,py(1.5),'y = 3','ta')+T(100,138,'再读 y 坐标','t'),
+  right:()=>plane()+arrow(px(0),py(0)-6,px(2),py(0)-6)+pt(2,0,'')+T(px(2)+8,py(0)-26,'向右 2 个单位','ta')+T(100,138,'沿着 x 轴走','t'),
+  up:()=>plane()+arrow(px(0)+6,py(0),px(0)+6,py(3))+pt(0,3,'')+T(px(0)+56,py(3)+4,'向上 3 个单位','ta')+T(100,138,'沿着 y 轴走','t'),
+  plot:()=>plane()+arrow(px(0),py(0)-5,px(2),py(0)-5)+arrow(px(2),py(0),px(2),py(3))+pt(2,3,'学校 (2 , 3)',8,-10)+T(100,138,'先向右，再向上','t'),
+  vertex:()=>plane()+PA(`M${px(2)} ${py(1)} L${px(6)} ${py(1)} L${px(4)} ${py(4)} Z`,'fs')+pt(2,1,'')+pt(6,1,'')+pt(4,4,'')+T(px(4)+30,py(4),'顶点','ta')+T(100,138,'三角形有 3 个顶点','t'),
+  ratio:()=>T(30,48,'机器人','t')+boxes(1,70,30,'fa')+T(30,90,'房子','t')+boxes(3,70,72,'fs')+T(100,130,'1 : 3（1 比 3）','ta'),
+  front:()=>ratioParts('a')+T(100,134,'比号前面的数','t'),
+  back:()=>ratioParts('b')+T(100,134,'比号后面的数','t'),
+  colon:()=>ratioParts('c')+T(100,134,'读作“比”','t'),
+  quantity:()=>T(34,48,'慧丽','t')+boxes(1,66,30,'fa')+T(34,92,'俊辉','t')+boxes(2,66,74,'fa')+T(150,48,'1 块','ta')+T(150,92,'2 块','ta')+T(100,132,'数量：有多少个','t'),
+  floorplan:()=>R(24,18,152,84,'fp',2)+R(24,18,50,30,'fs')+T(49,38,'讲台','tn')+R(96,48,56,24,'fs',3)+T(124,64,'实验台','tn')+L(24,118,72,118,'a')+[0,1,2].map(i=>L(24+i*24,112,24+i*24,124,'a','stroke-width:2')+T(24+i*24,138,i,'tn')).join('')+T(88,122,'cm','tn')+T(140,128,'1 : 100','ta'),
+  actual:()=>L(30,40,50,40,'a')+T(40,28,'1 cm','ta')+T(100,44,'图上','t')+T(100,74,'↓ × 100','tn')+L(20,100,180,100,'s','stroke-width:5')+T(100,90,'实际 100 cm = 1 m','ta')+T(100,132,'真正的距离','t'),
+  scale:()=>L(30,70,170,70,'s')+[0,1,2,3,4].map(i=>R(30+i*28,66,28,8,i%2?'fp':'fa')).join('')+[0,1,2,3,4,5].map(i=>L(30+i*28,62,30+i*28,78,'s','stroke-width:2')).join('')+T(30,94,'0','tn')+T(170,94,'5 m','tn')+T(100,42,'1 : 100','tba')+T(100,132,'图上 1 cm = 实际 100 cm','t'),
+  proportion:()=>propParts('')+T(100,112,'两个比的比值一样','t')+T(100,134,'1 : 2 = 2 : 4','ta'),
+  value:()=>big(100,56,'8 : 4','tb',30)+T(100,84,'8 ÷ 4 = 2','t')+T(100,120,'比值是 2','ta'),
+  inner:()=>propParts('in')+T(100,138,'中间的两个数','t'),
+  outer:()=>propParts('out')+T(100,108,'两头的两个数','t')+T(100,134,'1 × 4 = 2 × 2','ta'),
+  model:()=>car(20,58,0.55,'fa')+car(78,36,1.3)+T(38,108,'模型','ta')+T(140,108,'真车','t')+T(100,134,'1 : 10','ta'),
+  size:()=>car(28,40,1.8)+L(28,106,172,106,'d')+T(100,124,'46 cm × 20 cm × 12 cm','t')+T(100,24,'长 × 宽 × 高','ta'),
+  unitary:()=>T(100,26,'5 个苹果 → RM10','t')+T(40,54,'÷ 5','tn')+T(100,58,'1 个苹果 → RM2','ta')+T(40,86,'× 8','tn')+T(100,90,'8 个苹果 → RM16','t')+T(100,128,'先找 1 份，再找几份','ta'),
+  unitprice:()=>PA('M50 40 H140 L166 70 L140 100 H50 Z','fs')+`<circle class="fp" cx="146" cy="70" r="5"/>`+T(92,66,'RM2','tb')+T(92,90,'1 个','t')+T(100,128,'每一个的价钱','ta'),
+  bargain:()=>R(12,24,84,62,'fp',8)+T(54,46,'2 个 RM15','t')+T(54,70,'1 个 RM7.50','tn')+R(104,24,84,62,'fs',8)+T(146,46,'3 个 RM22','t')+T(146,70,'1 个 ≈ RM7.33','tn')+T(146,104,'✓ 更划算','ta')+T(100,132,'比较 1 个的价钱','t'),
+  gears:()=>gear(52,64,18,12,'fa')+gear(128,64,44,40,'fs')+T(52,118,'12 齿','ta')+T(128,128,'60 齿','t')+T(52,26,'1 : 5','ta'),
+  rate:()=>T(100,30,'30 天 → 4 500 个','t')+T(34,58,'÷ 30','tn')+T(100,62,'1 天 → 150 个','ta')+T(34,90,'× 50','tn')+T(100,94,'50 天 → 7 500 个','t')+T(100,130,'照这个速度','ta')
+};
+
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'coord',zh:'坐标',py:'zuò biāo',en:'Coordinates',color:'--c1',pg:'pp. 218–222, 231'},
+  {id:'ratio',zh:'比',py:'bǐ',en:'Ratio',color:'--c2',pg:'pp. 223–225'},
+  {id:'prop',zh:'比例',py:'bǐ lì',en:'Proportion',color:'--c3',pg:'pp. 226–236'}
+];
+const TERMS=[
+ // coordinates
+ {s:'coord',zh:'坐标',py:'zuò biāo',en:'coordinates',bm:'koordinat',pg:218,f:'coord',def:'A pair of numbers that tells exactly where a point is, like (3 , 2).',tip:'Read x first, then y.'},
+ {s:'coord',zh:'笛卡尔平面',py:'dí kǎ ěr píng miàn',en:'Cartesian plane',bm:'satah Cartes',pg:218,f:'plane',def:'A grid with an x-axis and a y-axis, used to show where points are.'},
+ {s:'coord',zh:'横轴',py:'héng zhóu',en:'horizontal axis (x-axis)',say:'horizontal axis, x axis',bm:'paksi mengufuk (paksi-x)',pg:218,f:'xaxis',def:'The number line that goes across, from left to right. It is called the x-axis.'},
+ {s:'coord',zh:'纵轴',py:'zòng zhóu',en:'vertical axis (y-axis)',say:'vertical axis, y axis',bm:'paksi mencancang (paksi-y)',pg:218,f:'yaxis',def:'The number line that goes up and down. It is called the y-axis.'},
+ {s:'coord',zh:'原点',py:'yuán diǎn',en:'origin',bm:'asalan',pg:218,f:'origin',def:'The point where the x-axis and y-axis meet. Its coordinates are (0 , 0). We label it O.'},
+ {s:'coord',zh:'x 坐标',py:'x zuò biāo',en:'x-coordinate',say:'x coordinate',bm:'koordinat-x',pg:219,f:'xc',def:'The first number in a coordinate. It tells how far to go right from the origin.',tip:'A point on the y-axis has x-coordinate 0.'},
+ {s:'coord',zh:'y 坐标',py:'y zuò biāo',en:'y-coordinate',say:'y coordinate',bm:'koordinat-y',pg:219,f:'yc',def:'The second number in a coordinate. It tells how far to go up from the origin.',tip:'A point on the x-axis has y-coordinate 0.'},
+ {s:'coord',zh:'向右',py:'xiàng yòu',en:'to the right',bm:'ke kanan',pg:219,f:'right',def:'Moving across towards the right, along the x-axis.'},
+ {s:'coord',zh:'向上',py:'xiàng shàng',en:'upwards',bm:'ke atas',pg:219,f:'up',def:'Moving up, along the y-axis.'},
+ {s:'coord',zh:'标示',py:'biāo shì',en:'to mark / plot',bm:'menanda',pg:220,f:'plot',def:'To put a point in the right place on the grid using its coordinates.',tip:'For (2 , 3): go right 2 units, then up 3 units.'},
+ {s:'coord',zh:'顶点',py:'dǐng diǎn',en:'vertex (corner point)',bm:'bucu',pg:231,f:'vertex',def:'A corner point of a shape, where two sides meet.'},
+ // ratio
+ {s:'ratio',zh:'比',py:'bǐ',en:'ratio',bm:'nisbah',pg:223,f:'ratio',def:'A way to compare two amounts, like 1 robot box to 3 house boxes, written 1 : 3.',tip:'Ratios have no units. “a 与 b 的比” is written a : b, not b : a.'},
+ {s:'ratio',zh:'前项',py:'qián xiàng',en:'first term',bm:'sebutan pertama',pg:224,f:'front',def:'The number before the ratio sign. In 1 : 3, the first term is 1.'},
+ {s:'ratio',zh:'后项',py:'hòu xiàng',en:'second term',bm:'sebutan kedua',pg:224,f:'back',def:'The number after the ratio sign. In 1 : 3, the second term is 3.'},
+ {s:'ratio',zh:'比的符号',py:'bǐ de fú hào',en:'ratio sign ( : )',say:'ratio sign',bm:'simbol nisbah',pg:224,f:'colon',def:'The two dots “:” written between the terms of a ratio. We read it as “比”.'},
+ {s:'ratio',zh:'数量',py:'shù liàng',en:'quantity / number of',bm:'kuantiti',pg:224,f:'quantity',def:'How many or how much there is of something.'},
+ {s:'ratio',zh:'平面图',py:'píng miàn tú',en:'floor plan',bm:'pelan lantai',pg:225,f:'floorplan',def:'A small drawing of a room or place, seen from above.'},
+ {s:'ratio',zh:'实际距离',py:'shí jì jù lí',en:'actual distance',bm:'jarak sebenar',pg:225,f:'actual',def:'The real distance in real life, not on the drawing.'},
+ {s:'ratio',zh:'比例尺',py:'bǐ lì chǐ',en:'scale',bm:'skala',pg:225,f:'scale',def:'The ratio between a length on a drawing and the real length.',tip:'1 : 100 means 1 cm on the plan is 100 cm in real life.'},
+ // proportion
+ {s:'prop',zh:'比例',py:'bǐ lì',en:'proportion',bm:'kadaran',pg:226,f:'proportion',def:'Two ratios that are equal, like 1 : 2 = 2 : 4.'},
+ {s:'prop',zh:'比值',py:'bǐ zhí',en:'value of a ratio',bm:'nilai nisbah',pg:226,f:'value',def:'The answer when you divide the first term by the second term. The value of 8 : 4 is 2.'},
+ {s:'prop',zh:'内项',py:'nèi xiàng',en:'inner terms (means)',bm:'sebutan dalam',pg:226,f:'inner',def:'In a proportion, the two numbers in the middle.'},
+ {s:'prop',zh:'外项',py:'wài xiàng',en:'outer terms (extremes)',bm:'sebutan luar',pg:226,f:'outer',def:'In a proportion, the two numbers at the two ends.',tip:'Outer terms multiplied = inner terms multiplied.'},
+ {s:'prop',zh:'模型',py:'mó xíng',en:'model',bm:'model',pg:226,f:'model',def:'A smaller copy of a real thing, made using a ratio, like a toy car.'},
+ {s:'prop',zh:'尺寸',py:'chǐ cùn',en:'size / dimensions',bm:'saiz / ukuran',pg:226,f:'size',def:'How long, how wide and how high something is.',tip:'Model 46 cm long at 1 : 10 → real car 460 cm long.'},
+ {s:'prop',zh:'归一法',py:'guī yī fǎ',en:'unitary method',bm:'kaedah unitari',pg:227,f:'unitary',def:'First find the value of one, then use it to find the value of many.'},
+ {s:'prop',zh:'单价',py:'dān jià',en:'price of one (unit price)',bm:'harga seunit',pg:225,f:'unitprice',def:'The price of one item.'},
+ {s:'prop',zh:'划算',py:'huá suàn',en:'good value / worth it',bm:'berbaloi',pg:230,f:'bargain',def:'Getting more for your money. Compare the price of one to find the better deal.'},
+ {s:'prop',zh:'齿轮',py:'chǐ lún',en:'gear',bm:'gear',pg:232,f:'gears',def:'A wheel with teeth. Used in a word problem about ratio of teeth.'},
+ {s:'prop',zh:'速度',py:'sù dù',en:'rate / speed',bm:'kadar',pg:233,f:'rate',def:'How much is done in a certain time, like 150 boards a day.'}
+];
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const bigT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+Object.assign(F,{
+  diff7:()=>qCmp('diff'),
+  left7:()=>qR(20,44,160,32,'fs',0)+qR(20,44,96,32,'fa',0)+qT(68,65,'卖了','tw')+qT(148,65,'剩下','ta')+qT(100,112,'剩下的则是橙色布料','t')+qT(100,136,'全部 − 卖了 = 剩下','ta'),
+  ifthen:()=>qT(100,40,'若蓝色布料是 7 卷……','ta')+qT(100,72,'若 = 如果','t')+qT(100,104,'则 = 那么、而','t')+qT(100,136,'连接条件和结果','tn'),
+  together:()=>qR(20,40,70,26,'fa',0)+qR(90,40,90,26,'fs',0)+qT(55,58,'7 本','tw')+qT(135,58,'RM175','tn')+qP('M20 76 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+qT(100,118,'共：全部加起来','ta'),
+  mustpay:()=>qP('M46 42 h84 l22 26 l-22 26 h-84 z','fs')+qT(88,76,'RM75','tb').replace('class="tb"','class="tb" style="font-size:16px"')+qT(100,124,'须付：必须付的钱','ta'),
+  statement7:()=>qT(100,44,'这项说明正确吗？','ta')+qT(60,86,'✓ 正确','t')+qT(140,86,'✗ 不正确','tn')+qT(100,126,'先算，再回答','t'),
+  unchanged:()=>qBar(28,'5 小时',60,'fa','150 条')+qBar(70,'8 小时',120,'fa','? 条')+qT(100,126,'效率不变：快慢一样','ta'),
+  findvalue:()=>qT(100,34,'5 个 → RM10','t')+qT(40,62,'÷ 5','tn')+qT(100,66,'1 个 → RM2','ta')+qT(40,94,'× 3','tn')+qT(100,98,'3 个 → RM6','t')+qT(100,132,'确认某个值：先找 1 份','ta'),
+  people:()=>[0,1,2,3].map(i=>`<circle class="fp" cx="${40+i*40}" cy="46" r="9"/>`+qP(`M${28+i*40} 74 q12 -22 24 0 z`,'fp')).join('')+qT(100,106,'总人数 = 4','ta')+qT(100,134,'人数、总数量：一共有多少','t'),
+  capacity:()=>qP('M40 40 h44 v66 h-44 z','fp')+qP('M42 70 h40 v34 h-40 z','fs')+qP('M116 30 h52 v76 h-52 z','fp')+qP('M118 50 h48 v54 h-48 z','fs')+qT(62,126,'小水桶','t')+qT(142,126,'大水桶','t')+qT(100,20,'容量：能装多少','ta'),
+  rate7:()=>qT(100,34,'5 小时 → 150 条','t')+qT(40,62,'÷ 5','tn')+qT(100,66,'1 小时 → 30 条','ta')+qT(40,94,'× 8','tn')+qT(100,98,'8 小时 → 240 条','t')+qT(100,132,'效率：一段时间做多少','ta'),
+  drive:()=>qL(16,84,184,84,'s','stroke-width:3')+qP('M40 60 h44 l14 16 h10 v14 h-80 v-14 z','fs')+`<circle class="fp" cx="56" cy="90" r="7"/><circle class="fp" cx="92" cy="90" r="7"/>`+qP('M120 74 H172','a')+qP('M166 68 L174 74 L166 80','a')+qT(100,120,'行驶：车子开过的路','ta')+qT(100,138,'路程：走过的距离','t'),
+  howfar:()=>qL(20,70,180,70,'s')+qC(20,70,7,'dot')+qC(180,70,7,'ink')+qP('M20 56 Q100 24 180 56','a')+qT(100,36,'多远？','ta')+qT(100,110,'问距离有多长','t'),
+  same7:()=>`<circle class="fa" cx="64" cy="58" r="22"/><circle class="fa" cx="136" cy="58" r="22"/>`+bigT(100,66,'=','tb',22)+qT(100,104,'相同：一模一样','ta')+qT(100,132,'例：3 盒相同的鸡精','t'),
+  mw7:()=>[['3 盒','fa'],['5 瓶','fs'],['7 本','fa'],['49 卷','fs']].map((r,i)=>qR(12+i*48,34,42,42,r[1],6)+qT(33+i*48,60,r[0],r[1]==='fa'?'tw':'tn')).join('')+qT(100,102,'量词：数目和东西中间的字','ta')+qT(100,130,'盒、瓶、本、支、条、卷、件','t')
+});
+SECTIONS.push({id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'Workbook pp. 39–47'});
+TERMS.push(
+ {s:'q',zh:'相差',py:'xiāng chà',en:'difference between',bm:'beza',pg:'Workbook p. 41',f:'diff7',def:'How much bigger one amount is than the other. Subtract.',tip:'例：食堂与多用途礼堂的面积相差多少 m²？'},
+ {s:'q',zh:'剩下',py:'shèng xià',en:'left over / the rest',bm:'baki / selebihnya',pg:'Workbook p. 47',f:'left7',def:'What is still there after some is taken away.',tip:'例：剩下的则是橙色布料'},
+ {s:'q',zh:'若 / 则',py:'ruò / zé',en:'if / then',say:'if, then',bm:'jika / maka',pg:'Workbook p. 47',f:'ifthen',def:'若 means “if”, 则 means “then” or “while”. They join a condition to its result.'},
+ {s:'q',zh:'共',py:'gòng',en:'altogether',bm:'kesemuanya',pg:'Workbook p. 41',f:'together',def:'Everything added together.',tip:'例：共花了 RM175 · 共可调制多少 ml？'},
+ {s:'q',zh:'须付',py:'xū fù',en:'must pay',bm:'perlu bayar',pg:'Workbook p. 41',f:'mustpay',def:'How much money has to be paid.'},
+ {s:'q',zh:'说明',py:'shuō míng',en:'statement',bm:'pernyataan',pg:'Workbook p. 47',f:'statement7',def:'A sentence about the numbers. Work it out, then say if it is 正确 (correct).'},
+ {s:'q',zh:'不变',py:'bù biàn',en:'stays the same',bm:'tidak berubah',pg:'Workbook p. 45',f:'unchanged',def:'Does not change — so the same ratio keeps working.',tip:'例：如果效率不变'},
+ {s:'q',zh:'多远',py:'duō yuǎn',en:'how far',bm:'berapa jauh',pg:'Workbook p. 41',f:'howfar',def:'Asks for a distance.'},
+ {s:'q',zh:'相同',py:'xiāng tóng',en:'identical / the same',bm:'sama',pg:'Workbook p. 39',f:'same7',def:'Exactly alike, so each one counts the same.',tip:'例：3 盒相同的鸡精 · 5 本相同的词典'},
+ {s:'q',zh:'量词',py:'liàng cí',en:'counting words',bm:'penjodoh bilangan',pg:'Workbook pp. 39–47',f:'mw7',def:'The word between a number and a thing: 3 盒 (3 boxes), 49 卷 (49 rolls). Read it to know what is counted.',tip:'盒 box · 瓶 bottle · 本 book · 支 pen · 条 bracelet · 卷 roll · 件 garment'},
+ {s:'prop',zh:'确认某个值',py:'què rèn mǒu gè zhí',en:'find a certain value',bm:'menentukan sesuatu nilai',pg:'Workbook p. 39',f:'findvalue',def:'Find the value of one first, then use it to find the value you want.'},
+ {s:'prop',zh:'人数',py:'rén shù',en:'number of people',bm:'bilangan orang',pg:'Workbook p. 39',f:'people',def:'How many people there are. 总人数 is the total number of people.'},
+ {s:'prop',zh:'容量',py:'róng liàng',en:'capacity',bm:'muatan',pg:'Workbook p. 39',f:'capacity',def:'How much a container can hold.',tip:'例：小水桶与大水桶的容量的比是 1 : 3'},
+ {s:'prop',zh:'效率',py:'xiào lǜ',en:'rate of work',bm:'kadar kerja',pg:'Workbook p. 45',f:'rate7',def:'How much work is done in a certain time.'},
+ {s:'prop',zh:'行驶',py:'xíng shǐ',en:'to drive / travel',bm:'memandu',pg:'Workbook p. 41',f:'drive',def:'A vehicle moving along a road.',tip:'例：可行驶多远的距离？'},
+ {s:'prop',zh:'路程',py:'lù chéng',en:'journey distance',bm:'jarak perjalanan',pg:'Workbook p. 41',f:'drive',def:'The distance covered on a journey.'}
+);
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “zuobiao”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

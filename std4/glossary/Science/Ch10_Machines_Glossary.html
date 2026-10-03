@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>机械 Machines Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Science_Glossary.html">← <span style="font-family:var(--zh)">所有章节</span> · All chapters</a>
+  <header>
+    <div class="eyebrow">Sains Tahun 4 SJKC · 第 10 章 · KSSR 科学笔记</div>
+    <h1><span class="zh">机械</span>Machines</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 杠杆, ganggan, lever…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms come from Chapter 10 of the Standard 4 Science notes (KSSR 科学笔记 4 年级). Page numbers are the note pages. Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const C=(x,y,r,k='fs')=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+const E=(x,y,rx,ry,k='fs')=>`<ellipse class="${k}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+const kid=(x,y,k='fp')=>C(x,y-14,9,k)+PA(`M${x-13} ${y+14} q13 -24 26 0 z`,k);
+const eye=(x,y,s=1)=>PA(`M${x-26*s} ${y} q26 -20 52 0 q-26 20 -52 0 z`,'fp')+C(x,y,9*s,'fa')+C(x,y,4*s,'ink');
+const ear=(x,y)=>PA(`M${x+8} ${y-18} a18 22 0 1 0 -2 38 q8 2 6 -8 q-8 -6 -2 -14 q6 -8 14 -2 q6 -12 -16 -14 z`,'fs');
+const nose=(x,y)=>PA(`M${x} ${y-22} q-4 18 -12 28 q-4 8 6 10 h14 q10 -2 6 -10 q-8 -10 -12 -28 z`,'fs')+PA(`M${x-8} ${y+14} h16`,'s');
+const tongue=(x,y)=>PA(`M${x-24} ${y-12} q24 -16 48 0 q4 26 -24 30 q-28 -4 -24 -30 z`,'fa')+PA(`M${x} ${y-4} v22`,'s');
+const hand=(x,y)=>PA(`M${x-16} ${y+26} v-24 q0 -8 6 -8 q6 0 6 8 v-16 q0 -8 6 -8 q6 0 6 8 v16 q0 -8 6 -8 q6 0 6 8 v24 z`,'fs');
+const cyl=(x,y,h,fill,k='fs')=>R(x,y,26,h,'fp',3)+(fill?R(x+2,y+h-fill,22,fill-2,k,0):'')+[0,1,2,3].map(i=>L(x,y+10+i*(h-16)/3,x+9,y+10+i*(h-16)/3,'s','stroke-width:1.5')).join('');
+const jar=(x,y,lab,k='fs')=>R(x,y,44,34,'fp',3)+R(x+2,y+12,40,20,k,0)+T(x+22,y+50,lab,'t');
+const watch=(x,y)=>C(x,y,24,'fp')+R(x-5,y-30,10,7,'fa',2)+L(x,y,x+12,y-10,'s','stroke-width:2.5')+DOT(x,y,3,'ink');
+const arw=(x1,y1,x2,y2,w=2.5)=>{const a=Math.atan2(y2-y1,x2-x1);return L(x1,y1,x2,y2,'a',`stroke-width:${w}`)+PA(`M${x2-9*Math.cos(a-0.4)} ${y2-9*Math.sin(a-0.4)} L${x2} ${y2} L${x2-9*Math.cos(a+0.4)} ${y2-9*Math.sin(a+0.4)}`,'a');};
+const gearF=(x,y,r=22,n=8,k='fp')=>[...Array(n)].map((_,i)=>{const a=i*360/n;return PA(`M${x+(r-2)*Math.cos(rad(a-9))} ${y+(r-2)*Math.sin(rad(a-9))} L${x+(r+8)*Math.cos(rad(a-6))} ${y+(r+8)*Math.sin(rad(a-6))} L${x+(r+8)*Math.cos(rad(a+6))} ${y+(r+8)*Math.sin(rad(a+6))} L${x+(r-2)*Math.cos(rad(a+9))} ${y+(r-2)*Math.sin(rad(a+9))} Z`,k);}).join('')+C(x,y,r,k)+C(x,y,r*0.3,'fs');
+const leverF=(fx,fy,ang=-8)=>`<g transform="rotate(${ang} ${fx} ${fy})">`+R(fx-78,fy-14,156,10,'fs',3)+'</g>'+PA(`M${fx-14} ${fy+30} L${fx} ${fy-2} L${fx+14} ${fy+30} Z`,'ink');
+const boxL=(x,y,w=28,h=24,k='ink')=>R(x-w/2,y-h,w,h,k,2);
+const ropeF=(x1,y1,x2,y2)=>PA(`M${x1} ${y1} L${x2} ${y2}`,'s').replace('class="s"','class="s" style="stroke-width:2.5"');
+const F={
+  /* ---- 10.1 lever ---- */
+  machine:()=>gearF(56,58,20,8)+gearF(104,78,14,7)+R(132,40,48,10,'fs',3)+PA('M142 70 L150 50 L158 70 Z','ink')+T(100,124,'机械：帮我们做工作的东西','ta'),
+  lever:()=>leverF(100,74)+boxL(36,62)+arw(166,34,166,56)+T(36,110,'阻力点','tn')+T(100,118,'支点','tn')+T(166,110,'动力点','tn')+T(100,24,'杠杆：一根杆架在支点上','ta'),
+  tool:()=>R(30,56,16,46,'fs',3)+PA('M22 38 h32 v18 h-32 z','ink')+R(96,46,8,52,'fs',2)+R(88,34,24,14,'ink',3)+PA('M150 40 q20 10 0 20 q-20 -10 0 -20','ink')+R(154,50,8,46,'fs',2)+T(100,124,'工具：用来做事情的东西','ta'),
+  rod:()=>R(20,62,160,12,'fs',4)+T(100,110,'杆：又直又长的棍子','ta'),
+  fulcrum:()=>R(24,52,152,10,'fs',3)+PA('M84 96 L100 60 L116 96 Z','ink')+T(100,118,'支点：杠杆架着的那一点','ta'),
+  effort:()=>leverF(100,74)+boxL(36,62)+arw(164,28,164,58,3)+T(164,84,'用力','ta')+T(100,118,'动力点：我们用力的地方','ta'),
+  load:()=>leverF(100,74)+boxL(36,62)+T(36,40,'重','t')+arw(164,34,164,56)+T(100,118,'阻力点：放着重物的地方','ta'),
+  lift:()=>boxL(60,96,34,28)+arw(60,62,60,26,3)+L(16,100,186,100,'s','stroke-width:3')+T(140,60,'提升：把东西抬高','ta'),
+  pry:()=>R(96,74,20,20,'fs',2)+PA('M30 44 L104 72 L100 82 L28 56 Z','fs')+PA('M86 96 L100 66 L114 96 Z','ink')+arw(40,32,40,10,2.5)+T(100,126,'撬起：用杆把东西翘起来','ta'),
+  heavy:()=>PA('M58 96 L72 50 L120 44 L140 96 Z','ink')+T(100,76,'重','t').replace('class="t"','class="t" style="fill:#fff"')+arw(160,40,160,78,3)+L(16,100,186,100,'s','stroke-width:3')+T(100,126,'重物：很重的东西','ta'),
+  broom:()=>R(96,20,8,56,'fs',2)+PA('M78 76 h44 l10 30 h-64 z','fs')+[0,1,2,3].map(i=>L(80+i*13,80,74+i*14,104,'s')).join('')+T(100,130,'扫帚：也是一种杠杆','ta'),
+  closer:()=>R(14,46,86,8,'fs',3)+PA('M48 70 L58 50 L68 70 Z','ink')+boxL(20,46,18,14)+arw(94,30,94,42,2)+R(108,88,80,8,'fs',3)+PA('M116 110 L126 90 L136 110 Z','ink')+boxL(170,88,18,14)+arw(112,66,112,84,2)+T(56,86,'近：省力','ta')+T(148,128,'远：费力','t')+T(100,24,'越靠近支点，越省力','ta'),
+  /* ---- 10.2 simple machines ---- */
+  simple:()=>C(44,52,16,'fp')+gearF(100,56,14,7)+PA('M140 86 L186 86 L186 44 Z','fs')+T(100,112,'简单机械：最基本的机械','ta')+T(100,130,'杠杆、滑轮、齿轮、斜面','tn')+T(100,140,'螺旋、尖劈、轮轴','tn'),
+  pulley:()=>C(100,46,24,'fp')+C(100,46,9,'fs')+ropeF(76,46,76,96)+ropeF(124,46,124,86)+PA('M100 22 a24 24 0 0 1 24 24','s')+boxL(76,112,30,22)+arw(140,70,140,96,2.5)+T(100,132,'滑轮：带凹槽的轮子','ta'),
+  groove:()=>C(100,56,34,'fp')+C(100,56,12,'fs')+PA('M66 56 h8 M126 56 h8','s')+R(94,20,12,10,'fa',1)+T(100,106,'凹槽：轮边上的小沟','ta')+T(100,128,'绳子就放在凹槽里','tn'),
+  rope:()=>PA('M20 50 q24 -18 48 0 q24 18 48 0 q24 -18 48 0','s').replace('class="s"','class="s" style="stroke-width:4"')+PA('M20 86 q24 -18 48 0 q24 18 48 0 q24 -18 48 0','s').replace('class="s"','class="s" style="stroke-width:4"')+T(100,124,'绳索：粗粗的绳子','ta'),
+  gear:()=>gearF(62,58,22,8)+gearF(124,74,16,7)+T(100,124,'齿轮：有锯齿的轮子','ta')+T(100,140,'例：时钟里的齿轮','tn'),
+  jagged:()=>PA('M20 76 l16 -22 l16 22 l16 -22 l16 22 l16 -22 l16 22 l16 -22 l16 22 v18 H20 z','fs')+T(100,122,'锯齿状：像锯子一样的尖齿','ta'),
+  incline:()=>PA('M26 98 L174 98 L174 34 Z','fs')+arw(60,86,150,46,2.5)+L(26,98,174,98,'s','stroke-width:3')+T(100,122,'斜面：斜斜的平面','ta')+T(100,140,'例：楼梯、斜坡','tn'),
+  tilt:()=>L(20,96,180,96,'d')+PA('M30 96 L170 46','s','stroke-width:4')+PA('M30 96 a44 44 0 0 1 32 -14','a')+T(74,88,'倾斜','ta')+T(100,126,'倾斜：一边高，一边低','ta'),
+  screw:()=>R(86,22,28,70,'fp',3)+[0,1,2,3,4].map(i=>PA(`M86 ${34+i*13} q14 8 28 0`,'s')).join('')+PA('M86 92 l14 18 l14 -18 z','fp')+PA('M128 40 a24 24 0 0 1 0 44','a','stroke-width:2.5')+PA('M126 80 l6 8 l-10 4','a')+T(100,128,'螺旋：转着插进去的圆柱','ta'),
+  tighten:()=>R(78,54,44,44,'fp',4)+R(86,36,28,18,'fs',3)+PA('M132 42 a26 26 0 0 1 0 40','a','stroke-width:2.5')+PA('M130 78 l6 8 l-10 4','a')+T(100,124,'拧紧：转紧它','ta')+T(100,142,'例：瓶子和盖子','tn'),
+  wedge:()=>PA('M20 50 L150 70 L20 90 Z','fs')+R(150,58,34,24,'ink',3)+PA('M100 24 L100 44','a')+T(100,118,'尖劈：有一个尖端的工具','ta')+T(100,138,'例：刀具、门挡','tn'),
+  point:()=>PA('M160 66 L40 52 L40 80 Z','fs')+C(166,66,5,'fa')+T(100,110,'尖端：又细又尖的那一头','ta'),
+  cut:()=>PA('M26 42 L140 60 L140 72 L26 58 Z','fs')+R(140,52,42,26,'ink',3)+R(60,86,86,16,'fp',2)+PA('M103 70 l0 16','a')+T(100,128,'切割：把东西切开','ta'),
+  wheelaxle:()=>C(66,62,28,'fp')+C(66,62,9,'fs')+R(66,56,96,12,'fs',3)+C(160,62,12,'fp')+T(100,110,'轮轴：轮子固定在杆上','ta')+T(100,132,'例：门把手','tn'),
+  axle:()=>R(30,58,140,10,'fs',4)+C(66,63,22,'fp')+C(134,63,22,'fp')+C(66,63,7,'fs')+C(134,63,7,'fs')+T(100,110,'轴：轮子中间的那根杆','ta'),
+  efficiency:()=>C(60,58,26,'fp')+L(60,58,60,40,'s','stroke-width:3')+L(60,58,74,66,'s','stroke-width:3')+arw(96,58,132,58,3)+boxL(160,74,34,30,'fs')+T(100,110,'效率：做得又快又好','ta')+T(100,132,'用机械，工作更快','tn'),
+  easier:()=>boxL(50,80,36,32)+arw(50,52,50,24,3)+T(50,110,'很重','tn')+boxL(150,80,36,32)+arw(150,52,150,34,1.6)+T(150,110,'轻松','ta')+T(100,132,'简易：做起来更容易','ta'),
+  /* ---- 10.3 complex machines ---- */
+  complex:()=>gearF(50,54,18,8)+PA('M86 86 L136 86 L136 50 Z','fs')+R(146,36,10,40,'fp',2)+C(166,70,14,'fp')+T(100,112,'复杂机械：','ta')+T(100,132,'好几个简单机械合起来','ta'),
+  combine:()=>C(34,58,16,'fp')+T(60,62,'+','t')+gearF(90,58,14,7)+T(118,62,'=','t')+R(136,38,48,42,'fs',4)+T(160,62,'机器','tn')+T(100,116,'组合：把它们合在一起','ta'),
+  drill:()=>R(96,20,10,48,'fs',2)+PA('M96 68 L88 68 L88 92 L114 92 L114 68 L106 68 Z','fp')+PA('M94 92 L100 118 L106 92 Z','fs')+C(140,34,12,'fp')+R(104,28,36,10,'fs',2)+T(100,136,'手摇钻：轮轴 + 螺旋 + 尖劈','ta'),
+  barrow:()=>PA('M36 44 L150 44 L132 82 L54 82 Z','fs')+C(54,96,16,'fp')+C(54,96,5,'fs')+L(150,48,186,74,'s','stroke-width:3')+L(132,82,170,96,'s','stroke-width:3')+T(100,126,'手推车：杠杆 + 轮轴','ta'),
+  materials:()=>R(26,46,44,40,'fs',4)+T(48,72,'木','t')+R(78,46,44,40,'fp',4)+T(100,72,'铁','t')+R(130,46,44,40,'fs',4)+T(152,72,'胶','t')+T(100,118,'制作材料：用什么做的','ta'),
+  life:()=>R(40,34,120,66,'fp',5)+L(40,52,160,52,'s')+[0,1,2].map(i=>[0,1,2,3].map(j=>DOT(60+j*28,66+i*14,3,'dot')).join('')).join('')+T(100,124,'使用寿命：可以用多久','ta'),
+  cost:()=>C(66,62,26,'fp')+T(66,70,'RM','ta')+R(108,46,64,38,'fp',4)+[0,1,2].map(i=>L(118,58+i*10,162,58+i*10,'d')).join('')+T(100,118,'成本：做出来要花多少钱','ta'),
+  maintain:()=>PA('M36 86 L92 36 q10 -10 20 0 q10 10 0 20 L52 102 q-10 10 -16 4 q-6 -6 0 -20 z','fs')+C(150,70,22,'fp')+T(150,78,'RM','ta')+T(100,126,'保养费：修理和保养的钱','ta'),
+  safety:()=>PA('M100 24 L150 40 v34 q0 30 -50 44 q-50 -14 -50 -44 V40 z','fp')+PA('M80 72 l14 16 l28 -32','a','stroke-width:4')+T(100,130,'安全性：用起来安不安全','ta'),
+  eco:()=>C(100,60,32,'fp')+PA('M78 60 q22 -30 44 0 q-22 30 -44 0','fs')+L(78,60,122,60,'s')+T(100,112,'环保性：会不会伤害环境','ta'),
+  sustainable:()=>R(44,28,112,76,'fp',5)+[0,1,2,3].map(i=>PA(`M60 ${44+i*16} l6 8 l14 -16`,'a','stroke-width:3')).join('')+[0,1,2,3].map(i=>L(92,46+i*16,142,46+i*16,'d')).join('')+T(100,128,'可永续使用：能一直用下去','ta'),
+  durable:()=>R(34,40,66,52,'fs',4)+PA('M146 28 L182 40 v24 q0 22 -36 32 q-36 -10 -36 -32 V40 z','fp')+PA('M130 62 l10 12 l22 -24','a','stroke-width:3')+T(100,122,'耐用：用很久也不坏','ta'),
+  economical:()=>C(60,58,24,'fa')+T(60,66,'RM','t')+arw(96,50,134,78,3)+T(152,58,'少','ta')+T(100,118,'经济：花的钱比较少','ta')
+};
+const SECTIONS=[
+  {id:'lever',zh:'杠杆',py:'gàng gǎn',en:'Levers',color:'--c1',pg:'Notes pp. 99–100'},
+  {id:'simple',zh:'简单机械',py:'jiǎn dān jī xiè',en:'Simple machines',color:'--c2',pg:'Notes pp. 101–103'},
+  {id:'complex',zh:'复杂机械',py:'fù zá jī xiè',en:'Complex machines',color:'--c3',pg:'Notes pp. 103–104'}
+];
+const TERMS=[
+ {s:'lever',zh:'机械',py:'jī xiè',en:'machine',bm:'mesin',pg:99,f:'machine',def:'A tool that helps us do work more easily.'},
+ {s:'lever',zh:'杠杆',py:'gàng gǎn',en:'lever',bm:'tuas',pg:99,f:'lever',def:'A rod resting on a fulcrum, used to lift or pry up a heavy object.'},
+ {s:'lever',zh:'工具',py:'gōng jù',en:'tool',bm:'alat',pg:99,f:'tool',def:'Something we use to do a job.'},
+ {s:'lever',zh:'杆',py:'gǎn',en:'rod / bar',say:'rod',bm:'rod',pg:99,f:'rod',def:'A long straight stick — the main part of a lever.'},
+ {s:'lever',zh:'支点',py:'zhī diǎn',en:'fulcrum',bm:'fulkrum',pg:99,f:'fulcrum',def:'The fixed point the lever turns on.'},
+ {s:'lever',zh:'动力点',py:'dòng lì diǎn',en:'effort / force point',say:'the force point',bm:'daya',pg:99,f:'effort',def:'Where we push or pull on the lever.'},
+ {s:'lever',zh:'阻力点',py:'zǔ lì diǎn',en:'load point',say:'the load point',bm:'beban',pg:99,f:'load',def:'Where the heavy object sits on the lever.'},
+ {s:'lever',zh:'提升',py:'tí shēng',en:'to lift',bm:'mengangkat',pg:99,f:'lift',def:'To raise something up.'},
+ {s:'lever',zh:'撬起',py:'qiào qǐ',en:'to pry up',say:'to pry up',bm:'mengumpil',pg:99,f:'pry',def:'To lift the edge of something with a bar, like opening a tin lid.'},
+ {s:'lever',zh:'重物',py:'zhòng wù',en:'heavy object / load',say:'heavy object',bm:'beban',pg:99,f:'heavy',def:'Something heavy that we want to move.'},
+ {s:'lever',zh:'扫帚',py:'sào zhou',en:'broom',bm:'penyapu',pg:99,f:'broom',def:'An everyday lever — your hands are the force, the top hand is the fulcrum.'},
+ {s:'lever',zh:'越近越省力',py:'yuè jìn yuè shěng lì',en:'the nearer, the less force',say:'the nearer the less force needed',bm:'semakin dekat, semakin sedikit daya',pg:100,f:'closer',def:'The closer the load is to the fulcrum, the less force you need to lift it.'},
+ /* simple machines */
+ {s:'simple',zh:'简单机械',py:'jiǎn dān jī xiè',en:'simple machine',say:'simple machine',bm:'mesin ringkas',pg:101,f:'simple',def:'The basic machines: lever, pulley, gear, inclined plane, screw, wedge, wheel and axle.'},
+ {s:'simple',zh:'滑轮',py:'huá lún',en:'pulley',bm:'takal',pg:101,f:'pulley',def:'A wheel with a groove. A rope runs through it to lift or lower a load.',tip:'例：百叶窗上的滑轮'},
+ {s:'simple',zh:'凹槽',py:'āo cáo',en:'groove',bm:'alur',pg:101,f:'groove',def:'The dip around the edge of a wheel that holds the rope.'},
+ {s:'simple',zh:'绳索',py:'shéng suǒ',en:'rope',bm:'tali',pg:101,f:'rope',def:'A thick cord. It passes through the pulley.'},
+ {s:'simple',zh:'齿轮',py:'chǐ lún',en:'gear',bm:'gear',pg:102,f:'gear',def:'A wheel with teeth around the edge. Gears turn each other.'},
+ {s:'simple',zh:'锯齿状',py:'jù chǐ zhuàng',en:'jagged / toothed',say:'jagged',bm:'bergerigi',pg:102,f:'jagged',def:'Shaped like the teeth of a saw.'},
+ {s:'simple',zh:'斜面',py:'xié miàn',en:'inclined plane',say:'inclined plane',bm:'satah condong',pg:102,f:'incline',def:'A flat surface with one end higher than the other, like a ramp or stairs.'},
+ {s:'simple',zh:'倾斜',py:'qīng xié',en:'tilted / sloping',say:'tilted',bm:'condong',pg:102,f:'tilt',def:'Leaning, with one side higher than the other.'},
+ {s:'simple',zh:'螺旋',py:'luó xuán',en:'screw',bm:'skru',pg:102,f:'screw',def:'A grooved cylinder. Turning it pushes it into something and holds two parts together.'},
+ {s:'simple',zh:'拧紧',py:'nǐng jǐn',en:'to tighten',say:'to tighten',bm:'mengetatkan',pg:102,f:'tighten',def:'To turn something until it is firm, like a bottle cap.'},
+ {s:'simple',zh:'尖劈',py:'jiān pī',en:'wedge',bm:'baji',pg:103,f:'wedge',def:'A tool with one pointed end, used to cut, hold or stop an object.',tip:'例：刀具、门挡'},
+ {s:'simple',zh:'尖端',py:'jiān duān',en:'pointed end',say:'pointed end',bm:'hujung tajam',pg:103,f:'point',def:'The sharp, thin end of a tool.'},
+ {s:'simple',zh:'切割',py:'qiē gē',en:'to cut',bm:'memotong',pg:103,f:'cut',def:'To slice something into pieces.'},
+ {s:'simple',zh:'轮轴',py:'lún zhóu',en:'wheel and axle',say:'wheel and axle',bm:'roda dan gandar',pg:103,f:'wheelaxle',def:'A wheel fixed onto a rod called an axle.',tip:'例：门把手'},
+ {s:'simple',zh:'轴',py:'zhóu',en:'axle',bm:'gandar',pg:103,f:'axle',def:'The rod that a wheel is fixed to and turns on.'},
+ {s:'simple',zh:'效率',py:'xiào lǜ',en:'efficiency',bm:'kecekapan',pg:101,f:'efficiency',def:'Getting the work done well and quickly. Machines increase efficiency.'},
+ {s:'simple',zh:'简易',py:'jiǎn yì',en:'easy / simpler',say:'easier',bm:'mudah',pg:101,f:'easier',def:'Not hard to do. Machines make work simpler.'},
+ /* complex machines */
+ {s:'complex',zh:'复杂机械',py:'fù zá jī xiè',en:'complex machine',say:'complex machine',bm:'mesin kompleks',pg:103,f:'complex',def:'A machine made by putting more than one simple machine together.'},
+ {s:'complex',zh:'组合',py:'zǔ hé',en:'to combine',say:'to combine',bm:'digabungkan',pg:103,f:'combine',def:'To join two or more things into one.'},
+ {s:'complex',zh:'手摇钻',py:'shǒu yáo zuàn',en:'hand drill',say:'hand drill',bm:'gerudi tangan',pg:104,f:'drill',def:'It contains a wheel and axle, a screw and wedges.'},
+ {s:'complex',zh:'手推车',py:'shǒu tuī chē',en:'wheelbarrow',bm:'kereta sorong',pg:104,f:'barrow',def:'It is made of levers and a wheel and axle.'},
+ {s:'complex',zh:'制作材料',py:'zhì zuò cái liào',en:'materials used',say:'materials used',bm:'bahan',pg:104,f:'materials',def:'What the machine is made of. It must be considered when making a machine.'},
+ {s:'complex',zh:'使用寿命',py:'shǐ yòng shòu mìng',en:'service life',say:'service life',bm:'hayat perkhidmatan',pg:104,f:'life',def:'How long the machine can be used before it wears out.'},
+ {s:'complex',zh:'成本',py:'chéng běn',en:'cost',bm:'kos',pg:104,f:'cost',def:'How much money it takes to make the machine.'},
+ {s:'complex',zh:'保养费',py:'bǎo yǎng fèi',en:'maintenance fee',say:'maintenance fee',bm:'yuran penyelenggaraan',pg:104,f:'maintain',def:'The money needed to look after and repair the machine.'},
+ {s:'complex',zh:'安全性',py:'ān quán xìng',en:'safety',bm:'keselamatan',pg:104,f:'safety',def:'How safe the machine is to use.'},
+ {s:'complex',zh:'环保性',py:'huán bǎo xìng',en:'environmental protection',say:'environmental protection',bm:'perlindungan alam sekitar',pg:104,f:'eco',def:'Whether the machine harms the environment.'},
+ {s:'complex',zh:'可永续使用',py:'kě yǒng xù shǐ yòng',en:'sustainable',bm:'mampan',pg:104,f:'sustainable',def:'A machine that is durable, economical, easy and safe to use, and not harmful to the environment.'},
+ {s:'complex',zh:'耐用',py:'nài yòng',en:'durable',bm:'tahan lasak',pg:104,f:'durable',def:'Lasts a long time without breaking.'},
+ {s:'complex',zh:'经济',py:'jīng jì',en:'economical',bm:'menjimatkan',pg:104,f:'economical',def:'Does not cost much money to buy or to run.'}
+];
+const COMMON=new Set();
+
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “guancha”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

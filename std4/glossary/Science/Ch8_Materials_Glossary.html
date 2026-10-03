@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>材料 Materials Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Science_Glossary.html">← <span style="font-family:var(--zh)">所有章节</span> · All chapters</a>
+  <header>
+    <div class="eyebrow">Sains Tahun 4 SJKC · 第 8 章 · KSSR 科学笔记</div>
+    <h1><span class="zh">材料</span>Materials</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 橡胶, xiangjiao, rubber…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms come from Chapter 8 of the Standard 4 Science notes (KSSR 科学笔记 4 年级). Page numbers are the note pages. Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+const C=(x,y,r,k='fs')=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+const E=(x,y,rx,ry,k='fs')=>`<ellipse class="${k}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+const kid=(x,y,k='fp')=>C(x,y-14,9,k)+PA(`M${x-13} ${y+14} q13 -24 26 0 z`,k);
+const eye=(x,y,s=1)=>PA(`M${x-26*s} ${y} q26 -20 52 0 q-26 20 -52 0 z`,'fp')+C(x,y,9*s,'fa')+C(x,y,4*s,'ink');
+const ear=(x,y)=>PA(`M${x+8} ${y-18} a18 22 0 1 0 -2 38 q8 2 6 -8 q-8 -6 -2 -14 q6 -8 14 -2 q6 -12 -16 -14 z`,'fs');
+const nose=(x,y)=>PA(`M${x} ${y-22} q-4 18 -12 28 q-4 8 6 10 h14 q10 -2 6 -10 q-8 -10 -12 -28 z`,'fs')+PA(`M${x-8} ${y+14} h16`,'s');
+const tongue=(x,y)=>PA(`M${x-24} ${y-12} q24 -16 48 0 q4 26 -24 30 q-28 -4 -24 -30 z`,'fa')+PA(`M${x} ${y-4} v22`,'s');
+const hand=(x,y)=>PA(`M${x-16} ${y+26} v-24 q0 -8 6 -8 q6 0 6 8 v-16 q0 -8 6 -8 q6 0 6 8 v16 q0 -8 6 -8 q6 0 6 8 v24 z`,'fs');
+const cyl=(x,y,h,fill,k='fs')=>R(x,y,26,h,'fp',3)+(fill?R(x+2,y+h-fill,22,fill-2,k,0):'')+[0,1,2,3].map(i=>L(x,y+10+i*(h-16)/3,x+9,y+10+i*(h-16)/3,'s','stroke-width:1.5')).join('');
+const jar=(x,y,lab,k='fs')=>R(x,y,44,34,'fp',3)+R(x+2,y+12,40,20,k,0)+T(x+22,y+50,lab,'t');
+const watch=(x,y)=>C(x,y,24,'fp')+R(x-5,y-30,10,7,'fa',2)+L(x,y,x+12,y-10,'s','stroke-width:2.5')+DOT(x,y,3,'ink');
+const dropF=(x,y,k='fa',s=1)=>PA(`M${x} ${y-18*s} q${13*s} ${15*s} ${8*s} ${24*s} q${-3*s} ${6*s} ${-8*s} ${6*s} q${-5*s} 0 ${-8*s} ${-6*s} q${-5*s} ${-9*s} ${8*s} ${-24*s} z`,k);
+const treeF=(x,y)=>R(x-4,y-26,8,26,'ink',1)+C(x,y-42,16,'fs')+C(x-14,y-32,12,'fs')+C(x+14,y-32,12,'fs');
+const shirtF=(x,y,k='fs')=>PA(`M${x-26} ${y-24} l14 -8 h24 l14 8 l-8 12 l-6 -4 v28 h-24 v-28 l-6 4 z`,k);
+const bottleF=(x,y,k='fp')=>R(x-12,y-18,24,38,k,4)+R(x-5,y-30,10,12,k,2)+R(x-7,y-34,14,5,'ink',1);
+const cupF=(x,y,k='fs')=>PA(`M${x-16} ${y-22} l4 44 h24 l4 -44 z`,k);
+const tyreF=(x,y,r=20)=>C(x,y,r,'ink')+C(x,y,r*0.45,'fp');
+const brickF=(x,y,w=34,h=14)=>R(x-w/2,y-h/2,w,h,'fs',2);
+const flameS=(x,y)=>PA(`M${x} ${y-14} q9 9 5 15 q-2 5 -5 6 q-3 -1 -5 -6 q-4 -6 5 -15 z`,'fa');
+const waterBox=(y=66)=>R(14,y,172,44,'fp',0)+PA(`M14 ${y} h172`,'s');
+const F={
+  /* ---- 8.1 sources ---- */
+  material:()=>R(20,42,46,40,'fs',4)+T(43,68,'木','t')+R(78,42,46,40,'fp',4)+T(101,68,'布','t')+R(136,42,46,40,'ink',4)+T(159,68,'铁','t').replace('class="t"','class="t" style="fill:#fff"')+T(100,110,'材料：做东西用的东西','ta'),
+  object:()=>cupF(40,56)+bottleF(100,56)+R(140,44,44,30,'fs',3)+L(146,74,146,92,'s','stroke-width:3')+L(178,74,178,92,'s','stroke-width:3')+T(100,116,'物品：做好的东西','ta')+T(100,136,'杯子、瓶子、椅子','tn'),
+  source:()=>treeF(40,92)+PA('M68 70 h30','a')+PA('M94 66 l5 4 l-5 4','a')+R(110,52,36,34,'fs',3)+T(128,74,'木材','tn')+T(100,120,'来源：材料是从哪里来的','ta'),
+  plants:()=>treeF(48,100)+treeF(104,104)+treeF(152,98)+T(100,128,'植物：木材、棉、橡胶的来源','ta'),
+  wood:()=>R(20,36,58,22,'fs',2)+R(20,64,58,22,'fs',2)+R(104,40,52,12,'fs',2)+L(110,52,110,86,'s','stroke-width:3')+L(150,52,150,86,'s','stroke-width:3')+R(100,34,60,8,'fs',2)+T(49,110,'木板','tn')+T(130,110,'家具','tn')+T(100,134,'木材：来自树','ta'),
+  cotton:()=>C(38,46,11,'fp')+C(52,54,11,'fp')+C(28,58,11,'fp')+L(40,68,40,88,'s','stroke-width:2')+shirtF(130,58)+T(40,110,'棉花','tn')+T(130,110,'衣服、毛巾','tn')+T(100,134,'棉：柔软，会吸水','ta'),
+  rubber:()=>tyreF(52,62,24)+PA('M118 96 v-30 q0 -22 14 -22 q6 0 6 10 v24 M138 58 q4 -16 10 -16 q5 0 5 10 v30 M153 62 q4 -12 9 -12 q5 0 5 10 v34 q0 12 -14 12 h-30 q-5 0 -5 -6','s')+T(52,104,'轮胎','tn')+T(140,124,'手套','tn')+T(100,22,'橡胶：有弹性','ta'),
+  animals:()=>E(70,62,26,18,'fs')+C(100,52,12,'fs')+[0,1,2,3].map(i=>L(56+i*12,78,56+i*12,96,'s','stroke-width:3')).join('')+E(142,60,20,14,'fp')+C(162,50,9,'fp')+T(100,124,'动物：羊毛、皮革、丝的来源','ta'),
+  wool:()=>PA('M60 70 q0 -28 24 -28 q24 0 24 28 z','fs')+R(56,70,56,10,'fp',2)+C(84,36,8,'fs')+shirtF(154,62,'fp')+T(84,100,'帽子','tn')+T(154,100,'毛衣','tn')+T(100,128,'羊毛：很暖','ta'),
+  leather:()=>PA('M50 56 h60 v46 h-60 z','fs')+PA('M66 56 q14 -24 28 0','s')+R(130,80,48,20,'fs',3)+PA('M130 80 q10 -14 26 -12 l22 12','fs')+T(80,124,'手提包','tn')+T(154,124,'皮鞋','tn')+T(100,30,'皮革：动物的皮做的','ta'),
+  silk:()=>E(50,60,20,13,'fp')+[0,1,2].map(i=>E(50,60,20-i*5,13-i*3,'s')).join('')+PA('M100 44 q40 10 60 40 q-26 -10 -40 10 q-6 -26 -26 -24','fs')+T(50,96,'蚕茧','tn')+T(140,110,'丝巾','tn')+T(100,132,'丝：来自蚕茧，又滑又亮','ta'),
+  rocks:()=>PA('M24 92 l14 -28 l26 6 l10 22 z','fs')+PA('M78 92 l18 -34 l30 10 l6 24 z','fs')+PA('M132 92 l16 -22 l28 8 l4 14 z','fs')+L(16,92,186,92,'s','stroke-width:3')+T(100,122,'岩石：金属、土壤的来源','ta'),
+  metal:()=>E(60,56,30,12,'fp')+PA('M30 56 v26 q0 14 30 14 q30 0 30 -14 v-26','fp')+PA('M90 62 h26','s','stroke-width:3')+E(150,50,9,14,'fp')+R(147,60,6,36,'fp',2)+T(100,118,'金属：又硬又亮','ta')+T(100,138,'银、铜、铁、铝、锡','tn'),
+  soil:()=>R(14,62,172,42,'fs',0)+[0,1,2,3,4].map(i=>DOT(32+i*34,76,3,'dot')).join('')+plantRoot(60)+T(100,128,'土壤：砖块、瓷器的来源','ta'),
+  glass:()=>bottleF(60,60,'fp')+bottleF(104,60,'fp')+R(140,34,44,56,'fp',4)+PA('M146 40 h32 v44 h-32 z','d')+T(100,120,'玻璃：透明，不透水','ta'),
+  brick:()=>brickF(70,96,46,16)+brickF(130,96,46,16)+brickF(100,78,46,16)+brickF(70,60,46,16)+brickF(130,60,46,16)+T(100,126,'砖块：用土壤烧成','ta'),
+  porcelain:()=>PA('M84 94 q-14 -16 -8 -32 q6 -16 4 -24 h40 q-2 8 4 24 q6 16 -8 32 z','fp')+R(94,32,12,8,'fs',1)+E(150,88,22,8,'fp')+E(150,80,22,8,'fs')+T(100,124,'瓷器：花瓶、碗碟','ta'),
+  petroleum:()=>L(44,98,44,38,'s','stroke-width:3')+L(30,98,58,98,'s','stroke-width:3')+PA('M44 42 l24 10','s','stroke-width:3')+R(100,50,34,48,'ink',3)+dropF(117,70,'fp',0.8)+R(148,56,34,42,'ink',3)+T(100,124,'石油：塑料和人造布料的来源','ta'),
+  plastic:()=>bottleF(46,58,'fp')+PA('M90 54 q16 -14 36 0 l8 44 h-52 z','fp')+PA('M92 54 q14 10 32 0','s')+R(146,58,40,34,'fp',3)+T(100,120,'塑料：轻、不透水','ta'),
+  synthetic:()=>PA('M26 96 q30 -52 60 0 z','fs')+L(56,96,56,46,'s')+PA('M108 70 q32 -34 64 0 z','fs')+L(140,70,140,100,'s','stroke-width:2')+T(56,122,'帐篷','tn')+T(140,122,'雨伞','tn')+T(100,30,'人造布料：防雨','ta'),
+  /* ---- 8.2 properties ---- */
+  property:()=>R(30,46,44,40,'fs',4)+C(128,58,22,'fp')+PA('M144 74 L168 98','s','stroke-width:4')+T(100,116,'性质：材料是怎样的','ta')+T(100,136,'会不会吸水？会浮还是会沉？','tn'),
+  absorb:()=>R(50,56,100,38,'fs',3)+[0,1,2].map(i=>dropF(70+i*30,36,'fa',0.7)).join('')+[0,1,2].map(i=>PA(`M${70+i*30} 44 v10`,'a')).join('')+T(100,120,'会吸水：把水吸进去','ta')+T(100,138,'棉、纸','tn'),
+  waterproof:()=>R(40,62,120,34,'fp',3)+dropF(80,40,'fa',0.8)+PA('M100 48 q14 -10 26 4','a')+dropF(136,36,'fa',0.6)+T(100,122,'不透水：水不会穿过去','ta')+T(100,138,'塑料、金属、橡胶、玻璃','tn'),
+  float:()=>waterBox(56)+PA('M62 56 l10 16 h56 l10 -16 z','fs')+R(86,36,22,20,'fp',2)+T(100,120,'浮：停在水面上','ta')+T(100,138,'木材、塑料会浮','tn'),
+  sink:()=>waterBox(52)+R(84,76,32,20,'ink',2)+[0,1].map(i=>PA(`M100 ${56+i*8} v8`,'a')).join('')+T(100,124,'沉：掉到水底','ta')+T(100,138,'金属、橡胶、玻璃会沉','tn'),
+  elastic:()=>C(40,62,12,'fa')+PA('M52 62 q10 -14 20 0 q10 14 20 0 q10 -14 20 0 q10 14 20 0','s','stroke-width:3')+C(144,62,12,'fa')+PA('M150 86 h28','a')+PA('M174 82 l5 4 l-5 4','a')+T(100,114,'有弹性：拉得长，放手会回原状','ta')+T(100,136,'橡胶、氨纶','tn'),
+  nonelastic:()=>R(40,54,120,16,'fs',3)+PA('M86 82 l28 22 M114 82 l-28 22','a','stroke-width:3')+T(100,120,'没有弹性：拉不长','ta')+T(100,138,'木材、金属、玻璃、塑料','tn'),
+  heatcond:()=>flameS(60,104)+R(44,62,112,16,'fp',3)+[0,1,2,3].map(i=>PA(`M${72+i*24} 58 v-20`,'a')).join('')+T(100,24,'热传过去','tn')+T(100,126,'热导体：容易传热 (金属)','ta'),
+  heatins:()=>flameS(46,104)+R(34,62,70,16,'fp',3)+R(104,56,56,28,'fs',4)+PA('M124 46 l20 -20 M144 46 l-20 -20','a','stroke-width:3')+T(132,100,'木柄','tn')+T(100,130,'热的绝缘体：不容易传热','ta'),
+  eleccond:()=>PA('M30 44 H86 M114 44 H170 V96 H30 Z','s').replace('class="s"','class="s" fill="none" style="stroke-width:2.5"')+R(84,36,32,16,'fp',2)+T(100,48,'铁','tn')+bulbF2(170,70,'fa')+T(100,126,'电导体：电流可以通过 (金属)','ta'),
+  elecins:()=>PA('M30 44 H86 M114 44 H170 V96 H30 Z','s').replace('class="s"','class="s" fill="none" style="stroke-width:2.5"')+R(84,36,32,16,'ink',2)+T(100,48,'胶','tn').replace('class="tn"','class="tn" style="fill:#fff"')+bulbF2(170,70,'fp')+T(100,120,'电的绝缘体：电流不能通过','ta')+T(100,138,'橡胶、塑料、木材、玻璃','tn'),
+  transparent:()=>R(62,30,76,60,'fp',4)+PA('M14 60 h46','a')+PA('M140 60 h46','a')+PA('M180 56 l6 4 l-6 4','a')+T(100,62,'全部透过','tn')+T(100,116,'透明体：看得很清楚','ta')+T(100,136,'玻璃、透明塑料','tn'),
+  translucent:()=>R(62,30,76,60,'fs',4)+PA('M14 60 h46','a')+PA('M140 60 h26','a')+T(100,62,'部分透过','tn')+T(100,116,'半透明体：看起来模糊','ta')+T(100,136,'磨砂杯、墨镜','tn'),
+  opaque:()=>R(62,30,76,60,'ink',4)+PA('M14 60 h46','a')+PA('M146 48 l20 20 M166 48 l-20 20','a','stroke-width:3')+T(100,116,'不透明体：光透不过','ta')+T(100,136,'棉、金属、木材、橡胶','tn'),
+  /* ---- 8.3 applications ---- */
+  apply:()=>R(36,40,56,44,'fs',4)+PA('M100 62 h26','a')+PA('M122 58 l5 4 l-5 4','a')+R(136,40,48,44,'fp',4)+PA('M148 62 l8 10 l16 -22','a','stroke-width:3')+T(100,110,'应用：把性质用在东西上','ta'),
+  choose:()=>R(16,46,44,40,'fs',4)+T(38,72,'木','t')+R(78,46,44,40,'fp',4)+T(100,72,'铁','t')+R(140,46,44,40,'fs',4)+T(162,72,'布','t')+R(74,42,52,48,'s',6).replace('class="s"','class="s" fill="none" style="stroke-width:3"')+T(100,120,'选择：挑出最合适的材料','ta'),
+  purpose:()=>R(44,48,52,36,'fp',4)+T(70,70,'雨伞','tn')+PA('M104 66 h22','a')+PA('M122 62 l5 4 l-5 4','a')+dropF(150,54,'fa',0.8)+T(100,112,'用途：这样东西是用来做什么的','ta'),
+  suitable:()=>R(30,46,50,40,'fp',4)+T(55,72,'锅','t')+R(120,46,50,40,'fs',4)+T(145,72,'金属','tn')+PA('M86 66 h28','a')+PA('M110 62 l5 4 l-5 4','a')+T(100,112,'合适：刚刚好，用得上','ta')+T(100,134,'锅用金属，锅柄用塑料','tn'),
+  conduct:()=>R(30,56,140,18,'fp',3)+flameS(44,104)+[0,1,2,3,4].map(i=>PA(`M${60+i*24} 52 h18`,'a')).join('')+T(100,34,'热往另一边传','tn')+T(100,124,'传热：把热送过去','ta'),
+  nonmetal:()=>R(30,56,140,18,'fs',3)+flameS(44,104)+PA('M96 36 l20 20 M116 36 l-20 20','a','stroke-width:3')+T(100,120,'非金属：不是金属的材料','ta')+T(100,138,'木材、塑料、橡胶、玻璃','tn'),
+  current:()=>PA('M20 62 H180','s','stroke-width:3')+[0,1,2].map(i=>PA(`M${50+i*44} 54 l8 8 l-8 8`,'a')).join('')+bolt8(100,36)+T(100,106,'电流：在电线里流动的电','ta'),
+  pass:()=>R(40,34,30,72,'fs',2)+R(130,34,30,72,'fs',2)+PA('M74 70 h52','a','stroke-width:3')+PA('M120 64 l8 6 l-8 6','a')+T(100,128,'通过：从一边穿到另一边','ta'),
+  force:()=>E(100,62,30,20,'fa')+PA('M22 62 h36','a','stroke-width:3')+PA('M52 56 l8 6 l-8 6','a')+PA('M178 62 h-36','a','stroke-width:3')+PA('M148 56 l-8 6 l8 6','a')+T(100,112,'外力：从外面推或拉的力','ta')+T(100,134,'外力会让东西改变形状','tn'),
+  restore:()=>E(44,62,24,15,'fa')+PA('M76 62 h24','a')+PA('M96 58 l5 4 l-5 4','a')+C(136,62,20,'fa')+T(44,98,'被压扁','tn')+T(136,98,'回原状','tn')+T(100,128,'恢复原状：变回本来的样子','ta'),
+  spandex:()=>shirtF(60,58,'fp')+PA('M94 60 h28','a')+PA('M118 56 l5 4 l-5 4','a')+shirtF(152,58,'fa')+T(100,108,'氨纶：弹性很好的纤维','ta')+T(100,132,'做泳装、运动装、袜子','tn'),
+  fibre:()=>[0,1,2,3,4,5].map(i=>PA(`M${30+i*28} 34 q8 24 0 48 q-8 24 0 26`,'s','')).join('')+T(100,124,'纤维：一条条细细的线','ta'),
+  blurry:()=>R(62,30,76,60,'fs',4)+C(100,60,16,'fp')+C(100,60,22,'d')+C(100,60,28,'d')+T(100,116,'模糊：看不清楚','ta')
+};
+function plantRoot(x){return L(x,62,x,36,'s','stroke-width:3')+E(x-9,30,8,5,'fs')+E(x+9,30,8,5,'fs')+PA(`M${x} 62 l-8 14 M${x} 62 l8 14`,'s');}
+function bulbF2(x,y,k){return C(x,y-4,10,k)+R(x-5,y+7,10,8,'fs',2);}
+function bolt8(x,y){return PA(`M${x+2} ${y-14} l-10 16 h7 l-4 13 l13 -18 h-7 l5 -11 z`,'fa');}
+const SECTIONS=[
+  {id:'src',zh:'材料的来源',py:'cái liào de lái yuán',en:'Sources of materials',color:'--c1',pg:'Notes pp. 84–87'},
+  {id:'prop',zh:'材料的性质',py:'cái liào de xìng zhì',en:'Properties of materials',color:'--c2',pg:'Notes pp. 88, 90–93'},
+  {id:'use',zh:'性质的应用',py:'xìng zhì de yìng yòng',en:'Using the properties',color:'--c3',pg:'Notes pp. 89–93'}
+];
+const TERMS=[
+ {s:'src',zh:'材料',py:'cái liào',en:'material',bm:'bahan',pg:84,f:'material',def:'What something is made of — wood, cotton, metal, plastic and so on.'},
+ {s:'src',zh:'物品',py:'wù pǐn',en:'object / item',say:'object',bm:'objek',pg:84,f:'object',def:'A thing that has been made, such as a chair, a bottle or a towel.'},
+ {s:'src',zh:'来源',py:'lái yuán',en:'source',bm:'sumber',pg:84,f:'source',def:'Where a material comes from. The five sources are plants, animals, rocks, soil and petroleum.'},
+ {s:'src',zh:'植物',py:'zhí wù',en:'plants',bm:'tumbuh-tumbuhan',pg:84,f:'plants',def:'Wood, cotton and rubber all come from plants.'},
+ {s:'src',zh:'木材',py:'mù cái',en:'wood / timber',say:'wood',bm:'kayu',pg:84,f:'wood',def:'Material from trees, used for furniture, cutting boards and doors.'},
+ {s:'src',zh:'棉',py:'mián',en:'cotton',bm:'kapas',pg:84,f:'cotton',def:'A soft plant material used for handkerchiefs, towels and shirts. It absorbs water.'},
+ {s:'src',zh:'橡胶',py:'xiàng jiāo',en:'rubber',bm:'getah',pg:84,f:'rubber',def:'A stretchy material from rubber trees, used for gloves, shoe soles and tyres.'},
+ {s:'src',zh:'动物',py:'dòng wù',en:'animals',bm:'haiwan',pg:85,f:'animals',def:'Wool, leather and silk all come from animals.'},
+ {s:'src',zh:'羊毛',py:'yáng máo',en:'wool',bm:'bulu biri-biri',pg:85,f:'wool',def:'Hair from sheep, made into warm caps, sweaters and gloves.'},
+ {s:'src',zh:'皮革',py:'pí gé',en:'leather',bm:'kulit haiwan',pg:85,f:'leather',def:'Animal skin, used for handbags, shoes and sofas.'},
+ {s:'src',zh:'丝',py:'sī',en:'silk',bm:'sutera',pg:85,f:'silk',def:'A smooth, shiny thread from silkworm cocoons, used for scarves and ties.'},
+ {s:'src',zh:'岩石',py:'yán shí',en:'rocks',bm:'batuan',pg:86,f:'rocks',def:'Metals such as silver, copper, iron, aluminium and tin come from rocks.'},
+ {s:'src',zh:'金属',py:'jīn shǔ',en:'metal',bm:'logam',pg:86,f:'metal',def:'Hard, shiny material such as iron or copper. It conducts heat and electricity.',tip:'银 yín silver · 铜 tóng copper · 铁 tiě iron · 铝 lǚ aluminium · 锡 xī tin'},
+ {s:'src',zh:'土壤',py:'tǔ rǎng',en:'soil',bm:'tanih',pg:86,f:'soil',def:'Glass, bricks and porcelain are made from soil.'},
+ {s:'src',zh:'玻璃',py:'bō li',en:'glass',bm:'kaca',pg:86,f:'glass',def:'A hard, clear material used for mirrors and bottles.'},
+ {s:'src',zh:'砖块',py:'zhuān kuài',en:'brick',bm:'batu bata',pg:86,f:'brick',def:'A block of baked clay used to build walls.'},
+ {s:'src',zh:'瓷器',py:'cí qì',en:'porcelain',bm:'porselin',pg:86,f:'porcelain',def:'Smooth, white pottery used for vases, plates and bowls.'},
+ {s:'src',zh:'石油',py:'shí yóu',en:'petroleum',bm:'petroleum',pg:87,f:'petroleum',def:'A liquid from under the ground. Plastic and synthetic cloth are made from it.'},
+ {s:'src',zh:'塑料',py:'sù liào',en:'plastic',bm:'plastik',pg:87,f:'plastic',def:'A light, waterproof material used for bottles, bags and containers.'},
+ {s:'src',zh:'人造布料',py:'rén zào bù liào',en:'synthetic cloth',say:'synthetic cloth',bm:'kain sintetik',pg:87,f:'synthetic',def:'Cloth made by people, not from plants or animals. Used for tents, umbrellas and raincoats.'},
+ /* properties */
+ {s:'prop',zh:'性质',py:'xìng zhì',en:'property',bm:'sifat',pg:88,f:'property',def:'What a material is like — does it absorb water, does it float, does it stretch?'},
+ {s:'prop',zh:'会吸水',py:'huì xī shuǐ',en:'water absorbent',say:'water absorbent',bm:'menyerap air',pg:90,f:'absorb',def:'Soaks the water up. Cotton and paper absorb water.'},
+ {s:'prop',zh:'不透水',py:'bú tòu shuǐ',en:'waterproof',bm:'kalis air',pg:90,f:'waterproof',def:'Water cannot get through. Plastic, metal, rubber and glass are waterproof.'},
+ {s:'prop',zh:'浮',py:'fú',en:'to float',bm:'terapung',pg:91,f:'float',def:'Stays on top of the water. Wood and plastic float.'},
+ {s:'prop',zh:'沉',py:'chén',en:'to sink',bm:'tenggelam',pg:91,f:'sink',def:'Goes down to the bottom. Metal, rubber and glass sink.'},
+ {s:'prop',zh:'有弹性',py:'yǒu tán xìng',en:'elastic',bm:'kenyal',pg:93,f:'elastic',def:'Changes shape when you pull or press it, then goes back by itself. Rubber is elastic.'},
+ {s:'prop',zh:'没有弹性',py:'méi yǒu tán xìng',en:'non-elastic',say:'non elastic',bm:'tidak kenyal',pg:92,f:'nonelastic',def:'Does not stretch. Wood, metal, glass and plastic are non-elastic.'},
+ {s:'prop',zh:'热导体',py:'rè dǎo tǐ',en:'heat conductor',say:'heat conductor',bm:'pengalir haba',pg:89,f:'heatcond',def:'A material that lets heat pass through easily. Metals are heat conductors.'},
+ {s:'prop',zh:'热的绝缘体',py:'rè de jué yuán tǐ',en:'heat insulator',say:'heat insulator',bm:'penebat haba',pg:89,f:'heatins',def:'A material that does not let heat pass through easily, like the plastic handle of an iron.'},
+ {s:'prop',zh:'电导体',py:'diàn dǎo tǐ',en:'electrical conductor',say:'electrical conductor',bm:'pengalir elektrik',pg:90,f:'eleccond',def:'A material that lets electricity flow through it. Metals are good conductors.'},
+ {s:'prop',zh:'电的绝缘体',py:'diàn de jué yuán tǐ',en:'electrical insulator',say:'electrical insulator',bm:'penebat elektrik',pg:90,f:'elecins',def:'A material that does not let electricity through — rubber, plastic, wood, glass.'},
+ {s:'prop',zh:'透明体',py:'tòu míng tǐ',en:'transparent',bm:'lut sinar',pg:91,f:'transparent',def:'Lets all the light through, so you see clearly. Some glass and plastic are transparent.'},
+ {s:'prop',zh:'半透明体',py:'bàn tòu míng tǐ',en:'translucent',bm:'lut cahaya',pg:92,f:'translucent',def:'Lets only some light through, so things behind look blurry.'},
+ {s:'prop',zh:'不透明体',py:'bú tòu míng tǐ',en:'opaque',bm:'legap',pg:92,f:'opaque',def:'Lets no light through. Cotton, metal, wood and rubber are opaque.'},
+ /* applications */
+ {s:'use',zh:'应用',py:'yìng yòng',en:'application / use',say:'application',bm:'aplikasi',pg:89,f:'apply',def:'Using what we know about a material to make something useful.'},
+ {s:'use',zh:'选择',py:'xuǎn zé',en:'to choose',bm:'memilih',pg:89,f:'choose',def:'To pick the material that works best for the job.'},
+ {s:'use',zh:'用途',py:'yòng tú',en:'use / purpose',say:'purpose',bm:'kegunaan',pg:89,f:'purpose',def:'What a thing is made for.'},
+ {s:'use',zh:'合适',py:'hé shì',en:'suitable',bm:'sesuai',pg:89,f:'suitable',def:'Just right for the job.',tip:'例：锅用金属，锅柄用塑料才合适。'},
+ {s:'use',zh:'传热',py:'chuán rè',en:'to transfer heat',say:'transfer heat',bm:'memindahkan haba',pg:89,f:'conduct',def:'To pass heat from one place to another.'},
+ {s:'use',zh:'非金属',py:'fēi jīn shǔ',en:'non-metal',say:'non metal',bm:'bukan logam',pg:89,f:'nonmetal',def:'Anything that is not a metal. Non-metals do not transfer heat easily.'},
+ {s:'use',zh:'电流',py:'diàn liú',en:'electric current',say:'electric current',bm:'arus elektrik',pg:90,f:'current',def:'The electricity flowing along a wire.'},
+ {s:'use',zh:'通过',py:'tōng guò',en:'to pass through',say:'pass through',bm:'melaluinya',pg:90,f:'pass',def:'To go from one side to the other.'},
+ {s:'use',zh:'外力',py:'wài lì',en:'external force',say:'external force',bm:'daya luar',pg:93,f:'force',def:'A push or a pull from outside that changes an object’s shape.'},
+ {s:'use',zh:'恢复原状',py:'huī fù yuán zhuàng',en:'to return to its original shape',say:'return to its original shape',bm:'kembali kepada bentuk asal',pg:93,f:'restore',def:'To go back to the shape it had before.'},
+ {s:'use',zh:'氨纶',py:'ān lún',en:'spandex',bm:'spandeks',pg:93,f:'spandex',def:'A very stretchy fibre. It is the best material for swimwear, sportswear and socks.'},
+ {s:'use',zh:'纤维',py:'xiān wéi',en:'fibre',bm:'gentian',pg:93,f:'fibre',def:'A long thin thread. Cloth is woven from fibres.'},
+ {s:'use',zh:'模糊',py:'mó hu',en:'blurry / unclear',say:'blurry',bm:'kabur',pg:92,f:'blurry',def:'Not clear. Things behind a translucent object look blurry.'}
+];
+const COMMON=new Set();
+
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “guancha”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

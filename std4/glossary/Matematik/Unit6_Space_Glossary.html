@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>空间 Space Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c-q:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c-angle:#D9661A; --c-line:#2B64D1; --c-shape:#0F8079; --c-area:#B2427A; --c-vol:#6E52C2;
+  --sec:var(--c-angle); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c-q:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c-angle:#F08A42; --c-line:#6B9BF2; --c-shape:#3DBDB3; --c-area:#E07AAE; --c-vol:#A68CF0;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c-q:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c-angle:#F08A42; --c-line:#6B9BF2; --c-shape:#3DBDB3; --c-area:#E07AAE; --c-vol:#A68CF0;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;align-items:baseline;gap:10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec)}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure strokes */
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.ink{fill:var(--ink)}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,Menlo,Consolas,monospace;text-anchor:middle}
+
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round}
+.ct{fill:color-mix(in srgb,var(--sec) 22%,var(--paper));stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.cf{fill:color-mix(in srgb,var(--sec) 40%,var(--paper));stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.cs{fill:color-mix(in srgb,var(--sec) 62%,var(--paper));stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.hi .ct,.hi .cf,.hi .cs{fill:var(--sec)}
+.dot{fill:var(--sec)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div>
+      <div class="eyebrow">Matematik Tahun 4 SJKC · 第 6 单元 · pp. 191–217</div>
+      <h1><span class="zh">空间</span>Space</h1>
+      <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+      <div class="voice-note" id="voiceNote" hidden></div>
+    </div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 角, jiao, angle…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 6 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019) and the EPH workbook (Workbook pp. 76–77). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×140) ---------- */
+const L=(a,b,c,d,k='s')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"/>`;
+const P=(pts,k='s')=>`<polygon class="${k}" points="${pts}"/>`;
+const PL=(pts,k='s')=>`<polyline class="${k}" points="${pts}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${x}" y="${y}">${s}</text>`;
+const DOT=(x,y,r=5)=>`<circle class="dot" cx="${x}" cy="${y}" r="${r}"/>`;
+function tick(x1,y1,x2,y2,n=1){
+  const mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1,l=Math.hypot(dx,dy),ux=dx/l,uy=dy/l,px=-uy*7,py=ux*7;let o='';
+  for(let i=0;i<n;i++){const off=(i-(n-1)/2)*6;const cx=mx+ux*off,cy=my+uy*off;o+=L((cx-px).toFixed(1),(cy-py).toFixed(1),(cx+px).toFixed(1),(cy+py).toFixed(1),'a');}
+  return o;
+}
+function heads(x1,y1,x2,y2){ // arrowheads at both ends of a line
+  const a=Math.atan2(y2-y1,x2-x1),h=(x,y,t)=>{const p1=[x+10*Math.cos(t+2.6),y+10*Math.sin(t+2.6)],p2=[x+10*Math.cos(t-2.6),y+10*Math.sin(t-2.6)];return PL(`${p1[0].toFixed(1)},${p1[1].toFixed(1)} ${x},${y} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`)};
+  return h(x2,y2,a)+h(x1,y1,a+Math.PI);
+}
+function dim(x1,y1,x2,y2,label,lx,ly){return L(x1,y1,x2,y2,'d')+T(lx,ly,label,'ta');}
+function poly(n,r,cx=100,cy=72,rot=-Math.PI/2){let p=[];for(let i=0;i<n;i++){const t=rot+i*2*Math.PI/n;p.push((cx+r*Math.cos(t)).toFixed(1)+','+(cy+r*Math.sin(t)).toFixed(1));}return p;}
+function cube(X,Y,s,d){
+  return P(`${X},${Y} ${X+d},${Y-d} ${X+s+d},${Y-d} ${X+s},${Y}`,'ct')+
+         P(`${X+s},${Y} ${X+s+d},${Y-d} ${X+s+d},${Y+s-d} ${X+s},${Y+s}`,'cs')+
+         `<rect class="cf" x="${X}" y="${Y}" width="${s}" height="${s}"/>`;
+}
+function cubes(nx,ny,nz,s,ox,oy,hiZ){
+  const d=s/2;let o='';
+  for(let y=ny-1;y>=0;y--)for(let z=0;z<nz;z++)for(let x=0;x<nx;x++){
+    const X=ox+x*s+y*d,Y=oy-s-z*s-y*d;const c=cube(X,Y,s,d);
+    o+=(hiZ===z)?`<g class="hi">${c}</g>`:c;
+  }
+  return o;
+}
+function box(x,y,w,h,d,topHi){
+  return P(`${x},${y} ${x+d},${y-d} ${x+w+d},${y-d} ${x+w},${y}`,topHi?'fs':'ct')+
+         P(`${x+w},${y} ${x+w+d},${y-d} ${x+w+d},${y+h-d} ${x+w},${y+h}`,'cs')+
+         `<rect class="cf" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+}
+const corner=(x,y,dx,dy,s=12)=>PA(`M${x} ${y+dy*s} H${x+dx*s} V${y}`,'a');
+function lw(which){
+  return `<rect class="fp" x="40" y="35" width="120" height="66"/>`+
+    (which==='l'?L(40,101,160,101,'a'):L(160,35,160,101,'a'))+
+    dim(40,118,160,118,'长 length',100,134)+dim(176,35,176,101,'宽',188,72);
+}
+function bh(which){
+  return P('30,112 170,112 120,26','fp')+
+    (which==='b'?L(30,112,170,112,'a'):'')+
+    L(120,26,120,112,which==='h'?'a':'d')+PA('M120 100 H132 V112','s')+
+    T(100,132,'底 base',which==='b'?'ta':'t')+T(150,72,'高',which==='h'?'ta':'t');
+}
+const F={
+  angle:()=>L(40,110,178,110)+L(40,110,140,30)+PA('M72 110 A32 32 0 0 0 65 90','a')+DOT(40,110)+T(96,100,'角','ta')+T(40,132,'两条直线相交'),
+  acute:()=>L(40,110,178,110)+L(40,110,160,40)+PA('M75 110 A35 35 0 0 0 70.2 92.4','a')+DOT(40,110)+T(118,100,'小于 90°','ta'),
+  right:()=>L(40,110,178,110)+L(40,110,40,15)+PA('M40 88 H62 V110','a')+DOT(40,110)+T(100,80,'= 90°','ta'),
+  obtuse:()=>L(100,112,188,112)+L(100,112,35,38)+PA('M130 112 A30 30 0 0 0 80.3 89.3','a')+DOT(100,112)+T(150,92,'大于 90°','ta'),
+  straight:()=>L(15,100,185,100)+PA('M135 100 A35 35 0 0 0 65 100','a')+DOT(100,100)+T(100,52,'= 180°','ta')+T(100,124,'一条直线'),
+  line:()=>L(20,70,180,70)+heads(20,70,180,70)+T(100,100,'直直的，没有弯'),
+  intersect:()=>L(30,30,170,110)+L(30,110,170,30)+DOT(100,70,7)+T(100,130,'在这一点相交','ta'),
+  rightsym:()=>L(40,115,178,115)+L(40,115,40,15)+`<rect x="40" y="81" width="34" height="34" fill="color-mix(in srgb,var(--sec) 25%,transparent)"/>`+PA('M40 81 H74 V115','a')+T(125,72,'这个小方形','ta')+T(125,92,'= 直角','ta'),
+  parallel:()=>L(20,45,180,45)+L(20,95,180,95)+PL('95,39 103,45 95,51','a')+PL('95,89 103,95 95,101','a')+L(45,49,45,91,'d')+L(155,49,155,91,'d')+T(100,76,'距离一样')+T(100,128,'永远不会相交','ta'),
+  perpendicular:()=>L(100,12,100,126)+L(22,90,178,90)+PA('M100 72 H118 V90','a')+T(150,50,'直角','ta'),
+  setsquare:()=>P('30,122 30,18 172,122','fp')+P('46,112 46,62 112,112','s')+Array.from({length:9},(_,i)=>L(40+i*14,122,40+i*14,114,'s')).join('')+PA('M30 106 H46 V122','a')+T(120,52,'三角尺','ta'),
+  ruler:()=>`<rect class="fp" x="12" y="48" width="176" height="44" rx="4"/>`+Array.from({length:11},(_,i)=>L(22+i*15.6,48,22+i*15.6,i%5?60:66,'s')+T((22+i*15.6).toFixed(1),84,i)).join('')+T(100,120,'cm','ta'),
+  plane:()=>`<rect class="fs" x="14" y="42" width="46" height="46"/>`+P('72,88 97,40 122,88','fs')+`<rect class="fs" x="134" y="52" width="54" height="36"/>`+T(100,122,'平平的，画在纸上'),
+  square:()=>`<rect class="fp" x="55" y="25" width="90" height="90"/>`+tick(55,25,145,25)+tick(145,25,145,115)+tick(55,115,145,115)+tick(55,25,55,115)+corner(55,115,1,-1)+corner(145,115,-1,-1)+corner(55,25,1,1)+corner(145,25,-1,1)+T(100,134,'4 条边一样长 · 4 个直角'),
+  rectangle:()=>`<rect class="fp" x="30" y="30" width="140" height="74"/>`+tick(30,30,170,30)+tick(30,104,170,104)+tick(30,30,30,104,2)+tick(170,30,170,104,2)+corner(30,104,1,-1)+corner(170,104,-1,-1)+corner(30,30,1,1)+corner(170,30,-1,1)+T(100,128,'对边一样长 · 4 个直角'),
+  equilateral:()=>P('100,16 42,112 158,112','fp')+tick(100,16,42,112)+tick(100,16,158,112)+tick(42,112,158,112)+T(100,140,'3 条边一样长'),
+  isosceles:()=>P('100,14 62,116 138,116','fp')+tick(100,14,62,116)+tick(100,14,138,116)+L(62,116,138,116,'a')+T(62,62,'腰','ta')+T(138,62,'腰','ta')+T(100,134,'底边'),
+  scalene:()=>P('70,26 40,116 172,116','fp')+tick(70,26,40,116,1)+tick(40,116,172,116,2)+tick(70,26,172,116,3)+T(100,134,'3 条边都不一样长'),
+  righttri:()=>P('45,18 45,116 170,116','fp')+PA('M45 100 H61 V116','a')+T(115,60,'有 1 个直角','ta'),
+  regular:()=>P(poly(8,56,100,68,-Math.PI/2+Math.PI/8).join(' '),'fp')+(()=>{const p=poly(8,56,100,68,-Math.PI/2+Math.PI/8).map(s=>s.split(',').map(Number));return p.map((q,i)=>{const r=p[(i+1)%8];return tick(q[0],q[1],r[0],r[1])}).join('')})()+T(100,138,'每条边、每个角都一样'),
+  hexagon:()=>P(poly(6,54,100,66).join(' '),'fs')+T(100,72,'6 条边','t')+T(100,136,'周长 = 6 × 边长','ta'),
+  side:()=>`<rect class="fp" x="60" y="22" width="84" height="84"/>`+L(60,106,144,106,'a')+T(102,128,'边长 3 cm','ta'),
+  perimeter:()=>`<rect x="40" y="32" width="120" height="70" fill="none" stroke="var(--sec)" stroke-width="6" stroke-dasharray="14 6" rx="2"/>`+T(100,24,'4','ta')+T(172,72,'3','ta')+T(100,118,'4','ta')+T(28,72,'3','ta')+T(100,137,'周长 = 4 + 3 + 4 + 3 = 14'),
+  length:()=>lw('l'), width:()=>lw('w'),
+  area:()=>{let o='';for(let r=0;r<3;r++)for(let c=0;c<4;c++)o+=`<rect class="fs" x="${56+c*22}" y="${22+r*22}" width="22" height="22"/>`;return o+T(100,110,'4 × 3 = 12','ta')+T(100,132,'面积 = 12 平方单位');},
+  squnit:()=>`<rect class="fs" x="72" y="30" width="56" height="56"/>`+dim(72,20,128,20,'1 单位',100,14)+dim(140,30,140,86,'1',150,62)+T(100,112,'面积 = 1 平方单位','ta'),
+  cm2:()=>`<rect class="fs" x="72" y="30" width="56" height="56"/>`+dim(72,20,128,20,'1 cm',100,14)+dim(140,30,140,86,'1 cm',164,62)+T(100,112,'1 cm × 1 cm = 1 cm²','ta'),
+  base:()=>bh('b'), height:()=>bh('h'),
+  formula:()=>T(100,40,'长方形面积 = 长 × 宽')+T(100,72,'三角形面积 = 底 × 高 ÷ 2','ta')+T(100,104,'体积 = 长 × 宽 × 高'),
+  volume:()=>cubes(4,2,3,18,55,126)+T(100,22,'24 立方单位','ta'),
+  unitcube:()=>cubes(2,2,2,26,62,120)+T(100,20,'8 个立方体','ta'),
+  cube:()=>cubes(3,3,3,20,58,126)+T(100,20,'长 = 宽 = 高','ta'),
+  cuboid:()=>box(30,58,110,54,32)+dim(30,124,140,124,'长',85,138)+T(166,34,'宽','ta')+dim(186,26,186,80,'',0,0)+T(156,100,'高','ta'),
+  cuunit:()=>box(62,56,60,60,30)+T(92,132,'1 单位')+T(172,40,'1 单位')+T(36,90,'1')+T(100,22,'1 立方单位','ta'),
+  cm3:()=>box(62,56,60,60,30)+T(92,132,'1 cm')+T(172,40,'1 cm')+T(40,90,'1 cm')+T(100,22,'1 cm³','ta'),
+  layer:()=>cubes(3,3,3,20,58,126,0)+T(100,20,'1 层 = 3 × 3 = 9 个','ta'),
+  basearea:()=>box(34,58,100,52,34,true)+T(101,48,'28 cm²','ta')+dim(154,60,154,110,'',0,0)+T(170,90,'高','ta')+T(100,134,'体积 = 底部面积 × 高'),
+  prism:()=>L(90,85,160,85,'d')+L(90,85,125,25,'d')+L(40,120,90,85,'d')+P('40,120 110,120 75,60','fs')+L(110,120,160,85)+L(75,60,125,25)+L(160,85,125,25)+T(100,138,'两头一样的立体','ta')
+};
+
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'angle',zh:'角',py:'jiǎo',en:'Angles',color:'--c-angle',pg:'pp. 191–193'},
+  {id:'line',zh:'线',py:'xiàn',en:'Lines',color:'--c-line',pg:'pp. 194–195'},
+  {id:'shape',zh:'平面图形',py:'píng miàn tú xíng',en:'Flat shapes',color:'--c-shape',pg:'pp. 193, 198'},
+  {id:'area',zh:'周长与面积',py:'zhōu cháng yǔ miàn jī',en:'Perimeter & area',color:'--c-area',pg:'pp. 196–204'},
+  {id:'vol',zh:'体积',py:'tǐ jī',en:'Volume',color:'--c-vol',pg:'pp. 205–209'}
+];
+const TERMS=[
+ // angles
+ {s:'angle',zh:'角',py:'jiǎo',en:'angle',bm:'sudut',pg:191,f:'angle',def:'The shape made where two straight lines meet.',tip:'Look for angles at the corners of books, doors and clock hands.'},
+ {s:'angle',zh:'锐角',py:'ruì jiǎo',en:'acute angle',bm:'sudut tirus',pg:192,f:'acute',def:'An angle that is smaller than a right angle (less than 90°). It looks sharp.',tip:'<b>锐</b> means “sharp”.'},
+ {s:'angle',zh:'直角',py:'zhí jiǎo',en:'right angle',bm:'sudut tegak',pg:192,f:'right',def:'An angle of exactly 90°, like the corner of a square or a page.',tip:'Every corner of a square is a right angle.'},
+ {s:'angle',zh:'钝角',py:'dùn jiǎo',en:'obtuse angle',bm:'sudut cakah',pg:192,f:'obtuse',def:'An angle bigger than a right angle (more than 90°) but smaller than a straight angle (180°). It looks wide open.',tip:'<b>钝</b> means “blunt”.'},
+ {s:'angle',zh:'平角',py:'píng jiǎo',en:'straight angle',bm:'sudut lurus',pg:192,f:'straight',def:'An angle of 180°. The two arms point in opposite directions and make a straight line.',tip:'1 straight angle = 2 right angles.'},
+ {s:'angle',zh:'直角符号',py:'zhí jiǎo fú hào',en:'right angle symbol',bm:'simbol sudut tegak',pg:195,f:'rightsym',def:'A small square drawn in a corner to show that the angle is a right angle.'},
+ // lines
+ {s:'line',zh:'直线',py:'zhí xiàn',en:'straight line',bm:'garis lurus',pg:191,f:'line',def:'A line that does not bend or curve.'},
+ {s:'line',zh:'相交',py:'xiāng jiāo',en:'to cross / intersect',bm:'bersilang',pg:192,f:'intersect',def:'When two lines meet or cross each other at a point.'},
+ {s:'line',zh:'平行线',py:'píng xíng xiàn',en:'parallel lines',bm:'garis selari',pg:194,f:'parallel',def:'Two straight lines that never meet. The distance between them always stays the same.',tip:'Draw little arrows (›) on both lines to show they are parallel. Example: railway tracks.'},
+ {s:'line',zh:'垂直线',py:'chuí zhí xiàn',en:'perpendicular lines',bm:'garis serenjang',pg:195,f:'perpendicular',def:'Two straight lines that meet to make a right angle (90°).',tip:'Mark the corner with a right angle symbol.'},
+ {s:'line',zh:'三角尺',py:'sān jiǎo chǐ',en:'set square',bm:'sesiku',pg:194,f:'setsquare',def:'A triangle-shaped ruler with a right angle. We use it to draw parallel and perpendicular lines.'},
+ {s:'line',zh:'直尺',py:'zhí chǐ',en:'ruler',bm:'pembaris',pg:194,f:'ruler',def:'A straight tool with a scale in cm, used to draw and measure straight lines.'},
+ // shapes
+ {s:'shape',zh:'平面图形',py:'píng miàn tú xíng',en:'flat (2D) shape',bm:'bentuk dua matra',pg:193,f:'plane',def:'A flat shape that can be drawn on paper, like a square, rectangle or triangle.'},
+ {s:'shape',zh:'正方形',py:'zhèng fāng xíng',en:'square',bm:'segi empat sama',pg:193,f:'square',def:'A shape with 4 equal sides and 4 right angles.'},
+ {s:'shape',zh:'长方形',py:'cháng fāng xíng',en:'rectangle',bm:'segi empat tepat',pg:193,f:'rectangle',def:'A shape with 4 right angles. Its opposite sides are the same length.'},
+ {s:'shape',zh:'等边三角形',py:'děng biān sān jiǎo xíng',en:'equilateral triangle',bm:'segi tiga sama sisi',pg:193,f:'equilateral',def:'A triangle with all 3 sides the same length. All 3 angles are acute angles.',tip:'<b>等边</b> = “equal sides”. Also called 正三角形.'},
+ {s:'shape',zh:'等腰三角形',py:'děng yāo sān jiǎo xíng',en:'isosceles triangle',bm:'segi tiga sama kaki',pg:193,f:'isosceles',def:'A triangle with 2 sides the same length. The two equal sides are called 腰 (yāo); the other side is the base.'},
+ {s:'shape',zh:'不等边三角形',py:'bù děng biān sān jiǎo xíng',en:'scalene triangle',bm:'segi tiga bersisi tak sama',pg:193,f:'scalene',def:'A triangle where all 3 sides are different lengths.'},
+ {s:'shape',zh:'直角三角形',py:'zhí jiǎo sān jiǎo xíng',en:'right-angled triangle',bm:'segi tiga bersudut tegak',pg:193,f:'righttri',def:'A triangle that has one right angle.'},
+ {s:'shape',zh:'正多边形',py:'zhèng duō biān xíng',en:'regular polygon',bm:'poligon sekata',pg:198,f:'regular',def:'A flat shape with many straight sides, where every side is the same length.',tip:'Perimeter = number of sides × side length.'},
+ {s:'shape',zh:'正六边形',py:'zhèng liù biān xíng',en:'regular hexagon',bm:'heksagon sekata',pg:198,f:'hexagon',def:'A regular shape with 6 equal sides.',tip:'Side 20 cm → perimeter = 6 × 20 cm = 120 cm.'},
+ {s:'shape',zh:'边长',py:'biān cháng',en:'side length',bm:'panjang sisi',pg:196,f:'side',def:'How long one side of a shape is.'},
+ // perimeter & area
+ {s:'area',zh:'周长',py:'zhōu cháng',en:'perimeter',bm:'perimeter',pg:196,f:'perimeter',def:'The total distance all the way around a flat shape. Add up all the sides.',tip:'Rectangle: (length + width) × 2. Square: 4 × side.'},
+ {s:'area',zh:'长',py:'cháng',en:'length',bm:'panjang',pg:196,f:'length',def:'The longer side of a rectangle or cuboid.'},
+ {s:'area',zh:'宽',py:'kuān',en:'width',bm:'lebar',pg:196,f:'width',def:'The shorter side of a rectangle; how wide something is.'},
+ {s:'area',zh:'面积',py:'miàn jī',en:'area',bm:'luas',pg:199,f:'area',def:'How much flat space a shape or surface covers.',tip:'Rectangle area = length × width.'},
+ {s:'area',zh:'平方单位',py:'píng fāng dān wèi',en:'square unit',bm:'unit persegi',pg:199,f:'squnit',def:'A unit for area: one small square that is 1 unit long and 1 unit wide.'},
+ {s:'area',zh:'平方厘米',py:'píng fāng lí mǐ',en:'square centimetre (cm²)',bm:'sentimeter persegi',pg:200,f:'cm2',def:'The area of a square that is 1 cm on each side. Written cm².',tip:'Also: 平方毫米 mm², 平方米 m².'},
+ {s:'area',zh:'底',py:'dǐ',en:'base',bm:'tapak',pg:201,f:'base',def:'The side of a triangle we choose to measure from (often the bottom side).'},
+ {s:'area',zh:'高',py:'gāo',en:'height',bm:'tinggi',pg:201,f:'height',def:'How tall a shape is. In a triangle, it is the line from the top that is perpendicular to the base.'},
+ {s:'area',zh:'公式',py:'gōng shì',en:'formula',bm:'rumus',pg:200,f:'formula',def:'A short math rule that tells you how to work something out.',tip:'Triangle area = base × height ÷ 2.'},
+ // volume
+ {s:'vol',zh:'体积',py:'tǐ jī',en:'volume',bm:'isi padu',pg:205,f:'volume',def:'How much space a solid object takes up.',tip:'Volume = length × width × height.'},
+ {s:'vol',zh:'立方体',py:'lì fāng tǐ',en:'unit cube',bm:'kubus unit',pg:205,f:'unitcube',def:'A small cube used for counting. We count cubes to find the volume.'},
+ {s:'vol',zh:'立方单位',py:'lì fāng dān wèi',en:'cubic unit',bm:'unit padu',pg:205,f:'cuunit',def:'A unit for volume: a cube that is 1 unit long, 1 unit wide and 1 unit high.'},
+ {s:'vol',zh:'立方厘米',py:'lì fāng lí mǐ',en:'cubic centimetre (cm³)',bm:'sentimeter padu',pg:206,f:'cm3',def:'The volume of a cube that is 1 cm on each side. Written cm³.',tip:'Don’t mix them up: cm (length), cm² (area), cm³ (volume).'},
+ {s:'vol',zh:'正方体',py:'zhèng fāng tǐ',en:'cube',bm:'kubus',pg:206,f:'cube',def:'A solid with 6 square faces. Its length, width and height are all equal.'},
+ {s:'vol',zh:'长方体',py:'cháng fāng tǐ',en:'cuboid',bm:'kuboid',pg:206,f:'cuboid',def:'A box-shaped solid with 6 rectangle faces, like a shoebox.'},
+ {s:'vol',zh:'层',py:'céng',en:'layer',bm:'lapisan',pg:206,f:'layer',def:'One level of cubes. Count the cubes in one layer, then multiply by the number of layers.'},
+ {s:'vol',zh:'底部面积',py:'dǐ bù miàn jī',en:'base area',bm:'luas tapak',pg:207,f:'basearea',def:'The area of the bottom face of a solid (length × width).',tip:'Volume = base area × height.'},
+ {s:'vol',zh:'棱柱体',py:'léng zhù tǐ',en:'prism',bm:'prisma',pg:216,f:'prism',def:'A solid whose two ends are the same flat shape, with flat sides joining them.'}
+];
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+Object.assign(F,{
+  solid:()=>box(22,62,60,44,24)+cubes(1,1,1,40,120,112)+qT(100,134,'立体：有长、宽、高','ta'),
+  face:()=>box(40,62,96,48,30,true)+qT(88,52,'一个面','ta')+qT(100,134,'长方体有 6 个面','t'),
+  largest:()=>qBar(24,'A',70,'fs')+qBar(58,'B',130,'fa','最大')+qBar(92,'C',100,'fs')+qT(100,138,'最大：比其他的都大','ta'),
+  build:()=>cubes(4,2,2,18,50,110)+qT(100,22,'用正方体组建长方体','ta'),
+  join:()=>qR(30,40,54,54,'fs',0)+qR(84,40,90,54,'fs',0)+qL(84,40,84,94,'a','stroke-width:5')+qT(84,114,'连在一起的边','ta')+qT(100,136,'两个图形连在一起'),
+  newshape:()=>qR(30,40,144,54,'fp',0)+qL(84,40,84,94,'d')+qR(30,40,144,54,'a',0)+qT(100,120,'新图形的周长','ta')+qT(100,138,'只算外面一圈','t'),
+  picture:()=>qPic(),
+  asshown:()=>qR(20,34,70,50,'fp',4)+qP('M32 74 L52 48 L78 74 Z','fs')+qP('M100 58 h20','a')+qP('M114 52 l6 6 l-6 6','a')+qT(152,56,'看图','ta')+qT(152,74,'照着做','t')+qT(100,120,'如图所示','ta'),
+  name:()=>qText('名称',[['这个平面图形的名称是？'],['→ 正方形','ta']]),
+  cutinto:()=>qCut(5)+qT(100,112,'切成 5 块','ta')+qT(100,134,'每块的体积相同'),
+  eachpiece:()=>qCut(4)+qR(30,30,35,56,'fa',4)+qT(100,112,'每块 = 1 块的大小','ta')+qT(100,134,'总体积 ÷ 块数'),
+  lessthan:()=>qT(100,64,'2 < 3','tb','font-size:34px')+qT(100,98,'2 少于 3','ta')+qT(100,130,'开口向着大的数','t'),
+  morethan:()=>qT(100,64,'5 > 3','tb','font-size:34px')+qT(100,98,'5 多于 3','ta')+qT(100,130,'开口向着大的数','t'),
+  diff:()=>qCmp('diff'),
+  fillin:()=>qR(40,26,120,78,'fp',0)+[0,1,2].map(i=>qL(40,52+i*26-26,160,52+i*26-26,'s','stroke-width:1.5')).join('')+qL(80,26,80,104,'s','stroke-width:1.5')+qT(60,44,'长','t')+qT(60,70,'宽','t')+qT(60,96,'高','t')+qT(120,44,'10 cm','t')+qT(120,70,'?','ta')+qT(120,96,'?','ta')+qT(100,130,'把答案写进空格','ta'),
+  equalto:()=>qBar(30,'PS',100,'fa')+qBar(70,'JK',100,'fs')+qT(100,122,'PS 与 JK 的长度相等','ta'),
+  third:()=>qFrac(3,1,'三分之一 = 1/3','分成 3 份，取 1 份'),
+  inunits:()=>qText('以……为单位',[['以 cm² 为单位'],['→ 答案写 cm²','ta']],22)
+});
+SECTIONS.push({id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c-q',pg:'Workbook pp. 76–77'});
+TERMS.push(
+ {s:'vol',zh:'立体图形',py:'lì tǐ tú xíng',en:'solid (3D) shape',bm:'bentuk tiga matra',pg:'Workbook p. 77',f:'solid',def:'A shape that has length, width and height, like a cube or cuboid.',tip:'例：写出这个蛋糕的立体图形的名称。'},
+ {s:'vol',zh:'面',py:'miàn',en:'face (of a solid)',bm:'muka',pg:'Workbook p. 77',f:'face',def:'One flat side of a solid shape. A cuboid has 6 faces.',tip:'例：计算这个蛋糕最大的一面的面积。'},
+ {s:'q',zh:'下图显示',py:'xià tú xiǎn shì',en:'the picture below shows',bm:'rajah di bawah menunjukkan',pg:'Workbook p. 76',f:'picture',def:'Look at the picture under the sentence for the information you need.'},
+ {s:'q',zh:'所示',py:'suǒ shì',en:'as shown',bm:'seperti yang ditunjukkan',pg:'Workbook p. 76',f:'asshown',def:'Look at the picture — it shows what the question means.',tip:'例：左图所示的长方体 Y'},
+ {s:'q',zh:'以……为单位',py:'yǐ … wéi dān wèi',en:'give the answer in (units)',say:'give the answer in these units',bm:'dalam unit',pg:'Workbook p. 76',f:'inunits',def:'Tells you which units to write your answer in.',tip:'cm for length · cm² for area · cm³ for volume'},
+ {s:'q',zh:'名称',py:'míng chēng',en:'name',bm:'nama',pg:'Workbook p. 77',f:'name',def:'What something is called.'},
+ {s:'q',zh:'组建',py:'zǔ jiàn',en:'build / put together',bm:'membina',pg:'Workbook p. 76',f:'build',def:'To make something by putting smaller pieces together.',tip:'例：用了一些正方体 W 来组建长方体 Y。'},
+ {s:'q',zh:'连在一起',py:'lián zài yì qǐ',en:'join together',bm:'dicantumkan',pg:'Workbook p. 76',f:'join',def:'Put two shapes side by side so they touch along one edge.'},
+ {s:'q',zh:'新图形',py:'xīn tú xíng',en:'new shape',bm:'bentuk baharu',pg:'Workbook p. 76',f:'newshape',def:'The shape you get after joining shapes together.',tip:'The joined edge is inside, so it is not part of the perimeter.'},
+ {s:'q',zh:'最大',py:'zuì dà',en:'the biggest / largest',bm:'paling besar',pg:'Workbook p. 77',f:'largest',def:'Bigger than all the others. The opposite is 最小 (smallest).'},
+ {s:'q',zh:'切成',py:'qiē chéng',en:'cut into',bm:'dipotong kepada',pg:'Workbook p. 77',f:'cutinto',def:'Cut something into a number of pieces.',tip:'例：把这个蛋糕切成 40 块。'},
+ {s:'q',zh:'每块',py:'měi kuài',en:'each piece',bm:'setiap keping',pg:'Workbook p. 77',f:'eachpiece',def:'One of the pieces. If all pieces are the same, divide the total by the number of pieces.'},
+ {s:'q',zh:'少于',py:'shǎo yú',en:'less than',bm:'kurang daripada',pg:'Workbook p. 77',f:'lessthan',def:'Smaller than. The sign is <.',tip:'例：高与宽的差少于 3 cm → the difference is smaller than 3 cm.'},
+ {s:'q',zh:'多于',py:'duō yú',en:'more than',bm:'lebih daripada',pg:'Workbook p. 77',f:'morethan',def:'Bigger than. The sign is >.'},
+ {s:'q',zh:'差',py:'chà',en:'difference',bm:'beza',pg:'Workbook p. 77',f:'diff',def:'The answer when you subtract the smaller number from the bigger one.',tip:'例：高与宽的差 = 高 − 宽 (or 宽 − 高).'},
+ {s:'q',zh:'与……相等',py:'yǔ … xiāng děng',en:'equal to',bm:'sama dengan',pg:'Workbook p. 76',f:'equalto',def:'The same size or amount as something else.',tip:'例：PS 与 JK 的长度相等。'},
+ {s:'q',zh:'三分之一',py:'sān fēn zhī yī',en:'one third (⅓)',say:'one third',bm:'satu per tiga',pg:'Workbook p. 76',f:'third',def:'One of 3 equal parts.',tip:'例：JK 的长度是 PQ 的三分之一 → PQ is 3 times as long as JK.'},
+ {s:'q',zh:'填写',py:'tián xiě',en:'fill in',bm:'isikan',pg:'Workbook p. 77',f:'fillin',def:'Write the answers in the empty spaces or table.'}
+);
+
+const bigT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+Object.assign(F,{
+  exactly:()=>qR(30,34,140,56,'fp',2)+[0,1,2,3].map(i=>qR(32+i*35,36,33,52,'fs',2)).join('')+qT(100,112,'刚好填满，不多不少','ta')+qT(100,136,'刚好：正正好','t'),
+  shaded:()=>qR(26,36,60,58,'ink',2)+qR(110,36,60,58,'fp',2)+qT(56,112,'涂黑的面','ta')+qT(140,112,'没涂的面','t'),
+  part:()=>qR(24,40,152,50,'fp',0)+qR(24,40,58,50,'fa',0)+qT(53,70,'这部分','tw')+qT(130,70,'其他部分','t')+qT(100,124,'部分：整体里的一块','ta'),
+  same:()=>qR(30,40,54,54,'fs',0)+qP('M112 94 L172 94 L112 40 Z','fs')+bigT(98,72,'=','tb',22)+qT(100,124,'面积是一样的','ta')+qT(100,140,'一样 = 相同','t'),
+  times3:()=>qBar(30,'便利贴',44,'fa','1 份')+qBar(72,'复习板',132,'fa','3 份')+qT(100,130,'是便利贴的 3 倍 → × 3','ta'),
+  lessthan6:()=>qCmp('less'),
+  dims:()=>qR(40,40,110,54,'fs',3)+qT(95,116,'长度','ta')+qL(40,104,150,104,'d')+qT(172,70,'宽度','ta')+qL(160,40,160,94,'d')+qT(100,28,'高度用在立体上','tn'),
+  stack:()=>[0,1,2,3].map(i=>qR(56,84-i*14,88,12,'fs',2)).join('')+qL(158,30,158,96,'a')+qT(176,66,'2 cm','ta')+qT(100,124,'一叠便利贴','ta')+qT(100,140,'叠：一层一层堆起来','t'),
+  fillup:()=>qR(40,30,120,80,'fp',2)+[0,1,2].map(r=>[0,1,2].map(c=>qR(42+c*39,32+r*26,37,24,'fs',2)).join('')).join('')+qT(100,132,'填满：装满整个盒子','ta'),
+  cover:()=>qR(34,26,132,84,'fp',2)+[0,1,2,3].map(i=>qR(38+(i%2)*66,30+Math.floor(i/2)*40,62,38,'fs',2)).join('')+qT(100,132,'贴满：贴满整个布告栏','ta'),
+  cutout:()=>qP('M40 34 H150 V104 H40 Z','d')+qP('M52 46 H138 V94 H52 Z','fs')+qP('M150 24 l14 -10 l8 10 l-14 10 z','fa')+qT(100,130,'剪出：用剪刀剪下来','ta'),
+  mark:()=>qR(30,34,140,60,'fp',2)+[0,1,2].map(i=>qP(`M${52+i*44} 74 l10 10 l16 -22`,'a')).join('')+qT(100,126,'做标记：在上面做记号','ta'),
+  sheet:()=>[0,1,2].map(i=>qR(40+i*10,32+i*8,80,56,'fp',2)).join('')+qT(100,120,'张：一张便利贴','ta')+qT(100,138,'多少张？→ 数纸的量词','t'),
+  sticky:()=>qR(60,30,80,80,'fs',2)+qP('M60 30 h80 v14 h-80 z','fa')+qT(100,132,'便利贴','ta'),
+  board:()=>qR(24,28,152,78,'fp',4)+qR(30,34,140,66,'fs',2)+qT(100,126,'布告栏','ta'),
+  box:()=>box(40,56,96,44,28)+qT(100,132,'收纳盒','ta'),
+  block:()=>cubes(2,2,2,26,62,116)+qT(100,22,'积木','ta')
+});
+TERMS.push(
+ {s:'q',zh:'刚好',py:'gāng hǎo',en:'exactly / just right',bm:'tepat',pg:'Workbook p. 34',f:'exactly',def:'Fits perfectly — not too much, not too little.',tip:'例：16 叠便利贴刚好填满整个收纳盒'},
+ {s:'q',zh:'涂黑',py:'tú hēi',en:'shaded black',bm:'dilorek hitam',pg:'Workbook p. 32',f:'shaded',def:'The part coloured black in the picture.',tip:'例：积木涂黑部分的面积是 25 cm²'},
+ {s:'q',zh:'部分',py:'bù fen',en:'part / section',bm:'bahagian',pg:'Workbook p. 32',f:'part',def:'One piece of the whole thing.'},
+ {s:'q',zh:'一样',py:'yí yàng',en:'the same',bm:'sama',pg:'Workbook p. 32',f:'same',def:'Equal in size or amount. Same meaning as 相同.',tip:'例：正方形卡片与三角形卡片的面积是一样的'},
+ {s:'q',zh:'……的 3 倍',py:'… de sān bèi',en:'3 times as much as',say:'three times as much as',bm:'3 kali ganda',pg:'Workbook p. 34',f:'times3',def:'Three times the amount. Multiply by 3.'},
+ {s:'q',zh:'比……少',py:'bǐ … shǎo',en:'less than',bm:'kurang daripada',pg:'Workbook p. 34',f:'lessthan6',def:'The first amount is smaller by this much. Subtract.',tip:'例：宽度比长度少 4 cm'},
+ {s:'q',zh:'张',py:'zhāng',en:'sheet (counting word)',say:'sheet',bm:'keping',pg:'Workbook p. 33',f:'sheet',def:'Used for counting flat things: paper, cards, sticky notes.',tip:'例：需要多少张便利贴？'},
+ {s:'area',zh:'长度 / 宽度 / 高度',py:'cháng dù / kuān dù / gāo dù',en:'length / width / height',say:'length, width, height',bm:'panjang / lebar / tinggi',pg:'Workbook p. 34',f:'dims',def:'The noun forms of 长, 宽 and 高 — used when a question talks about the measurement itself.'},
+ {s:'vol',zh:'叠',py:'dié',en:'stack / to stack',bm:'timbunan',pg:'Workbook p. 34',f:'stack',def:'A pile of flat things, one on top of another.',tip:'例：每叠便利贴的高是 2 cm'},
+ {s:'vol',zh:'填满',py:'tián mǎn',en:'fill up completely',bm:'memenuhi',pg:'Workbook p. 34',f:'fillup',def:'Fill the whole space, with no gaps.'},
+ {s:'area',zh:'贴满',py:'tiē mǎn',en:'cover completely (by pasting)',say:'cover completely',bm:'menampal penuh',pg:'Workbook p. 33',f:'cover',def:'Cover the whole surface with pieces.',tip:'例：贴满布告栏 → 布告栏面积 ÷ 一张的面积'},
+ {s:'shape',zh:'剪出',py:'jiǎn chū',en:'cut out',bm:'menggunting',pg:'Workbook p. 32',f:'cutout',def:'Cut a shape out of paper or card.'},
+ {s:'q',zh:'标记',py:'biāo jì',en:'a mark / to mark',bm:'tanda',pg:'Workbook p. 34',f:'mark',def:'A small sign put on something to show a place.'},
+ {s:'area',zh:'便利贴',py:'biàn lì tiē',en:'sticky note',bm:'nota lekat',pg:'Workbook p. 33',f:'sticky',def:'A small square of paper that sticks. Used in the area questions.'},
+ {s:'area',zh:'布告栏',py:'bù gào lán',en:'notice board',bm:'papan kenyataan',pg:'Workbook p. 33',f:'board',def:'A board on a wall for putting up notices.'},
+ {s:'vol',zh:'收纳盒',py:'shōu nà hé',en:'storage box',bm:'kotak simpanan',pg:'Workbook p. 34',f:'box',def:'A box for keeping things in. It is a cuboid.'},
+ {s:'vol',zh:'积木',py:'jī mù',en:'building block',bm:'blok binaan',pg:'Workbook p. 32',f:'block',def:'A wooden or plastic block. In these questions it is a cube or cuboid.'}
+);
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=5?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “zhijiao”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].en.replace('cm²','square centimetre').replace('cm³','cubic centimetre'),'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>

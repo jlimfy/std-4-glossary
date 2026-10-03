@@ -1,0 +1,1570 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lab Blaster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@600&display=swap">
+<style>
+  /* Single committed look: a school science-lab adventure. Colors painted explicitly. */
+  :root{
+    --ink:#1d2b2a; --chalk:#fdf6e3; --board:#2f5d50; --mint:#cfe8dc; --shore:#a9cfc0;
+    --tang:#ff7a1a; --good:#2fbf71; --bad:#e5484d; --sky:#12343b; --gold:#ffcf3a; --lock:#6b7c79;
+    --display:"Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+    --body:"Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  [hidden]{display:none!important}
+  html,body{height:100%}
+  body{background:var(--sky);color:var(--chalk);font-family:var(--body);overflow:hidden;
+       user-select:none;-webkit-user-select:none}
+  #stage,.touch,#weapons{touch-action:none}
+  #stage{position:fixed;inset:0}
+  #stage canvas{display:block;width:100%;height:100%}
+
+  /* ---------- HUD ---------- */
+  .hud{position:fixed;left:0;right:0;pointer-events:none;padding-inline:16px}
+  .hud-top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;flex-direction:column;align-items:center;gap:6px}
+  .qcard{max-width:720px;width:100%;background:var(--board);border:4px solid #7a5230;border-radius:10px;
+         padding:8px 14px 10px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+  .qmeta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);
+         font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#bfe3d3}
+  .qtext{font-family:var(--display);font-weight:800;font-size:clamp(17px,3vw,25px);line-height:1.15;
+         text-wrap:balance;margin-top:3px;color:var(--chalk)}
+  .qdata{margin-top:4px;font-family:var(--mono);font-size:13px;color:#ffd9b8}
+  .qdata:empty{display:none}
+  .objective{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:800;padding:2px 9px;border-radius:999px;background:rgba(0,0,0,.25);color:var(--chalk)}
+  .chip.ok{background:var(--good);color:#06291a}
+  .chip.warn{background:var(--bad);color:#fff}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .pill{background:rgba(18,52,59,.85);border:2px solid rgba(253,246,227,.25);border-radius:999px;
+        padding:3px 11px;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+  .hearts{letter-spacing:1px;color:var(--bad)}
+  .hearts .lost{color:rgba(253,246,227,.22)}
+
+  #cross{position:fixed;left:50%;top:50%;width:34px;height:34px;transform:translate(-50%,-50%);pointer-events:none}
+  #cross::before,#cross::after{content:"";position:absolute;background:var(--cross,var(--tang));border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+  #cross::before{left:15px;top:0;width:4px;height:34px}
+  #cross::after{top:15px;left:0;height:4px;width:34px}
+  #cross.on-target{--cross:#fff}
+
+  #weapons{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+           display:flex;gap:6px;pointer-events:auto}
+  .slot{font-family:var(--body);font-weight:800;font-size:12px;border-radius:10px;padding:5px 10px;border:2px solid rgba(253,246,227,.3);
+        background:rgba(18,52,59,.85);color:var(--chalk);box-shadow:none;display:flex;gap:6px;align-items:center;cursor:pointer}
+  .slot kbd{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.15);border-radius:4px;padding:0 5px;border:0}
+  .slot i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c)}
+  .slot.active{border-color:var(--c);background:rgba(0,0,0,.55)}
+  .slot.locked{opacity:.4;cursor:default}
+  .slot:active{transform:none}
+
+  #toast{position:fixed;left:50%;top:60%;transform:translate(-50%,0);pointer-events:none;text-align:center;
+         max-width:min(560px,calc(100% - 32px));padding:9px 18px;border-radius:12px;font-weight:800;
+         font-size:17px;line-height:1.3;opacity:0;transition:opacity .2s, transform .2s;z-index:5}
+  #toast.show{opacity:1;transform:translate(-50%,-6px)}
+  #toast.good{background:var(--good);color:#06291a}
+  #toast.bad{background:var(--bad);color:#fff}
+  #toast.info{background:var(--chalk);color:var(--ink)}
+  #toast small{display:block;font-weight:700;font-size:14px;margin-top:3px;opacity:.9}
+
+  #banner{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;z-index:4;
+          width:min(560px,calc(100% - 32px));background:var(--mint);color:var(--ink);border:4px solid var(--ink);
+          border-radius:16px;box-shadow:6px 6px 0 var(--tang);padding:12px 18px;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .eyebrow{margin:0}
+  #banner b{display:block;font-family:var(--display);font-size:28px;line-height:1.05;color:var(--board)}
+  #banner span{display:block;font-size:15px;margin-top:4px;font-weight:700}
+
+  #hurt{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;
+        background:radial-gradient(ellipse at center, rgba(229,72,77,0) 45%, rgba(229,72,77,.65) 100%)}
+  #hurt.on{opacity:1;transition:none}
+  #hurt.acid{background:radial-gradient(ellipse at center, rgba(124,255,79,.25) 20%, rgba(124,255,79,.8) 100%)}
+
+  #pauseHint{position:fixed;left:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);font-size:12px;color:#bfe3d3;
+             pointer-events:none;max-width:240px;line-height:1.35}
+  body.is-touch #pauseHint{display:none}
+
+  /* ---------- Panels & overlays ---------- */
+  .overlay{touch-action:pan-y;position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-inline:16px;
+           background:rgba(10,30,34,.8);backdrop-filter:blur(3px);z-index:10;overflow:auto}
+  .panel{max-width:560px;width:100%;background:var(--mint);color:var(--ink);border-radius:18px;
+         padding:22px 24px;border:4px solid var(--ink);box-shadow:8px 8px 0 var(--tang);margin-block:24px}
+  .panel h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,8vw,58px);line-height:.9;margin:0;color:var(--board)}
+  .panel h1 span{color:var(--tang)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#4c6b63;margin:0 0 6px}
+  .panel p{margin:10px 0 0;line-height:1.45;font-size:15px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+  button{font-family:var(--display);font-weight:800;font-size:19px;border:3px solid var(--ink);border-radius:12px;
+         padding:7px 18px;cursor:pointer;background:var(--tang);color:var(--ink);box-shadow:0 4px 0 var(--ink)}
+  button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+  button.ghost{background:#fff}
+  button.small{font-size:14px;padding:4px 12px;box-shadow:0 3px 0 var(--ink)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button:focus-visible,.node:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .big{font-family:var(--mono);font-size:38px;font-variant-numeric:tabular-nums;color:var(--board);margin-top:6px}
+  .stars{font-size:34px;letter-spacing:4px;color:var(--gold);-webkit-text-stroke:1.5px var(--ink)}
+  .stars .off{color:#fff;opacity:.6}
+  .review{margin-top:12px;max-height:32vh;overflow:auto;border-top:2px dashed #7fa89a;padding-top:8px}
+  .review div{font-size:14px;padding:6px 0;border-bottom:1px solid #b7d6c9}
+  .review b{color:var(--board)}
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:12px 0 0;font-size:14px;align-items:center}
+  kbd{font-family:var(--mono);font-size:12px;background:#fff;border:2px solid var(--ink);border-bottom-width:4px;border-radius:6px;padding:1px 6px;white-space:nowrap;color:var(--ink)}
+
+  /* ---------- World map ---------- */
+  #mapScreen{align-items:flex-start;background:var(--sky);backdrop-filter:none}
+  .mapwrap{max-width:1000px;width:100%;padding-block:calc(env(safe-area-inset-top,0px) + 18px) 28px;display:grid;gap:14px}
+  .maphead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+  .maphead h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,7vw,60px);line-height:.85;margin:0;color:var(--chalk)}
+  .maphead h1 span{color:var(--tang)}
+  .maphead .eyebrow{color:#9cc7b8}
+  .progress{font-family:var(--mono);font-size:13px;background:rgba(0,0,0,.25);padding:6px 12px;border-radius:999px;color:var(--chalk)}
+  .mapbox{border:4px solid var(--ink);border-radius:18px;overflow:hidden;background:#1a4a52;box-shadow:8px 8px 0 rgba(0,0,0,.3)}
+  #map{display:block;width:100%;height:auto}
+  .node{cursor:pointer;outline:none}
+  .node.locked{cursor:not-allowed}
+  .node .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.18);opacity:.35}}
+  .hop{animation:hop 1s ease-in-out infinite}
+  @keyframes hop{50%{transform:translateY(-6px)}}
+  .maplabel{font-family:var(--body);font-weight:800;font-size:15px}
+  .details{display:grid;grid-template-columns:1fr auto;gap:12px 18px;align-items:center;background:var(--mint);color:var(--ink);
+           border:4px solid var(--ink);border-radius:16px;padding:14px 18px;box-shadow:6px 6px 0 var(--tang)}
+  .details h2{font-family:var(--display);font-size:30px;line-height:1;margin:0;color:var(--board)}
+  .details .feat{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .details .feat span{font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#fff;border:2px solid var(--ink)}
+  .details .feat span.hot{background:var(--bad);color:#fff}
+  .details .feat span.tool{background:var(--gold)}
+  .details .topics{font-size:14px;margin-top:6px;color:#3d5a53}
+  .details .side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  @media (max-width:560px){ .details{grid-template-columns:1fr} .details .side{align-items:flex-start} }
+  .help{background:rgba(0,0,0,.22);border-radius:14px;padding:10px 16px;color:var(--chalk)}
+  .help summary{cursor:pointer;font-weight:800}
+  .help .keys{color:var(--chalk)}
+  .footrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;font-size:12px;color:#9cc7b8}
+
+  /* ---------- Touch ---------- */
+  body:not(.is-touch) .touch{display:none!important}
+  #stick{position:fixed;left:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:120px;height:120px;
+         border-radius:50%;background:rgba(253,246,227,.12);border:3px solid rgba(253,246,227,.4)}
+  #knob{position:absolute;left:32px;top:32px;width:50px;height:50px;border-radius:50%;background:rgba(253,246,227,.6)}
+  .tbtn{position:fixed;border-radius:50%;padding:0;font-size:15px}
+  #fire{right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);width:88px;height:88px}
+  #jump{right:122px;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);width:64px;height:64px;background:var(--chalk)}
+  #pauseT{right:16px;top:calc(env(safe-area-inset-top,0px) + 10px);width:44px;height:44px;background:var(--chalk);font-size:14px}
+  body.is-touch #weapons{bottom:calc(env(safe-area-inset-bottom,0px) + 120px)}
+  @media (prefers-reduced-motion: reduce){ #toast,#banner{transition:none} .node .pulse,.hop{animation:none} }
+</style>
+
+<div id="stage"></div>
+<div id="hurt"></div>
+
+<div class="hud hud-top" id="hud" hidden>
+  <div class="qcard">
+    <div class="qmeta"><span id="qnum">Room 1 / 3 · Question 1 / 3</span><span id="qtopic">Level 1</span></div>
+    <div class="qtext" id="qtext">Loading…</div>
+    <div class="qdata" id="qdata"></div>
+    <div class="objective" id="objective"></div>
+  </div>
+  <div class="stats">
+    <span class="pill hearts" id="hearts">♥♥♥♥♥</span>
+    <span class="pill" id="score">Score 0</span>
+    <span class="pill" id="streak">Streak 0</span>
+  </div>
+</div>
+<div id="cross" hidden></div>
+<div id="weapons" hidden></div>
+<div id="toast"></div>
+<div id="banner"></div>
+<div id="pauseHint" hidden>Mouse aim · Click shoot · WASD move · Space jump · 1/2/3 weapons · Esc pause</div>
+
+<div class="touch" id="touchUI" hidden>
+  <div id="stick"><div id="knob"></div></div>
+  <button class="tbtn" id="fire" aria-label="Shoot">FIRE</button>
+  <button class="tbtn" id="jump" aria-label="Jump">JUMP</button>
+  <button class="tbtn" id="pauseT" aria-label="Pause">II</button>
+</div>
+
+<!-- World map -->
+<div class="overlay" id="mapScreen">
+  <div class="mapwrap">
+    <div class="maphead">
+      <div>
+        <p class="eyebrow">Checkpoint Science · Stage 6 adventure</p>
+        <h1>Lab <span>Blaster</span></h1>
+      </div>
+      <div class="progress" id="progress">0 / 8 topics done · 0★</div>
+    </div>
+    <div class="mapbox"><svg id="map" viewBox="0 0 900 600" role="group" aria-label="Level map"></svg></div>
+    <div class="details" id="details"></div>
+    <details class="help">
+      <summary>How to play</summary>
+      <div class="keys">
+        <kbd>Mouse</kbd><span>Look and aim (tap-drag the right side on a tablet)</span>
+        <kbd>Click</kbd><span>Shoot the board with the right answer</span>
+        <kbd>W A S D</kbd><span>Walk</span>
+        <kbd>Space</kbd><span>Jump across platforms</span>
+        <kbd>1 2 3 / Q</kbd><span>Switch weapon once you find one</span>
+        <kbd>Esc / P</kbd><span>Pause</span>
+      </div>
+      <p style="margin:10px 0 0;font-size:14px;line-height:1.45">Answer every question in a room and clear its enemies to unlock the door. Get through the last door to finish the topic and unlock the next door on the map. A wrong answer, an enemy hit or a fall into acid costs a heart.</p>
+    </details>
+    <div class="footrow">
+      <span>Topics follow Cambridge Primary Checkpoint Science 0846 (April 2016, Paper 1). Questions are written fresh for this game. Progress is saved in this browser.</span>
+      <button class="ghost small" id="resetBtn">Reset progress</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pause -->
+<div class="overlay" id="pauseScreen" hidden>
+  <div class="panel">
+    <p class="eyebrow">Paused</p>
+    <h1>Take a <span>breath</span></h1>
+    <div class="row"><button id="resumeBtn">Resume</button><button class="ghost" id="quitBtn">Back to map</button></div>
+  </div>
+</div>
+
+<!-- End of level -->
+<div class="overlay" id="endScreen" hidden>
+  <div class="panel">
+    <p class="eyebrow" id="endEyebrow">Level complete</p>
+    <h1 id="endTitle">Great <span>work!</span></h1>
+    <div class="stars" id="endStars"></div>
+    <div class="big" id="endScore">0</div>
+    <p id="endLine"></p>
+    <div class="review" id="review"></div>
+    <div class="row" id="endBtns"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+"use strict";
+
+/* ==================================================================
+   QUESTION BANK — original questions on the 0846 April 2016 P1 topics.
+   The first option is always the correct one (shuffled at play time).
+   ================================================================== */
+const BANK = [
+  {t:"States of matter", q:"Which of these is a LIQUID at room temperature (25°C)?", a:["Mercury","Iron","Oxygen","Salt"], why:"Mercury is a metal, but it is a liquid at room temperature."},
+  {t:"States of matter", q:"Which of these is a GAS at room temperature (25°C)?", a:["Carbon dioxide","Copper","Water","Salt"], why:"Carbon dioxide is a gas. We breathe it out."},
+  {t:"States of matter", q:"Which of these is a SOLID at room temperature (25°C)?", a:["Copper","Mercury","Oxygen","Water"], why:"Copper is a solid metal at room temperature."},
+  {t:"Water", q:"At what temperature does pure water BOIL?", a:["100°C","0°C","50°C","37°C"], why:"Water boils at 100°C."},
+  {t:"Water", q:"At what temperature does pure water FREEZE?", a:["0°C","100°C","10°C","-50°C"], why:"Water freezes (and ice melts) at 0°C."},
+  {t:"Water", q:"Water vapour turning back into liquid water is called…", a:["Condensing","Evaporating","Melting","Freezing"], why:"Condensation happens when water vapour cools, like on a cold window."},
+  {t:"Water", q:"Liquid water turning into water vapour is called…", a:["Evaporating","Condensing","Freezing","Dissolving"], why:"Evaporation turns a liquid into a gas."},
+
+  {t:"Human body", q:"Which organ pumps blood around the body?", a:["Heart","Lungs","Kidneys","Stomach"], why:"The heart is a muscle that pumps blood."},
+  {t:"Human body", q:"Which organ controls all the other organs?", a:["Brain","Heart","Liver","Intestine"], why:"The brain sends messages that control the body."},
+  {t:"Human body", q:"Which organs take oxygen into the body?", a:["Lungs","Kidneys","Stomach","Brain"], why:"We breathe air into our lungs, and oxygen passes into the blood."},
+  {t:"Human body", q:"Which organs filter waste out of the blood?", a:["Kidneys","Lungs","Heart","Brain"], why:"The kidneys clean the blood and make urine."},
+  {t:"Human body", q:"Which organ holds food while it is being broken down?", a:["Stomach","Lungs","Kidneys","Heart"], why:"The stomach mixes food with digestive juices."},
+  {t:"Human body", q:"Which part of your body has taste buds?", a:["Tongue","Ears","Lungs","Knees"], why:"Taste buds on the tongue detect flavours."},
+  {t:"Skeletons", q:"Which is a job of the skeleton?", a:["Protecting organs","Pumping blood","Digesting food","Making oxygen"], why:"The skull protects the brain and the ribs protect the heart and lungs."},
+  {t:"Skeletons", q:"Which animals have muscles attached to their bones?", a:["Humans and many other animals","Only humans","Only fish","No animals"], why:"All animals with bony skeletons use muscles to move their bones."},
+  {t:"Skeletons", q:"What happens to a child's skeleton as the child gets older?", a:["It grows","It stays the same size","It shrinks","It disappears"], why:"Bones grow as the body grows."},
+
+  {t:"Light", q:"Hassan wants his shadow puppet to look BIGGER. Where should he move his hands?", a:["Closer to the lamp","Closer to the screen","Out of the light","Behind his back"], why:"Hands closer to the light block more light, so the shadow gets bigger."},
+  {t:"Light", q:"Your hands make shadows because they are…", a:["Opaque","Transparent","Flexible","Shiny"], why:"Opaque materials do not let light through, so a shadow forms."},
+  {t:"Light", q:"Which material lets NO light through?", a:["Cardboard","Clear glass","Tracing paper","Clear plastic"], why:"Cardboard is opaque."},
+  {t:"Light", q:"You put materials over your name. Through which one can you read it MOST clearly?", a:["Clear glass","Tracing paper","Tissue paper","Kitchen foil"], why:"Transparent materials let the most light through, so you see clearly."},
+  {t:"Sound", q:"Which statement about sound is TRUE?", a:["Sound travels as vibrations","Sound cannot travel through air","Sound moves at the same speed in everything","Our eardrums never move"], why:"Sound is made of vibrations passing through a material."},
+  {t:"Sound", q:"How does sound get from a drum to your ear?", a:["Vibrations travel through the air","Light carries it","It travels through empty space only","Magnets pull it"], why:"The drum makes the air vibrate, and the vibrations reach your eardrum."},
+  {t:"Sound", q:"Which part of your ear vibrates when sound reaches it?", a:["Eardrum","Earlobe","Tongue","Skull bone only"], why:"The eardrum vibrates, and your brain turns that into sound."},
+
+  {t:"Habitats", q:"What is the BEST way people can help a forest habitat?", a:["Protect the species living there","Drop litter in the forest","Make lots of new paths","Pick all the fruit"], why:"Protecting plants and animals keeps the habitat healthy."},
+  {t:"Habitats", q:"How does planting new trees help a forest?", a:["Animals get more food and shelter","It scares the animals away","It stops the rain falling","It makes the soil disappear"], why:"More trees mean more homes and food for animals."},
+  {t:"Habitats", q:"Why does teaching people about forests help them?", a:["People learn to take care of them","Trees grow faster when people talk","It makes the forest bigger overnight","It keeps animals indoors"], why:"People who understand habitats are more likely to protect them."},
+  {t:"Plants", q:"How are COCONUT seeds usually spread?", a:["By water","By wind","By explosion","By sticking to fur"], why:"Coconuts float and can drift across the sea."},
+  {t:"Plants", q:"How are DANDELION seeds spread?", a:["By wind","By water","By explosion","By animals eating them"], why:"Dandelion seeds have fluffy parachutes that float on the wind."},
+  {t:"Plants", q:"How are ORANGE seeds spread?", a:["By animals","By wind","By explosion","By water"], why:"Animals eat the fruit and the seeds are dropped somewhere new."},
+  {t:"Plants", q:"Some pods (like pea pods) dry out and burst open. This spreads seeds by…", a:["Explosion","Wind","Water","Animals"], why:"The pod splits suddenly and flings the seeds away."},
+
+  {t:"Magnets", q:"Which material is attracted to a magnet?", a:["Iron","Copper","Plastic","Wood"], why:"Iron (and steel, which contains iron) is magnetic."},
+  {t:"Magnets", q:"Two NORTH poles are pushed together. What happens?", a:["They repel (push apart)","They attract (pull together)","They melt","Nothing at all"], why:"Like poles repel, and opposite poles attract."},
+  {t:"Magnets", q:"Which magnet is the STRONGEST?", d:"Steel pins held →  A: 4   B: 12   C: 7   D: 9", a:["Magnet B","Magnet A","Magnet C","Magnet D"], why:"Magnet B held the most pins (12)."},
+  {t:"Magnets", q:"To make the magnet test FAIR, what should stay the same?", a:["The type of pins","The colour of each magnet","The day of the week","The person's name"], why:"If the pins change, you can't compare the magnets fairly."},
+  {t:"Forces", q:"A car drives along the road. Which force pulls it DOWN towards the Earth?", a:["Weight (gravity)","Air resistance","Upthrust","Magnetism"], why:"Weight is the force of gravity pulling downwards."},
+  {t:"Forces", q:"Which force pushes against a moving car as it moves through the air?", a:["Air resistance","Weight","Magnetism","Upthrust"], why:"Air resistance acts opposite to the direction of motion."},
+  {t:"Scientists", q:"Which scientist first explained gravity?", a:["Isaac Newton","Albert Einstein","Galileo Galilei","Robert Hooke"], why:"Isaac Newton explained gravity in the 1600s."},
+
+  {t:"Materials", q:"A plastic box is good for holding cold water because plastic…", a:["does not dissolve in water","is magnetic","is always transparent","melts easily"], why:"Plastic is insoluble and waterproof."},
+  {t:"Materials", q:"A pottery cup is good for hot tea because pottery…", a:["does not melt when hot","dissolves in tea","is magnetic","is see-through"], why:"Pottery has a very high melting point."},
+  {t:"Separating", q:"How can you separate IRON powder from CHALK powder?", a:["Use a magnet","Pour through a filter","Evaporate it","Add sugar"], why:"The magnet pulls out the iron and leaves the chalk behind."},
+  {t:"Separating", q:"Chalk (insoluble) is mixed with fertiliser (soluble). How do you separate them?", a:["Add water, then filter","Use a magnet","Shake it in a sieve","Freeze it"], why:"The fertiliser dissolves and passes through, and the chalk stays in the filter paper."},
+  {t:"Separating", q:"How can you get SALT back from salty water?", a:["Evaporate the water","Use a magnet","Filter it","Stir it faster"], why:"The water evaporates and the salt is left behind."},
+  {t:"Solutions", q:"When salt is stirred into water and disappears, the salt…", a:["dissolves","evaporates","condenses","melts"], why:"The salt dissolves to make a solution."},
+  {t:"Solutions", q:"In salty water, the WATER is called the…", a:["Solvent","Solute","Filter","Residue"], why:"The solvent is the liquid that does the dissolving."},
+  {t:"Solutions", q:"In salty water, the SALT is called the…", a:["Solute","Solvent","Vapour","Filter"], why:"The solute is the substance that dissolves."},
+  {t:"Solutions", q:"Sand does not make a solution with water because sand is…", a:["Insoluble","Soluble","A liquid","Magnetic"], why:"Insoluble substances do not dissolve."},
+
+  {t:"Investigations", q:"Which equipment measures the TEMPERATURE of water?", a:["Thermometer","Balance","Stopwatch","Measuring cylinder"], why:"A thermometer measures temperature in °C."},
+  {t:"Investigations", q:"Which equipment measures the VOLUME of water?", a:["Measuring cylinder","Thermometer","Balance","Stopwatch"], why:"A measuring cylinder measures volume in cm³ or ml."},
+  {t:"Investigations", q:"Which equipment measures the MASS of a solid?", a:["Balance","Stopwatch","Thermometer","Ruler"], why:"A balance measures mass in grams."},
+  {t:"Investigations", q:"Oskar stirs four solids into water. Which solid made the water WARMER?", d:"Start 20°C →  A: 26°C   B: 20°C   C: 15°C   D: 20°C", a:["Solid A","Solid B","Solid C","Solid D"], why:"Only solid A's water went up (20°C → 26°C)."},
+  {t:"Investigations", q:"A solid is stirred into water. The water goes cloudy and the solid sinks. The solid…", a:["did not dissolve","dissolved","melted","evaporated"], why:"A cloudy mixture with bits that settle means the solid is insoluble."},
+  {t:"Investigations", q:"Jamila puts drops on different parts of her tongue. The middle part tasted NOTHING. This suggests the middle has…", a:["the fewest taste buds","the most taste buds","no skin","extra bones"], why:"No taste means very few taste buds there."},
+  {t:"Investigations", q:"Ahmed walks the SAME distance in the forest each time before collecting soil from his shoes. Why?", a:["To make it a fair test","To get tired","To find the Moon","To make the shoes cleaner"], why:"Changing only one thing at a time keeps the test fair."},
+  {t:"Investigations", q:"In Ahmed's soil test, what else should stay the same?", a:["The shoes he wears","The weather on Mars","His favourite colour","The song he sings"], why:"Different shoe soles pick up different amounts of soil."},
+
+  {t:"Earth & space", q:"Which statement is TRUE?", a:["The Earth orbits the Sun","The Sun orbits the Earth","The Earth orbits the Moon","The Sun spins around the Moon"], why:"The Earth travels around the Sun."},
+  {t:"Earth & space", q:"How long does the Earth take to orbit the Sun once?", a:["About 365 days (1 year)","1 day","1 month","1 week"], why:"One trip around the Sun takes one year."},
+  {t:"Earth & space", q:"What causes day and night?", a:["The Earth spinning on its axis","The Sun switching off","The Moon covering the Sun","The Earth orbiting the Sun"], why:"The Earth spins once every 24 hours."},
+  {t:"Earth & space", q:"What shape is the Earth?", a:["Almost a sphere","Flat like a plate","A cube","A cone"], why:"The Earth is a ball shape (a sphere)."},
+  {t:"Earth & space", q:"What gives the Earth its light and heat?", a:["The Sun","The Moon","The stars at night","Clouds"], why:"The Sun is our nearest star."},
+  {t:"Earth & space", q:"What does the Moon orbit?", a:["The Earth","The Sun only","Mars","Nothing"], why:"The Moon travels around the Earth about once a month."},
+];
+
+/* ==================================================================
+   LEVELS — features ramp up after the first level.
+   parkour: 1 static platforms, 2 adds a moving platform
+   armor: "iron" (needs Heat Ray), "crystal" (needs Sonic Cannon), "mixed"
+   weapon: which weapon is hidden in that room
+   ================================================================== */
+const LEVELS = [
+  {name:"States of Matter", icon:"🧊", topics:["States of matter","Water"],
+   rooms:[{q:3},{q:2},{q:2}],
+   intro:"Warm-up! Shoot the right answer to open each door."},
+  {name:"Body & Bones", icon:"🦴", topics:["Human body","Skeletons"],
+   rooms:[{q:3,melee:1},{q:3,melee:2},{q:3,melee:3}],
+   intro:"Germs ahead! They bite when they get close, so blast them before the door will open."},
+  {name:"Light & Sound", icon:"💡", topics:["Light","Sound"],
+   rooms:[{q:2,melee:2},{q:2,parkour:1},{q:3,melee:3}],
+   intro:"Watch out for acid floors! Press Space to jump across the platforms."},
+  {name:"Habitats & Seeds", icon:"🌳", topics:["Habitats","Plants"],
+   rooms:[{q:2,melee:1,armor:"iron",weapon:"heat"},{q:2,parkour:1,armor:"iron"},{q:3,melee:3,armor:"iron"}],
+   intro:"Iron-plated boards! Goo bounces off. Search the room for the hidden Heat Ray."},
+  {name:"Magnets & Forces", icon:"🧲", topics:["Magnets","Forces","Scientists"],
+   rooms:[{q:2,ranged:1},{q:2,parkour:2,ranged:1},{q:3,melee:2,ranged:2}],
+   intro:"Robo-drones shoot back! Keep moving to dodge their shots."},
+  {name:"Mixtures", icon:"⚗️", topics:["Materials","Separating","Solutions"],
+   rooms:[{q:3,melee:2,ranged:1,armor:"iron",weapon:"heat"},{q:3,parkour:2,ranged:2,armor:"iron"},{q:3,melee:3,ranged:2,armor:"iron"}],
+   intro:"Iron boards are back, and the Heat Ray is hidden again. Germs and drones together!"},
+  {name:"Investigations", icon:"🔬", topics:["Investigations"],
+   rooms:[{q:2,melee:2,armor:"iron",weapon:"heat"},{q:3,ranged:2,armor:"crystal",weapon:"sonic"},{q:3,parkour:2,melee:2,ranged:2,armor:"mixed"}],
+   intro:"Crystal boards! Only sound vibrations can shatter them. Find the Sonic Cannon."},
+  {name:"Earth & Space", icon:"🪐", topics:["Earth & space"],
+   rooms:[{q:2,parkour:2,melee:2,ranged:1,armor:"iron",weapon:"heat"},{q:2,melee:3,ranged:2,armor:"crystal",weapon:"sonic"},{q:2,melee:4,ranged:3,armor:"mixed"}],
+   intro:"Final level! Everything at once. Find both weapons and reach the portal."},
+];
+
+const WEAPONS = {
+  goo:  {key:"1", name:"Goo Blaster",  css:"#ff7a1a", color:0xff7a1a, dmg:1, rate:280, speed:45, breaks:[]},
+  heat: {key:"2", name:"Heat Ray",     css:"#ff3b3b", color:0xff3b3b, dmg:2, rate:190, speed:90, breaks:["iron"]},
+  sonic:{key:"3", name:"Sonic Cannon", css:"#5fb4ff", color:0x5fb4ff, dmg:2, rate:420, speed:32, breaks:["crystal"]},
+};
+const ARMOR = {
+  iron:   {label:"IRON · HEAT RAY ONLY", frame:0x7d858f, need:"heat",  msg:"Goo bounces off iron! You need the Heat Ray."},
+  crystal:{label:"CRYSTAL · SONIC ONLY", frame:0x7fe3ff, need:"sonic", msg:"Crystal is too hard! Sound vibrations can shatter it, so use the Sonic Cannon."},
+};
+
+/* ==================================================================
+   Helpers, storage, audio
+   ================================================================== */
+const $ = id => document.getElementById(id);
+const rand = (a,b) => a + Math.random()*(b-a);
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const shuffle = arr => { const a = arr.slice(); for (let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const isTouch = matchMedia("(pointer: coarse)").matches && !matchMedia("(pointer: fine)").matches;
+if (isTouch) document.body.classList.add("is-touch");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+try { document.fonts && document.fonts.load('800 40px "Baloo 2"'); } catch(e){}
+
+const SAVE_KEY = "labblaster.progress.v2";
+function loadProgress(){
+  try { const p = JSON.parse(localStorage.getItem(SAVE_KEY)); if (p && typeof p.unlocked === "number") return p; } catch(e){}
+  return {unlocked:0, stars:{}, best:{}};
+}
+function saveProgress(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(progress)); } catch(e){} }
+let progress = loadProgress();
+
+let actx = null;
+function beep(freq, dur, type="square", vol=.08, slide=0, delay=0){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + delay;
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40,freq+slide), t+dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+    o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur+.02);
+  }catch(e){}
+}
+const sfx = {
+  goo(){ beep(520,.12,"sawtooth",.05,-380); },
+  heat(){ beep(1400,.09,"square",.035,-900); },
+  sonic(){ beep(180,.25,"sine",.12,220); beep(360,.2,"triangle",.05,300); },
+  good(){ beep(660,.1); beep(880,.1,"square",.06,0,.09); beep(1320,.18,"square",.05,0,.18); },
+  bad(){ beep(220,.25,"sawtooth",.07,-120); },
+  clang(){ beep(1800,.06,"square",.04); beep(900,.12,"triangle",.05,-300,.03); },
+  hurt(){ beep(140,.2,"sawtooth",.1,-60); },
+  kill(){ beep(300,.15,"square",.05,500); },
+  pickup(){ [523,659,784,1047].forEach((f,i)=>beep(f,.12,"square",.05,0,i*.07)); },
+  door(){ beep(200,.4,"triangle",.08,200); },
+  jump(){ beep(300,.1,"sine",.05,250); },
+  zap(){ beep(900,.15,"sawtooth",.03,-500); },
+  splash(){ beep(90,.35,"sawtooth",.1,-40); },
+};
+
+/* ==================================================================
+   Three.js scene + shared materials
+   ================================================================== */
+const stage = $("stage");
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x12343b);
+scene.fog = new THREE.Fog(0x12343b, 26, 60);
+const camera = new THREE.PerspectiveCamera(72, 1, .1, 200);
+camera.rotation.order = "YXZ";
+scene.add(new THREE.HemisphereLight(0xfdf6e3, 0x3b2a1a, .9));
+const sun = new THREE.DirectionalLight(0xffffff, .55); sun.position.set(6,14,8); scene.add(sun);
+
+function canvasTex(w,h,draw){
+  const c = document.createElement("canvas"); c.width=w; c.height=h;
+  draw(c.getContext("2d"), w, h);
+  const t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t;
+}
+const floorTexBase = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle="#d9c7a3"; g.fillRect(0,0,w,h);
+  g.fillStyle="#cbb68f"; g.fillRect(0,0,w/2,h/2); g.fillRect(w/2,h/2,w/2,h/2);
+  g.strokeStyle="#a8916a"; g.lineWidth=3; g.strokeRect(0,0,w,h);
+  g.beginPath(); g.moveTo(w/2,0);g.lineTo(w/2,h);g.moveTo(0,h/2);g.lineTo(w,h/2);g.stroke();
+});
+const ELEMS = "H He Li Be B C N O F Ne Na Mg Al".split(" ");
+const wallTexBase = canvasTex(1024,256,(g,w,h)=>{
+  g.fillStyle="#cfe8dc"; g.fillRect(0,0,w,h);
+  g.fillStyle="#a9cfc0"; g.fillRect(0,h-40,w,40);
+  const cols=["#ffb37a","#ffd98a","#9fd8b5","#8fc3e8","#e8a3b8"];
+  for(let i=0;i<13;i++){ const x=20+i*77, y=70;
+    g.fillStyle=cols[i%5]; g.fillRect(x,y,68,78); g.strokeStyle="#1d2b2a"; g.lineWidth=3; g.strokeRect(x,y,68,78);
+    g.fillStyle="#1d2b2a"; g.font="bold 30px sans-serif"; g.textAlign="center"; g.fillText(ELEMS[i],x+34,y+50);
+    g.font="bold 14px monospace"; g.fillText(String(i+1),x+34,y+20);
+  }
+});
+const crateTex = canvasTex(128,128,(g,w,h)=>{
+  g.fillStyle="#b07a45"; g.fillRect(0,0,w,h);
+  g.strokeStyle="#7a5230"; g.lineWidth=10; g.strokeRect(5,5,w-10,h-10);
+  g.lineWidth=8; g.beginPath(); g.moveTo(8,8); g.lineTo(w-8,h-8); g.stroke();
+});
+function tiled(base, rx, ry){ const t = base.clone(); t.needsUpdate = true; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); return t; }
+
+const MAT = {
+  wall:  new THREE.MeshLambertMaterial({color:0xcfe8dc}),
+  floor: new THREE.MeshLambertMaterial({color:0xcbb68f}),
+  ceil:  new THREE.MeshLambertMaterial({color:0x2f5d50}),
+  door:  new THREE.MeshLambertMaterial({color:0x2f5d50}),
+  bench: new THREE.MeshLambertMaterial({color:0x7a5230}),
+  top:   new THREE.MeshLambertMaterial({color:0x1d2b2a}),
+  plat:  new THREE.MeshLambertMaterial({color:0xffb37a}),
+  platMove: new THREE.MeshLambertMaterial({color:0x8fc3e8}),
+  crate: new THREE.MeshLambertMaterial({map:crateTex}),
+  acid:  new THREE.MeshBasicMaterial({color:0x7cff4f, transparent:true, opacity:.85}),
+  glass: new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:.35,side:THREE.DoubleSide}),
+};
+const doorSign = canvasTex(256,128,(g,w,h)=>{ g.fillStyle="#2f5d50"; g.fillRect(0,0,w,h); g.strokeStyle="#fdf6e3"; g.lineWidth=6; g.strokeRect(8,8,w-16,h-16); g.fillStyle="#fdf6e3"; g.font="800 54px sans-serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText("DOOR",w/2,h/2+2); });
+
+/* ==================================================================
+   Level state
+   ================================================================== */
+const WALL_H = 7, RW = 12, STEP = .42, GRAV = 20, JUMP_V = 7.4, SPEED = 5.4, MAX_HEARTS = 5;
+let L = null;         // current level runtime
+let mode = "map";     // map | play | pause | end
+const P = {pos:new THREE.Vector3(), vy:0, grounded:false, ground:null, r:.35, H:1.7, eye:1.55, inv:0, kx:0, kz:0, lastGround:0, jumpBuf:0};
+let yaw = 0, pitch = 0;
+
+function disposeLevel(){
+  if (!L) return;
+  scene.remove(L.g);
+  L.g.traverse(o=>{ if (o.geometry) o.geometry.dispose(); if (o.material && o.material.map && o.material.userData && o.material.userData.own) { o.material.map.dispose(); } if (o.material && o.material.userData && o.material.userData.own) o.material.dispose(); });
+  L = null;
+}
+function ownMat(m){ m.userData.own = true; return m; }
+
+function box(x1,y1,z1,x2,y2,z2,mat,opt={}){
+  const a = [Math.min(x1,x2),Math.min(y1,y2),Math.min(z1,z2)], b=[Math.max(x1,x2),Math.max(y1,y2),Math.max(z1,z2)];
+  const m = new THREE.Mesh(new THREE.BoxGeometry(b[0]-a[0], b[1]-a[1], b[2]-a[2]), mat);
+  m.position.set((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2);
+  (opt.parent||L.g).add(m);
+  let c = null;
+  if (opt.collide !== false){ c = {min:new THREE.Vector3(...a), max:new THREE.Vector3(...b), active:true, mesh:m}; L.colliders.push(c); }
+  if (opt.ray !== false) L.statics.push(m);
+  return {mesh:m, col:c};
+}
+function boxC(cx,cy,cz,sx,sy,sz,mat,opt){ return box(cx-sx/2,cy-sy/2,cz-sz/2,cx+sx/2,cy+sy/2,cz+sz/2,mat,opt); }
+
+function buildLevel(li){
+  disposeLevel();
+  const def = LEVELS[li];
+  const qs = shuffle(BANK.filter(q=>def.topics.includes(q.t)));
+  L = {li, def, g:new THREE.Group(), rooms:[], colliders:[], statics:[], movers:[], pickups:[], enemies:[], eshots:[], shots:[], particles:[], boards:[],
+       weapons:{goo:true}, weapon:"goo", hearts:MAX_HEARTS, hurt:0, score:0, streak:0, best:0, firstTry:0, missed:[], cur:-1, done:false, t:0,
+       lastClang:0, total:qs.length};
+  scene.add(L.g);
+  box(-RW-.6,-1,0, RW+.6,WALL_H,.6, MAT.wall);          // back wall of first room
+  let z = 0, qi = 0;
+  def.rooms.forEach((rd, ri)=>{
+    const len = rd.parkour ? 34 : 26;
+    const room = {ri, rd, zEntry:z, zFar:z-len, qs:qs.slice(qi, qi+rd.q), qIdx:0, answered:false, active:false,
+                  enemies:[], weaponFound:!rd.weapon, weaponTimer:0, hinted:false, spawn:new THREE.Vector3(0,0,z-2.5), platforms:[]};
+    qi += rd.q;
+    buildRoom(room);
+    L.rooms.push(room);
+    z = room.zFar - .6;
+  });
+  // Exit corridor + portal
+  const ez = z;
+  box(-3.6,-1,ez-10, 3.6,0,ez, MAT.floor);
+  box(-4.2,-1,ez-10, -3.6,WALL_H,ez, MAT.wall); box(3.6,-1,ez-10, 4.2,WALL_H,ez, MAT.wall);
+  box(-4.2,-1,ez-10.6, 4.2,WALL_H,ez-10, MAT.wall);
+  const portal = new THREE.Mesh(new THREE.TorusGeometry(1.5,.22,12,40), ownMat(new THREE.MeshBasicMaterial({color:0xffcf3a})));
+  portal.position.set(0,1.9,ez-7); L.g.add(portal);
+  const core = new THREE.Mesh(new THREE.CircleGeometry(1.35,32), ownMat(new THREE.MeshBasicMaterial({color:0xfdf6e3, transparent:true, opacity:.55})));
+  core.position.copy(portal.position); L.g.add(core);
+  L.portal = portal; L.exitZ = ez - 5;
+}
+
+function buildRoom(room){
+  const {zEntry:z0, zFar:z1, rd} = room, len = z0 - z1;
+  // side walls (textured)
+  const wm = ownMat(new THREE.MeshLambertMaterial({map:tiled(wallTexBase, len/13, 1)}));
+  box(-RW-.6,-1,z1-.6, -RW,WALL_H,z0, wm);
+  box(RW,-1,z1-.6, RW+.6,WALL_H,z0, wm);
+  // far wall with doorway
+  box(-RW,-1,z1-.6, -1.7,WALL_H,z1, MAT.wall);
+  box(1.7,-1,z1-.6, RW,WALL_H,z1, MAT.wall);
+  box(-1.7,3.7,z1-.6, 1.7,WALL_H,z1, MAT.wall);
+  const d = box(-1.7,0,z1-.5, 1.7,3.7,z1-.1, MAT.door);
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.6,.8), ownMat(new THREE.MeshBasicMaterial({map:doorSign})));
+  sign.position.set(0,.6,.21); d.mesh.add(sign);
+  const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,.2), ownMat(new THREE.MeshBasicMaterial({color:0xe5484d})));
+  lamp.position.set(0,4.2,z1+.05); L.g.add(lamp);
+  room.door = {mesh:d.mesh, col:d.col, open:false, t:0, baseY:d.mesh.position.y, lamp};
+  // ceiling
+  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(RW*2, len+.6), MAT.ceil);
+  ceil.rotation.x = Math.PI/2; ceil.position.set(0,WALL_H,(z0+z1-.6)/2); L.g.add(ceil);
+
+  if (!rd.parkour){
+    box(-RW,-1,z1-.6, RW,0,z0, MAT.floor, {ray:false});
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(RW*2, len+.6), ownMat(new THREE.MeshLambertMaterial({map:tiled(floorTexBase, RW*2/2.5, (len+.6)/2.5)})));
+    fl.rotation.x = -Math.PI/2; fl.position.set(0,.005,(z0+z1-.6)/2); L.g.add(fl);
+    // benches along the side walls
+    [-1,1].forEach(sx=>{ bench(sx*10.9, (z0+z1)/2 + sx*2, sx); });
+    if (rd.weapon) hideWeaponInCrates(room);
+  } else {
+    // start zone, end zone, acid in between, stepping platforms
+    box(-RW,-1,z0-6, RW,0,z0, MAT.floor, {ray:false});
+    box(-RW,-1,z1-.6, RW,0,z1+8, MAT.floor, {ray:false});
+    const acidLen = len - 14;
+    const acid = new THREE.Mesh(new THREE.PlaneGeometry(RW*2, acidLen), MAT.acid);
+    acid.rotation.x = -Math.PI/2; acid.position.set(0,-.35,z0-6-acidLen/2); L.g.add(acid);
+    const pit = box(-RW,-3,z0-6, RW,-2.9,z1+8, MAT.top, {collide:false, ray:false}); pit.mesh.visible = false;
+    const n = 6, span = acidLen, gap = span/n;
+    const heights = [.3,.8,1.25,.9,1.3,.6];
+    const xs = [0, 2.6, -1.2, 2.2, -1.6, .8].map(x=>x + rand(-.5,.5));
+    for (let i=0;i<n;i++){
+      const cz = z0-6 - gap*(i+.5), cy = heights[i], cx = xs[i];
+      const moving = rd.parkour===2 && i===3;
+      const p = boxC(cx, cy-.5, cz, 2.5, 1, 2.5, moving?MAT.platMove:MAT.plat);
+      room.platforms.push(p);
+      if (moving) L.movers.push({p, baseX:cx, amp:3.2, speed:1.3, phase:rand(0,6), lastX:cx});
+    }
+    if (rd.weapon){
+      const base = room.platforms[1], sx = base.mesh.position.x > 0 ? -1 : 1;
+      const px = clamp(base.mesh.position.x + sx*3.8, -RW+1.5, RW-1.5), py = base.col.max.y + .75, pz = base.mesh.position.z;
+      boxC(px, py-.5, pz, 2.2, 1, 2.2, MAT.plat);
+      addWeaponPickup(room, rd.weapon, px, py, pz);
+      room.hideHint = "Look for a platform off to the side of the jumping path.";
+    }
+  }
+}
+
+function bench(x, z, sx){
+  box(x-.7,0,z-2.5, x+.7,.9,z+2.5, MAT.bench);
+  box(x-.8,.9,z-2.6, x+.8,1.02,z+2.6, MAT.top);
+  const cols=[0x2fbf71,0xff7a1a,0x5fb4ff,0xf25fa0];
+  for(let i=0;i<3;i++){
+    const liquid = new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,.28,14), ownMat(new THREE.MeshLambertMaterial({color:cols[(i+(sx>0?1:0))%4]})));
+    liquid.position.set(x, 1.16, z-1.5+i*1.5); L.g.add(liquid);
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.5,14,1,true), MAT.glass);
+    glass.position.set(x, 1.27, z-1.5+i*1.5); L.g.add(glass);
+  }
+}
+
+function hideWeaponInCrates(room){
+  const z1 = room.zFar, sxW = Math.random()<.5 ? -1 : 1;
+  [-1,1].forEach(sx=>{
+    for (const cz of [z1+.65, z1+1.95]) for (const cy of [.65, 1.95]) boxC(sx*9.05, cy, cz, 1.3, 1.3, 1.3, MAT.crate);
+    boxC(sx*10.9, .65, z1+4.9, 1.3, 1.3, 1.3, MAT.crate);
+    boxC(sx*6.6, .65, z1+.65, 1.3, 1.3, 1.3, MAT.crate);
+  });
+  addWeaponPickup(room, room.rd.weapon, sxW*10.85, .9, z1+1.3);
+  room.hideHint = "Check behind the crate stacks in the far corners.";
+}
+
+function addWeaponPickup(room, w, x, y, z){
+  const g = new THREE.Group();
+  const col = WEAPONS[w].color;
+  const body = new THREE.Mesh(new THREE.BoxGeometry(.7,.32,.32), ownMat(new THREE.MeshLambertMaterial({color:0x1d2b2a})));
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(.09,.13,.7,10), ownMat(new THREE.MeshBasicMaterial({color:col})));
+  barrel.rotation.z = Math.PI/2; barrel.position.x = .55;
+  const grip = new THREE.Mesh(new THREE.BoxGeometry(.16,.35,.2), ownMat(new THREE.MeshLambertMaterial({color:col})));
+  grip.position.set(-.18,-.28,0);
+  const halo = new THREE.Mesh(new THREE.TorusGeometry(.75,.05,8,32), ownMat(new THREE.MeshBasicMaterial({color:col, transparent:true, opacity:.7})));
+  halo.rotation.x = Math.PI/2;
+  g.add(body, barrel, grip, halo);
+  g.position.set(x, y+.5, z); L.g.add(g);
+  L.pickups.push({kind:"weapon", w, g, room, baseY:y+.5, taken:false});
+}
+
+function addHeartPickup(x, y, z){
+  const g = new THREE.Group();
+  const s = new THREE.Shape();
+  s.moveTo(0,-.35); s.bezierCurveTo(-.5,0,-.35,.35,0,.18); s.bezierCurveTo(.35,.35,.5,0,0,-.35);
+  const m = new THREE.Mesh(new THREE.ExtrudeGeometry(s,{depth:.12,bevelEnabled:false}), ownMat(new THREE.MeshBasicMaterial({color:0xe5484d})));
+  g.add(m); g.position.set(x, y+.8, z); L.g.add(g);
+  L.pickups.push({kind:"heart", g, baseY:y+.8, taken:false});
+}
+
+/* ==================================================================
+   Boards
+   ================================================================== */
+const boardColors = ["#2f5d50","#3a4f7a","#6b3f5c","#7a5230"];
+function wrapText(g, text, maxW){
+  const words = text.split(" "), lines=[]; let line="";
+  for (const w of words){ const test = line ? line+" "+w : w;
+    if (g.measureText(test).width > maxW && line){ lines.push(line); line=w; } else line=test; }
+  if (line) lines.push(line); return lines;
+}
+function makeBoard(text, idx, armor){
+  const W=640,H=300;
+  const tex = canvasTex(W,H,(g)=>{
+    g.fillStyle=boardColors[idx%4]; g.fillRect(0,0,W,H);
+    g.strokeStyle="#fdf6e3"; g.lineWidth=8; g.setLineDash([18,12]); g.strokeRect(18,18,W-36,H-36); g.setLineDash([]);
+    g.fillStyle="#fdf6e3"; g.textAlign="center"; g.textBaseline="middle";
+    let size=66, lines;
+    do { g.font=`800 ${size}px "Baloo 2", "Trebuchet MS", sans-serif`; lines=wrapText(g,text,W-90); size-=4; }
+    while ((lines.length*size*1.12 > H-80) && size>24);
+    size += 4; const lh=size*1.12, y0=H/2-(lines.length-1)*lh/2;
+    lines.forEach((l,i)=>g.fillText(l,W/2,y0+i*lh));
+  });
+  const group = new THREE.Group();
+  const frameCol = armor ? ARMOR[armor].frame : 0xff7a1a;
+  const frame = new THREE.Mesh(new THREE.BoxGeometry(armor?3.6:3.3, armor?1.95:1.66, armor?.34:.18),
+     ownMat(new THREE.MeshLambertMaterial({color:frameCol, transparent:armor==="crystal", opacity:armor==="crystal"?.8:1})));
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(3.1,1.46), ownMat(new THREE.MeshBasicMaterial({map:tex})));
+  face.position.z = armor ? .18 : .1;
+  const back = face.clone(); back.rotation.y = Math.PI; back.position.z = -face.position.z;
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,1.2,8), MAT.top);
+  post.position.y = -1.4;
+  group.add(frame, face, back, post);
+  frame.userData.board = face.userData.board = back.userData.board = group;
+  if (armor){
+    const boltMat = ownMat(new THREE.MeshLambertMaterial({color: armor==="iron"?0x3d4550:0xdffaff}));
+    const geo = armor==="iron" ? new THREE.SphereGeometry(.11,8,8) : new THREE.OctahedronGeometry(.2);
+    for (const [bx,by] of [[-1.62,.83],[1.62,.83],[-1.62,-.83],[1.62,-.83]]){
+      const b = new THREE.Mesh(geo, boltMat); b.position.set(bx,by,.2); group.add(b);
+    }
+    const tagTex = canvasTex(512,64,(g,w,h)=>{
+      g.fillStyle = armor==="iron" ? "#3d4550" : "#1f6f8b"; g.fillRect(0,0,w,h);
+      g.fillStyle = "#fff"; g.font = "800 34px sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+      g.fillText(ARMOR[armor].label, w/2, h/2+2);
+    });
+    const tag = new THREE.Mesh(new THREE.PlaneGeometry(2.8,.35), ownMat(new THREE.MeshBasicMaterial({map:tagTex})));
+    tag.position.set(0,1.25,.05); group.add(tag);
+  }
+  return group;
+}
+
+function clearBoards(){ L.boards.forEach(b=>L.g.remove(b)); L.boards = []; }
+
+function spawnWave(room){
+  clearBoards();
+  const q = room.qs[room.qIdx]; q._wrong = false;
+  const opts = shuffle(q.a.map((text,i)=>({text, correct:i===0})));
+  const n = opts.length, rd = room.rd;
+  // decide armour
+  const armors = opts.map(()=>null);
+  if (rd.armor){
+    const pick = () => rd.armor==="mixed" ? (Math.random()<.5?"iron":"crystal") : rd.armor;
+    opts.forEach((o,i)=>{ if (o.correct || Math.random()<.45) armors[i] = pick(); });
+    if (rd.armor==="mixed" && L.weapons.heat && L.weapons.sonic === undefined) {/* both are found in earlier rooms of this level */}
+  }
+  const zc = rd.parkour ? room.zFar + 4.6 : room.zFar + 7;
+  opts.forEach((o,i)=>{
+    const b = makeBoard(o.text, i, armors[i]);
+    const x = -7.8 + 15.6*i/(n-1) + rand(-.6,.6), z = zc + rand(-1.6,1.6), y = 2.5 + rand(0,1.3) + (rd.parkour?.4:0);
+    b.position.set(x,y,z);
+    b.userData = {correct:o.correct, text:o.text, armor:armors[i], baseX:x, baseY:y, phase:rand(0,6), alive:true, spawn:0,
+      drift: (L.li>=2 && !reduceMotion) ? rand(.8,1.6) : 0, hitFlash:0};
+    b.scale.setScalar(.01);
+    L.g.add(b); L.boards.push(b);
+  });
+  renderHUD();
+}
+
+/* ==================================================================
+   Enemies
+   ================================================================== */
+const germMat = new THREE.MeshLambertMaterial({color:0x6fdc4a});
+const germSpike = new THREE.MeshLambertMaterial({color:0x3f9e2b});
+const white = new THREE.MeshBasicMaterial({color:0xffffff});
+const black = new THREE.MeshBasicMaterial({color:0x111111});
+const droneMat = new THREE.MeshLambertMaterial({color:0x9aa3ad});
+function tagEnemy(g, e){ g.traverse(o=>{ if (o.isMesh) o.userData.enemy = e; }); }
+
+function makeGerm(x, y, z){
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.SphereGeometry(.55,16,12), ownMat(germMat.clone()));
+  g.add(body);
+  for (let i=0;i<10;i++){
+    const s = new THREE.Mesh(new THREE.ConeGeometry(.1,.35,6), germSpike);
+    const th = i/10*Math.PI*2, ph = (i%2? .6 : -.3);
+    const v = new THREE.Vector3(Math.cos(th)*Math.cos(ph), Math.sin(ph), Math.sin(th)*Math.cos(ph));
+    s.position.copy(v).multiplyScalar(.6); s.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), v); g.add(s);
+  }
+  for (const ex of [-.2,.2]){
+    const e1 = new THREE.Mesh(new THREE.SphereGeometry(.14,10,8), white); e1.position.set(ex,.15,.46); g.add(e1);
+    const p1 = new THREE.Mesh(new THREE.SphereGeometry(.07,8,6), black); p1.position.set(ex,.15,.58); g.add(p1);
+  }
+  const mouth = new THREE.Mesh(new THREE.TorusGeometry(.14,.035,6,12,Math.PI), black);
+  mouth.position.set(0,-.12,.5); mouth.rotation.z = Math.PI; g.add(mouth);
+  L.g.add(g);
+  const e = {type:"germ", g, body, hp:2, pos:new THREE.Vector3(x,y,z), cd:rand(.5,1.5), windup:0, flash:0, dead:false,
+             speed: 1.8 + L.li*.14, t:rand(0,6)};
+  tagEnemy(g, e); return e;
+}
+function makeDrone(x, z){
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.SphereGeometry(.55,16,12), ownMat(droneMat.clone()));
+  body.scale.set(1,.65,1); g.add(body);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.8,.07,8,24), MAT.top); ring.rotation.x = Math.PI/2; g.add(ring);
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(.16,10,8), ownMat(new THREE.MeshBasicMaterial({color:0xff3344})));
+  eye.position.set(0,0,.48); g.add(eye);
+  for (const px of [-.8,.8]){ const r = new THREE.Mesh(new THREE.BoxGeometry(.5,.04,.12), MAT.top); r.position.set(px,.25,0); g.add(r); }
+  L.g.add(g);
+  const e = {type:"drone", g, body, eye, hp:3, pos:new THREE.Vector3(x,3.4,z), cd:rand(1.5,2.5), windup:0, flash:0, dead:false,
+             t:rand(0,6), strafe:Math.random()<.5?-1:1, props:[g.children[3], g.children[4]]};
+  tagEnemy(g, e); return e;
+}
+
+function spawnEnemies(room){
+  const rd = room.rd, z1 = room.zFar;
+  for (let i=0;i<(rd.melee||0);i++){
+    const zMin = z1 + 1.5, zMax = rd.parkour ? z1 + 7 : z1 + 14;
+    let x, z, tries = 0;
+    do { x = rand(-9,9); z = rand(zMin, zMax); } while (blockedAt(x, z, 0) && ++tries < 30);
+    const e = makeGerm(x, 0, z);
+    room.enemies.push(e); L.enemies.push(e);
+  }
+  for (let i=0;i<(rd.ranged||0);i++){
+    const e = makeDrone(rand(-8,8), z1 + rand(3, 9));
+    room.enemies.push(e); L.enemies.push(e);
+  }
+}
+
+/* ==================================================================
+   Collision
+   ================================================================== */
+function circleBox(px,pz,c){
+  const cx = clamp(px,c.min.x,c.max.x), cz = clamp(pz,c.min.z,c.max.z);
+  const dx = px-cx, dz = pz-cz; return {dx, dz, d2:dx*dx+dz*dz};
+}
+function pushOut(pos, r, H, grounded){
+  for (const c of L.colliders){
+    if (!c.active) continue;
+    if (pos.y >= c.max.y - .02 || pos.y + H <= c.min.y) continue;
+    const {dx,dz,d2} = circleBox(pos.x,pos.z,c);
+    if (d2 >= r*r) continue;
+    if (grounded && c.max.y - pos.y <= STEP){ pos.y = c.max.y; continue; }
+    if (d2 > 1e-8){ const d=Math.sqrt(d2), k=(r-d)/d; pos.x += dx*k; pos.z += dz*k; }
+    else {
+      const l=pos.x-c.min.x, rr=c.max.x-pos.x, f=pos.z-c.min.z, b=c.max.z-pos.z, m=Math.min(l,rr,f,b);
+      if (m===l) pos.x=c.min.x-r; else if (m===rr) pos.x=c.max.x+r; else if (m===f) pos.z=c.min.z-r; else pos.z=c.max.z+r;
+    }
+  }
+}
+function verticalMove(dt){
+  P.vy = Math.max(P.vy - GRAV*dt, -30);
+  const ny = P.pos.y + P.vy*dt, rr = P.r*.8;
+  P.grounded = false; P.ground = null;
+  if (P.vy <= 0){
+    let best = -Infinity, bc = null;
+    for (const c of L.colliders){
+      if (!c.active || c.max.y > P.pos.y + .05 || c.max.y < ny - .001) continue;
+      if (circleBox(P.pos.x,P.pos.z,c).d2 >= rr*rr) continue;
+      if (c.max.y > best){ best = c.max.y; bc = c; }
+    }
+    if (bc){ P.pos.y = best; P.vy = 0; P.grounded = true; P.ground = bc; P.lastGround = L.t; return; }
+  } else {
+    const head = P.pos.y + P.H;
+    for (const c of L.colliders){
+      if (!c.active || c.min.y < head - .05 || c.min.y > ny + P.H) continue;
+      if (circleBox(P.pos.x,P.pos.z,c).d2 >= rr*rr) continue;
+      P.vy = 0; P.pos.y = c.min.y - P.H; return;
+    }
+  }
+  P.pos.y = ny;
+}
+function groundAt(x, z, maxY){
+  let best = null;
+  for (const c of L.colliders){
+    if (!c.active || x<c.min.x || x>c.max.x || z<c.min.z || z>c.max.z || c.max.y > maxY) continue;
+    if (best === null || c.max.y > best) best = c.max.y;
+  }
+  return best;
+}
+function blockedAt(x, z, y){
+  for (const c of L.colliders){
+    if (!c.active) continue;
+    if (x>c.min.x-.4 && x<c.max.x+.4 && z>c.min.z-.4 && z<c.max.z+.4 && c.min.y < y+.9 && c.max.y > y+.1) return true;
+  }
+  return false;
+}
+function pointInCollider(p){
+  for (const c of L.colliders){
+    if (c.active && p.x>c.min.x && p.x<c.max.x && p.y>c.min.y && p.y<c.max.y && p.z>c.min.z && p.z<c.max.z) return true;
+  }
+  return false;
+}
+
+/* ==================================================================
+   HUD
+   ================================================================== */
+function curRoom(){ return L && L.rooms[L.cur]; }
+function renderHUD(){
+  if (!L) return;
+  const room = curRoom(); if (!room) return;
+  const q = room.qs[room.qIdx];
+  $("qnum").textContent = `Room ${room.ri+1} / ${L.rooms.length}` + (room.answered ? " · All answered" : ` · Question ${room.qIdx+1} / ${room.qs.length}`);
+  $("qtopic").textContent = `Level ${L.li+1} · ${q ? q.t : L.def.name}`;
+  if (room.answered){
+    const left = room.enemies.filter(e=>!e.dead).length;
+    $("qtext").textContent = left ? `Defeat the ${left} enem${left>1?"ies":"y"} left to unlock the door!` : (L.rooms[L.cur+1] ? "The door is open, head through it!" : "The door is open, reach the golden portal!");
+    $("qdata").textContent = "";
+  } else {
+    $("qtext").textContent = q.q;
+    $("qdata").textContent = q.d || "";
+  }
+  const alive = room.enemies.filter(e=>!e.dead).length;
+  const chips = [];
+  if (room.enemies.length) chips.push(`<span class="chip ${alive?"warn":"ok"}">${alive ? alive+" enem"+(alive>1?"ies":"y")+" left" : "Room clear"}</span>`);
+  if (room.rd.weapon && !room.weaponFound) chips.push(`<span class="chip">A ${WEAPONS[room.rd.weapon].name} is hidden here</span>`);
+  chips.push(`<span class="chip ${room.door.open?"ok":""}">Door ${room.door.open?"open":"locked"}</span>`);
+  $("objective").innerHTML = chips.join("");
+  $("hearts").innerHTML = "♥".repeat(Math.max(0,L.hearts)) + `<span class="lost">${"♥".repeat(MAX_HEARTS-Math.max(0,L.hearts))}</span>`;
+  $("score").textContent = `Score ${L.score}`;
+  $("streak").textContent = `Streak ${L.streak}`;
+  renderWeapons();
+}
+function renderWeapons(){
+  const el = $("weapons");
+  el.innerHTML = Object.entries(WEAPONS).map(([id,w])=>{
+    const have = L.weapons[id];
+    return `<button class="slot ${have?"":"locked"} ${L.weapon===id?"active":""}" data-w="${id}" style="--c:${w.css}" ${have?"":"disabled"} aria-label="${have?w.name:"Locked weapon"}">
+      <kbd>${w.key}</kbd><i></i>${have ? w.name : "???"}</button>`;
+  }).join("");
+}
+$("weapons").addEventListener("click", e=>{ const b = e.target.closest(".slot"); if (b) selectWeapon(b.dataset.w); });
+$("weapons").addEventListener("touchstart", e=>{ const b = e.target.closest(".slot"); if (b){ e.preventDefault(); selectWeapon(b.dataset.w); } }, {passive:false});
+
+let toastTimer = 0;
+function toast(kind, main, sub, ms){
+  const el = $("toast"); el.className = kind + " show"; el.textContent = main;
+  if (sub){ const s = document.createElement("small"); s.textContent = sub; el.append(s); }
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove("show"), ms || (kind==="good"?2300:2000));
+}
+let bannerTimer = 0;
+function banner(eyebrow, title, text, ms=3600){
+  const el = $("banner");
+  el.innerHTML = `<p class="eyebrow">${esc(eyebrow)}</p><b>${esc(title)}</b>${text?`<span>${esc(text)}</span>`:""}`;
+  el.classList.add("show"); clearTimeout(bannerTimer); bannerTimer = setTimeout(()=>el.classList.remove("show"), ms);
+}
+function flash(kind){
+  const h = $("hurt"); h.className = "on" + (kind==="acid" ? " acid" : "");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>h.classList.remove("on")));
+}
+
+/* ==================================================================
+   Game flow
+   ================================================================== */
+function showScreen(id){
+  for (const s of ["mapScreen","pauseScreen","endScreen"]) $(s).hidden = s !== id;
+  const playing = id === null;
+  $("hud").hidden = !playing && mode !== "pause";
+  $("cross").hidden = !playing; $("weapons").hidden = !playing;
+  $("touchUI").hidden = !playing || !isTouch; $("pauseHint").hidden = !playing || isTouch;
+}
+
+function startLevel(li){
+  lockPointer();
+  buildLevel(li);
+  P.pos.set(0,0,-2.5); P.vy=0; P.kx=P.kz=0; P.inv=0;
+  yaw = 0; pitch = 0; applyLook();
+  mode = "play";
+  activateRoom(0);
+  showScreen(null);
+  banner(`Level ${li+1}`, L.def.name, L.def.intro, 4200);
+}
+
+function activateRoom(i){
+  L.cur = i;
+  const room = L.rooms[i];
+  if (i > 0){ const prev = L.rooms[i-1].door; prev.open = false; prev.col.active = true; }
+  room.active = true;
+  spawnEnemies(room);
+  spawnWave(room);
+  if (i > 0){
+    const rd = room.rd, tips = [];
+    if (rd.parkour) tips.push("Jump across the platforms (Space). Don't touch the acid!");
+    if (rd.ranged) tips.push("Drones shoot back. Keep moving!");
+    if (rd.weapon) tips.push(`A ${WEAPONS[rd.weapon].name} is hidden in this room.`);
+    else if (rd.armor) tips.push("Armoured boards: switch to the right weapon.");
+    if (tips.length) banner(`Room ${i+1}`, rd.parkour ? "Parkour room" : "Next room", tips.join(" "), 3200);
+  }
+}
+
+function openDoor(room){
+  if (room.door.open) return;
+  room.door.open = true; sfx.door();
+  toast("good", L.rooms[room.ri+1] ? "Door unlocked!" : "Exit unlocked!", L.rooms[room.ri+1] ? "Head to the next room." : "Jump into the golden portal.");
+  renderHUD();
+}
+
+function checkRoomDone(room){
+  if (room.answered && room.enemies.every(e=>e.dead)) openDoor(room);
+  renderHUD();
+}
+
+function selectWeapon(id){
+  if (!L || !L.weapons[id] || L.weapon === id) return;
+  L.weapon = id; beep(700,.05,"square",.04); renderWeapons();
+}
+function cycleWeapon(){
+  const ids = Object.keys(WEAPONS).filter(k=>L.weapons[k]);
+  selectWeapon(ids[(ids.indexOf(L.weapon)+1) % ids.length]);
+}
+
+function loseHeart(n){
+  L.hearts -= n; L.hurt += n; renderHUD();
+  if (L.hearts <= 0) failLevel();
+}
+function hurtPlayer(n, fromX, fromZ){
+  if (P.inv > 0 || mode !== "play") return;
+  P.inv = 1.1; sfx.hurt(); flash();
+  if (fromX !== undefined){ const dx = P.pos.x-fromX, dz = P.pos.z-fromZ, d = Math.hypot(dx,dz)||1; P.kx = dx/d*9; P.kz = dz/d*9; P.vy = Math.max(P.vy, 3); }
+  L.streak = 0;
+  loseHeart(n);
+}
+
+function onBoardHit(board, point){
+  const u = board.userData;
+  if (!u.alive || mode !== "play") return;
+  const room = curRoom(); if (!room || room.answered) return;
+  // armour check
+  if (u.armor && !WEAPONS[L.weapon].breaks.includes(u.armor)){
+    burst(point, u.armor==="iron" ? 0xdfe3e8 : 0xbff4ff, 10, .5);
+    sfx.clang(); u.hitFlash = .25;
+    if (L.t - L.lastClang > 1.5){
+      L.lastClang = L.t;
+      const need = ARMOR[u.armor].need;
+      toast("info", ARMOR[u.armor].msg, L.weapons[need] ? `Press ${WEAPONS[need].key} to switch.` : "Keep exploring to find it.");
+    }
+    return;
+  }
+  const q = room.qs[room.qIdx];
+  if (u.correct){
+    burst(point, 0x2fbf71, 40);
+    if (!q._wrong){ L.streak++; L.firstTry++; L.best = Math.max(L.best, L.streak); }
+    L.score += 100 + (q._wrong ? 0 : L.streak*20);
+    sfx.good();
+    toast("good", q._wrong ? "Got it!" : (L.streak>=3 ? `Correct! ${L.streak} in a row!` : "Correct!"), q.why);
+    L.boards.forEach(b=>{ b.userData.alive = false; b.userData.dying = 1; });
+    room.qIdx++;
+    if (room.qIdx >= room.qs.length){ room.answered = true; setTimeout(()=>{ if (L && curRoom()===room) checkRoomDone(room); }, 600); renderHUD(); }
+    else setTimeout(()=>{ if (L && mode!=="end" && curRoom()===room) spawnWave(room); }, 1900);
+  } else {
+    burst(point, 0xe5484d, 24);
+    sfx.bad(); flash();
+    if (!q._wrong){ q._wrong = true; L.missed.push(q); }
+    L.streak = 0;
+    u.alive = false; u.dying = 1;
+    toast("bad", `Not "${u.text}"`, "Try another board!");
+    loseHeart(1);
+  }
+}
+
+function onEnemyHit(e, dmg, point){
+  if (e.dead) return;
+  e.hp -= dmg; e.flash = .15;
+  burst(point, e.type==="germ" ? 0x6fdc4a : 0xffd98a, 10, .6);
+  if (e.hp <= 0){
+    e.dead = true; sfx.kill();
+    burst(e.g.position, e.type==="germ" ? 0x6fdc4a : 0x9aa3ad, 34);
+    L.g.remove(e.g);
+    L.score += e.type==="germ" ? 50 : 80;
+    if (L.hearts < MAX_HEARTS && Math.random() < .3){
+      const gy = e.type==="germ" ? e.pos.y : (groundAt(e.pos.x, e.pos.z, 3) ?? 0);
+      addHeartPickup(e.pos.x, gy, e.pos.z);
+    }
+    const room = curRoom(); if (room) checkRoomDone(room);
+  } else beep(500,.05,"square",.04);
+}
+
+function completeLevel(){
+  if (L.done) return;
+  L.done = true; mode = "end";
+  if (document.pointerLockElement) document.exitPointerLock();
+  sfx.pickup();
+  const stars = L.hurt <= 1 ? 3 : L.hurt <= 3 ? 2 : 1;
+  const li = L.li;
+  progress.stars[li] = Math.max(progress.stars[li]||0, stars);
+  progress.best[li] = Math.max(progress.best[li]||0, L.score);
+  progress.unlocked = Math.max(progress.unlocked, Math.min(li+1, LEVELS.length-1));
+  if (li === LEVELS.length-1) progress.finished = true;
+  saveProgress();
+  const next = li+1 < LEVELS.length;
+  $("endEyebrow").textContent = `Level ${li+1} · ${L.def.name}`;
+  $("endTitle").innerHTML = stars===3 ? 'Brilliant <span>scientist!</span>' : 'Topic <span>done!</span>';
+  $("endStars").innerHTML = "★".repeat(stars) + `<span class="off">${"★".repeat(3-stars)}</span>`;
+  $("endScore").textContent = L.score.toLocaleString();
+  $("endLine").textContent = `First-try correct: ${L.firstTry} of ${L.total} · Hearts lost: ${L.hurt}` + (next ? ` · The door to "${LEVELS[li+1].name}" is now open!` : " · You finished every topic!");
+  fillReview();
+  $("endBtns").innerHTML = (next ? `<button id="nextBtn">Next level</button>` : "") + `<button class="ghost" id="mapBtn">World map</button><button class="ghost" id="retryBtn">Play again</button>`;
+  wireEndBtns(li);
+  showScreen("endScreen");
+}
+function failLevel(){
+  if (L.done) return;
+  L.done = true; mode = "end";
+  if (document.pointerLockElement) document.exitPointerLock();
+  const li = L.li;
+  $("endEyebrow").textContent = `Level ${li+1} · ${L.def.name}`;
+  $("endTitle").innerHTML = 'Out of <span>hearts</span>';
+  $("endStars").innerHTML = "";
+  $("endScore").textContent = L.score.toLocaleString();
+  $("endLine").textContent = `You reached room ${L.cur+1} of ${L.rooms.length}. Have another go!`;
+  fillReview();
+  $("endBtns").innerHTML = `<button id="retryBtn">Try again</button><button class="ghost" id="mapBtn">World map</button>`;
+  wireEndBtns(li);
+  showScreen("endScreen");
+}
+function fillReview(){
+  const rv = $("review"); rv.innerHTML = "";
+  if (!L.missed.length){ rv.hidden = true; return; }
+  rv.hidden = false;
+  rv.innerHTML = `<div><b>Review these</b></div>` + L.missed.map(q=>`<div>${esc(q.q)}<br><b>${esc(q.a[0])}</b>: ${esc(q.why)}</div>`).join("");
+}
+function wireEndBtns(li){
+  const n = $("nextBtn"), m = $("mapBtn"), r = $("retryBtn");
+  if (n) n.onclick = ()=>startLevel(li+1);
+  if (m) m.onclick = ()=>toMap(li+1 < LEVELS.length ? Math.min(progress.unlocked, li+1) : li);
+  if (r) r.onclick = ()=>startLevel(li);
+  setTimeout(()=>(n||r||m).focus(), 50);
+}
+function toMap(select){
+  disposeLevel(); mode = "map";
+  if (document.pointerLockElement) document.exitPointerLock();
+  renderMap(select);
+  showScreen("mapScreen");
+}
+function pause(){ if (mode !== "play") return; mode = "pause"; $("pauseScreen").hidden = false; setTimeout(()=>$("resumeBtn").focus(),30); }
+function resume(){ if (mode !== "pause") return; mode = "play"; $("pauseScreen").hidden = true; lockPointer(); }
+$("resumeBtn").onclick = resume;
+$("quitBtn").onclick = ()=>toMap(L ? L.li : 0);
+
+/* ==================================================================
+   World map
+   ================================================================== */
+const NODES = [[120,470],[270,525],[425,480],[575,530],[735,465],[745,315],[560,265],[690,140]];
+let selected = 0;
+function smoothPath(pts){
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+    const c1=[p1[0]+(p2[0]-p0[0])/6, p1[1]+(p2[1]-p0[1])/6], c2=[p2[0]-(p3[0]-p1[0])/6, p2[1]-(p3[1]-p1[1])/6];
+    d += ` C${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${p2[0]},${p2[1]}`;
+  }
+  return d;
+}
+function levelFeatures(def){
+  const f = [];
+  const r = def.rooms;
+  const has = k => r.some(x=>x[k]);
+  if (!has("melee") && !has("ranged") && !has("parkour") && !has("armor")) f.push(["Warm-up: no enemies",""]);
+  if (has("melee")) f.push(["Germs (close attacks)","hot"]);
+  if (has("ranged")) f.push(["Drones (shoot back)","hot"]);
+  if (has("parkour")) f.push([r.some(x=>x.parkour===2) ? "Parkour + moving platforms" : "Parkour",""]);
+  if (r.some(x=>x.weapon==="heat")) f.push(["Iron boards · find the Heat Ray","tool"]);
+  if (r.some(x=>x.weapon==="sonic")) f.push(["Crystal boards · find the Sonic Cannon","tool"]);
+  return f;
+}
+function renderMap(sel){
+  selected = clamp(sel ?? progress.unlocked, 0, LEVELS.length-1);
+  const svg = $("map"), u = progress.unlocked;
+  const doneCount = Object.keys(progress.stars).length, starSum = Object.values(progress.stars).reduce((a,b)=>a+b,0);
+  $("progress").textContent = `${doneCount} / ${LEVELS.length} topics done · ${starSum}★ of ${LEVELS.length*3}`;
+  let s = "";
+  // sea + waves
+  s += `<rect width="900" height="600" fill="#1a4a52"/>`;
+  for (let i=0;i<14;i++){ const x = (i*137)%880+10, y = (i*89)%560+20; s += `<path d="M${x},${y} q10,-7 20,0 t20,0" stroke="#2c6a73" stroke-width="3" fill="none" stroke-linecap="round"/>`; }
+  // island
+  const island = "M60,430 C30,300 120,190 250,185 C330,95 520,55 650,70 C800,55 880,170 855,290 C885,390 870,540 740,575 C610,605 420,592 290,585 C150,595 70,530 60,430 Z";
+  s += `<path d="${island}" fill="#a9cfc0" transform="translate(6,10)"/><path d="${island}" fill="#cfe8dc" stroke="#1d2b2a" stroke-width="4"/>`;
+  // scenery: trees and beakers
+  const trees = [[180,300],[210,340],[330,210],[820,230],[470,380],[300,420],[640,400],[160,560]];
+  trees.forEach(([x,y])=>{ s += `<rect x="${x-3}" y="${y}" width="6" height="14" fill="#7a5230"/><circle cx="${x}" cy="${y-4}" r="14" fill="#2fbf71" stroke="#1d2b2a" stroke-width="3"/>`; });
+  [[400,150],[520,160],[860,400]].forEach(([x,y])=>{ s += `<path d="M${x-8},${y-18} h16 v10 l10,22 h-36 l10,-22 z" fill="#8fc3e8" stroke="#1d2b2a" stroke-width="3"/><rect x="${x-14}" y="${y+4}" width="28" height="7" fill="#ff7a1a"/>`; });
+  // path (full, then done part)
+  const path = smoothPath(NODES);
+  s += `<path d="${path}" stroke="#1d2b2a" stroke-width="22" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="${path}" stroke="#e8d3a6" stroke-width="15" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="${path}" stroke="#fdf6e3" stroke-width="3" fill="none" stroke-dasharray="2 12" stroke-linecap="round"/>`;
+  // doors between nodes
+  for (let i=0;i<NODES.length-1;i++){
+    const [ax,ay] = NODES[i], [bx,by] = NODES[i+1];
+    const x = (ax+bx)/2, y = (ay+by)/2 - 10, open = i+1 <= u;
+    s += `<g transform="translate(${x},${y})" aria-hidden="true">
+      <rect x="-13" y="-19" width="26" height="34" rx="12" ry="12" fill="${open?"#2fbf71":"#e5484d"}" stroke="#1d2b2a" stroke-width="3"/>
+      ${open
+        ? `<rect x="-6" y="-11" width="12" height="22" fill="#1d2b2a"/>`
+        : `<rect x="-6" y="-3" width="12" height="10" rx="2" fill="#ffcf3a" stroke="#1d2b2a" stroke-width="2"/><path d="M-3.5,-3 v-4 a3.5,3.5 0 0 1 7,0 v4" stroke="#1d2b2a" stroke-width="2.2" fill="none"/>`}
+    </g>`;
+  }
+  // start flag
+  s += `<g transform="translate(62,500)"><rect x="0" y="-40" width="4" height="46" fill="#1d2b2a"/><path d="M4,-40 h28 l-7,9 l7,9 h-28 z" fill="#ff7a1a" stroke="#1d2b2a" stroke-width="2"/></g>`;
+  // nodes
+  LEVELS.forEach((lv,i)=>{
+    const [x,y] = NODES[i], locked = i > u, done = !!progress.stars[i], cur = i === selected;
+    const fill = locked ? "#6b7c79" : done ? "#2fbf71" : "#ff7a1a";
+    const st = progress.stars[i]||0;
+    const lab = `${i+1}. ${lv.name}`, lw = Math.round(18 + lab.length*8.4);
+    const lx = i===5 ? x+90 : x, ly = (i===0 || i===7) ? y-58 : i===5 ? y : y+56;
+    const starsY = (i===7 || i===0) ? y+52 : y-36;
+    s += `<g class="node ${locked?"locked":""}" data-i="${i}" tabindex="0" role="button" aria-label="Level ${i+1}: ${esc(lv.name)}${locked?" (locked)":done?` (done, ${st} stars)`:" (open)"}">`;
+    if (!locked && !done) s += `<circle class="pulse" cx="${x}" cy="${y}" r="34" fill="#ff7a1a" opacity=".5"/>`;
+    if (cur) s += `<circle cx="${x}" cy="${y}" r="38" fill="none" stroke="#ffcf3a" stroke-width="5"/>`;
+    s += `<circle cx="${x}" cy="${y+5}" r="30" fill="#1d2b2a"/><circle cx="${x}" cy="${y}" r="30" fill="${fill}" stroke="#1d2b2a" stroke-width="4"/>`;
+    s += locked
+      ? `<rect x="${x-10}" y="${y-3}" width="20" height="15" rx="3" fill="#cfe8dc"/><path d="M${x-6},${y-3} v-6 a6,6 0 0 1 12,0 v6" stroke="#cfe8dc" stroke-width="3.5" fill="none"/>`
+      : `<text x="${x}" y="${y+10}" text-anchor="middle" font-size="28">${lv.icon}</text>`;
+    s += `<g transform="translate(${lx},${ly})"><rect x="${-lw/2}" y="-15" width="${lw}" height="26" rx="13" fill="${locked?"#e3eeea":"#fdf6e3"}" stroke="#1d2b2a" stroke-width="2.5"/>
+          <text class="maplabel" x="0" y="4" text-anchor="middle" fill="#1d2b2a">${esc(lab)}</text></g>`;
+    if (done) s += `<text x="${x}" y="${starsY}" text-anchor="middle" font-size="18" fill="#ffcf3a" stroke="#1d2b2a" stroke-width="1.2">${"★".repeat(st)}${"☆".repeat(3-st)}</text>`;
+    s += `</g>`;
+  });
+  // player token on selected node
+  const [px,py] = NODES[selected];
+  s += `<g transform="translate(${px+44},${py-30})" pointer-events="none"><g class="hop">
+    <ellipse cx="0" cy="30" rx="12" ry="4" fill="rgba(0,0,0,.25)"/>
+    <rect x="-10" y="0" width="20" height="24" rx="8" fill="#fdf6e3" stroke="#1d2b2a" stroke-width="3"/>
+    <circle cx="0" cy="-6" r="10" fill="#f2c79b" stroke="#1d2b2a" stroke-width="3"/>
+    <rect x="-9" y="-10" width="18" height="6" rx="3" fill="#8fc3e8" stroke="#1d2b2a" stroke-width="2"/>
+    <rect x="8" y="8" width="14" height="6" rx="2" fill="#ff7a1a" stroke="#1d2b2a" stroke-width="2"/>
+  </g></g>`;
+  svg.innerHTML = s;
+  svg.querySelectorAll(".node").forEach(n=>{
+    const i = +n.dataset.i;
+    n.addEventListener("click", ()=>pickNode(i));
+    n.addEventListener("keydown", e=>{ if (e.key==="Enter"||e.key===" "){ e.preventDefault(); pickNode(i); } });
+  });
+  renderDetails();
+}
+function pickNode(i){
+  if (i > progress.unlocked){ toast("info","That door is still locked", `Finish "${LEVELS[i-1].name}" first.`); beep(200,.12,"square",.05); return; }
+  if (i === selected){ startLevel(i); return; }
+  renderMap(i);
+  const n = $("map").querySelector(`.node[data-i="${i}"]`); if (n) n.focus();
+}
+function renderDetails(){
+  const lv = LEVELS[selected], st = progress.stars[selected]||0, done = !!progress.stars[selected];
+  const qn = BANK.filter(q=>lv.topics.includes(q.t)).length;
+  $("details").innerHTML = `
+    <div>
+      <p class="eyebrow">Level ${selected+1} · ${lv.rooms.length} rooms · ${qn} questions${done?" · Done":""}</p>
+      <h2>${esc(lv.name)}</h2>
+      <div class="topics">Topics: ${lv.topics.map(esc).join(", ")}</div>
+      <div class="feat">${levelFeatures(lv).map(([t,c])=>`<span class="${c}">${esc(t)}</span>`).join("")}</div>
+    </div>
+    <div class="side">
+      <div class="stars" aria-label="${st} of 3 stars">${"★".repeat(st)}<span class="off">${"★".repeat(3-st)}</span></div>
+      <button id="playBtn">${done ? "Play again" : "Play level " + (selected+1)}</button>
+    </div>`;
+  $("playBtn").onclick = ()=>startLevel(selected);
+}
+let resetArmed = false;
+$("resetBtn").onclick = ()=>{
+  if (!resetArmed){ resetArmed = true; $("resetBtn").textContent = "Tap again to reset"; setTimeout(()=>{ resetArmed=false; $("resetBtn").textContent="Reset progress"; }, 3000); return; }
+  progress = {unlocked:0, stars:{}, best:{}}; saveProgress(); resetArmed = false; $("resetBtn").textContent = "Reset progress"; renderMap(0);
+};
+
+/* ==================================================================
+   Shooting & effects
+   ================================================================== */
+const ray = new THREE.Raycaster();
+const center = new THREE.Vector2(0,0);
+function aim(){
+  ray.setFromCamera(center, camera);
+  const list = [];
+  L.boards.forEach(b=>{ if (b.userData.alive) b.children.forEach(c=>{ if (c.userData.board) list.push(c); }); });
+  L.enemies.forEach(e=>{ if (!e.dead) e.g.children.forEach(c=>list.push(c)); });
+  for (const m of L.statics) list.push(m);
+  return ray.intersectObjects(list, false)[0] || null;
+}
+let lastShot = 0;
+const partGeo = new THREE.SphereGeometry(.09,6,6);
+const shotGeo = {goo:new THREE.SphereGeometry(.13,10,10), heat:new THREE.CylinderGeometry(.05,.05,1.1,6), sonic:new THREE.TorusGeometry(.3,.06,6,18)};
+const shotMat = {goo:new THREE.MeshBasicMaterial({color:WEAPONS.goo.color}), heat:new THREE.MeshBasicMaterial({color:WEAPONS.heat.color}), sonic:new THREE.MeshBasicMaterial({color:WEAPONS.sonic.color, transparent:true, opacity:.85})};
+function shoot(){
+  if (mode !== "play" || !L) return;
+  const w = WEAPONS[L.weapon], now = performance.now();
+  if (now - lastShot < w.rate) return; lastShot = now;
+  sfx[L.weapon]();
+  const hit = aim();
+  const dir = new THREE.Vector3(); camera.getWorldDirection(dir);
+  const from = camera.position.clone().add(dir.clone().multiplyScalar(.6)).add(new THREE.Vector3(0,-.25,0));
+  const to = hit ? hit.point.clone() : camera.position.clone().add(dir.clone().multiplyScalar(40));
+  const m = new THREE.Mesh(shotGeo[L.weapon], shotMat[L.weapon]);
+  m.position.copy(from);
+  if (L.weapon==="heat") m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir);
+  if (L.weapon==="sonic") m.lookAt(to);
+  L.g.add(m);
+  L.shots.push({m, from, to, t:0, dur:Math.max(.06, from.distanceTo(to)/w.speed), weapon:L.weapon,
+    board: hit && hit.object.userData.board || null, enemy: hit && hit.object.userData.enemy || null});
+}
+function burst(pos, color, n=26, power=1){
+  if (!L) return;
+  const mat = new THREE.MeshBasicMaterial({color, transparent:true});
+  for (let i=0;i<n;i++){
+    const m = new THREE.Mesh(partGeo, mat);
+    m.position.copy(pos);
+    const v = new THREE.Vector3(rand(-4,4)*power, rand(1,7)*power, rand(-4,4)*power);
+    L.particles.push({m, v}); L.g.add(m);
+  }
+  L.particles.push({mat, life:1, isMat:true});
+}
+
+/* ==================================================================
+   Input
+   ================================================================== */
+function applyLook(){ camera.rotation.y = yaw; camera.rotation.x = pitch; }
+const keys = {};
+let pointerLockOK = !isTouch, dragLook = false, mouseDown = false, dragDist = 0;
+function lockPointer(){
+  if (isTouch || !pointerLockOK) return;
+  try {
+    const p = renderer.domElement.requestPointerLock && renderer.domElement.requestPointerLock();
+    if (p && p.catch) p.catch(()=>fallbackToDrag());
+  } catch(e){ fallbackToDrag(); }
+}
+function fallbackToDrag(){
+  if (dragLook) return;
+  pointerLockOK = false; dragLook = true;
+  $("pauseHint").textContent = "Drag to look · Click or F to shoot · Arrow keys turn · WASD move · Space jump · P pause";
+}
+document.addEventListener("pointerlockerror", fallbackToDrag);
+document.addEventListener("pointerlockchange", ()=>{
+  if (!document.pointerLockElement && mode === "play" && pointerLockOK) pause();
+});
+document.addEventListener("mousemove", e=>{
+  if (mode !== "play" || isTouch) return;
+  if (document.pointerLockElement){ yaw -= e.movementX*.0022; pitch -= e.movementY*.0022; }
+  else if (dragLook && mouseDown){ yaw -= e.movementX*.004; pitch -= e.movementY*.004; dragDist += Math.abs(e.movementX)+Math.abs(e.movementY); }
+  else return;
+  pitch = clamp(pitch,-1.3,1.3); applyLook();
+});
+renderer.domElement.addEventListener("mousedown", e=>{
+  if (isTouch || mode !== "play") return;
+  if (document.pointerLockElement){ if (e.button===0) shoot(); return; }
+  if (pointerLockOK){ lockPointer(); return; }
+  mouseDown = true; dragDist = 0;
+});
+document.addEventListener("mouseup", ()=>{ if (mouseDown && dragLook && dragDist < 6 && mode==="play") shoot(); mouseDown = false; });
+renderer.domElement.addEventListener("wheel", e=>{ if (mode==="play"){ e.preventDefault(); cycleWeapon(); } }, {passive:false});
+document.addEventListener("keydown", e=>{
+  keys[e.code] = true;
+  if (mode !== "play") return;
+  if (e.code==="Space"){ e.preventDefault(); P.jumpBuf = .15; }
+  if (e.code==="KeyF" || e.code==="Enter") { e.preventDefault(); shoot(); }
+  if (e.code==="Digit1") selectWeapon("goo");
+  if (e.code==="Digit2") selectWeapon("heat");
+  if (e.code==="Digit3") selectWeapon("sonic");
+  if (e.code==="KeyQ") cycleWeapon();
+  if (e.code==="KeyP" || (e.code==="Escape" && !document.pointerLockElement)) pause();
+  if (e.code.startsWith("Arrow")) e.preventDefault();
+});
+document.addEventListener("keyup", e=>{ keys[e.code] = false; });
+window.addEventListener("blur", ()=>{ for (const k in keys) keys[k] = false; if (mode==="play" && !isTouch) pause(); });
+
+// Touch controls
+const stick = {id:null, x:0, y:0, cx:0, cy:0}, look = {id:null, x:0, y:0};
+const stickEl = $("stick"), knob = $("knob");
+stickEl.addEventListener("touchstart", e=>{
+  e.preventDefault(); const t = e.changedTouches[0], r = stickEl.getBoundingClientRect();
+  stick.id = t.identifier; stick.cx = r.left+r.width/2; stick.cy = r.top+r.height/2; moveStick(t);
+}, {passive:false});
+function moveStick(t){
+  let dx = t.clientX-stick.cx, dy = t.clientY-stick.cy; const d = Math.hypot(dx,dy), max = 45;
+  if (d > max){ dx *= max/d; dy *= max/d; }
+  stick.x = dx/max; stick.y = dy/max; knob.style.transform = `translate(${dx}px,${dy}px)`;
+}
+renderer.domElement.addEventListener("touchstart", e=>{
+  if (mode !== "play") return; e.preventDefault();
+  for (const t of e.changedTouches) if (look.id === null){ look.id = t.identifier; look.x = t.clientX; look.y = t.clientY; }
+}, {passive:false});
+document.addEventListener("touchmove", e=>{
+  for (const t of e.changedTouches){
+    if (t.identifier === stick.id){ e.preventDefault(); moveStick(t); }
+    else if (t.identifier === look.id){
+      e.preventDefault();
+      yaw -= (t.clientX-look.x)*.006; pitch -= (t.clientY-look.y)*.006;
+      pitch = clamp(pitch,-1.3,1.3); applyLook(); look.x = t.clientX; look.y = t.clientY;
+    }
+  }
+}, {passive:false});
+document.addEventListener("touchend", e=>{
+  for (const t of e.changedTouches){
+    if (t.identifier === stick.id){ stick.id = null; stick.x = stick.y = 0; knob.style.transform = ""; }
+    if (t.identifier === look.id) look.id = null;
+  }
+});
+let fireHeld = false;
+$("fire").addEventListener("touchstart", e=>{ e.preventDefault(); fireHeld = true; shoot(); }, {passive:false});
+$("fire").addEventListener("touchend", ()=>{ fireHeld = false; });
+$("jump").addEventListener("touchstart", e=>{ e.preventDefault(); P.jumpBuf = .15; }, {passive:false});
+$("pauseT").addEventListener("touchstart", e=>{ e.preventDefault(); pause(); }, {passive:false});
+
+/* ==================================================================
+   Update loop
+   ================================================================== */
+function resize(){ const w = innerWidth, h = innerHeight; renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+addEventListener("resize", resize); resize();
+const clock = new THREE.Clock();
+const tmpV = new THREE.Vector3();
+
+function updatePlayer(dt){
+  // moving platforms first (they carry the player)
+  for (const mv of L.movers){
+    const x = mv.baseX + Math.sin(L.t*mv.speed + mv.phase)*mv.amp, dx = x - mv.lastX; mv.lastX = x;
+    mv.p.mesh.position.x += dx; mv.p.col.min.x += dx; mv.p.col.max.x += dx;
+    if (P.ground === mv.p.col) P.pos.x += dx;
+  }
+  let f=0, s=0, turn=0;
+  if (keys.KeyW) f+=1; if (keys.KeyS) f-=1; if (keys.KeyD) s+=1; if (keys.KeyA) s-=1;
+  if (keys.ArrowUp) f+=1; if (keys.ArrowDown) f-=1;
+  if (keys.ArrowLeft) turn+=1; if (keys.ArrowRight) turn-=1;
+  if (stick.id !== null){ f -= stick.y; s += stick.x; }
+  const mag = Math.hypot(f,s); if (mag > 1){ f/=mag; s/=mag; }
+  if (turn){ yaw += turn*dt*2.2; applyLook(); }
+  const vx = (-Math.sin(yaw)*f + Math.cos(yaw)*s)*SPEED + P.kx;
+  const vz = (-Math.cos(yaw)*f - Math.sin(yaw)*s)*SPEED + P.kz;
+  P.kx *= Math.pow(.02, dt); P.kz *= Math.pow(.02, dt);
+  P.pos.x += vx*dt; P.pos.z += vz*dt;
+  pushOut(P.pos, P.r, P.H, P.grounded);
+  P.jumpBuf -= dt;
+  if (P.jumpBuf > 0 && (P.grounded || L.t - P.lastGround < .12) && P.vy <= 0){ P.vy = JUMP_V; P.jumpBuf = 0; P.grounded = false; P.lastGround = -9; sfx.jump(); }
+  verticalMove(dt);
+  pushOut(P.pos, P.r, P.H, false);
+  P.inv = Math.max(0, P.inv - dt);
+  // acid
+  if (P.pos.y < -1.4){
+    const room = curRoom();
+    sfx.splash(); flash("acid");
+    toast("bad", "Splash! Acid!", "You lost a heart. Try the jump again.");
+    P.pos.copy(room.spawn); P.vy = 0; P.kx = P.kz = 0; yaw = 0; applyLook();
+    L.streak = 0; loseHeart(1);
+  }
+  const moving = (f||s) && P.grounded;
+  camera.position.set(P.pos.x, P.pos.y + P.eye + (moving && !reduceMotion ? Math.sin(L.t*11)*.04 : 0), P.pos.z);
+}
+
+function updateRooms(dt){
+  const room = curRoom();
+  const next = L.rooms[L.cur+1];
+  if (next && room.door.open && P.pos.z < next.zEntry - 1.9) activateRoom(L.cur+1);
+  if (!next && room.door.open && P.pos.z < L.exitZ) completeLevel();
+  // doors animate
+  for (const r of L.rooms){
+    const d = r.door, target = d.open ? 1 : 0;
+    d.t += clamp(target - d.t, -dt*1.6, dt*1.6);
+    d.mesh.position.y = d.baseY + d.t*3.75;
+    d.col.min.y = d.t*3.75; d.col.max.y = 3.7 + d.t*3.75;
+    d.col.active = d.t < .6;
+    d.lamp.material.color.setHex(d.open ? 0x2fbf71 : 0xe5484d);
+  }
+  // hidden-weapon hint
+  if (room.rd.weapon && !room.weaponFound){
+    room.weaponTimer += dt;
+    if (room.weaponTimer > 28 && !room.hinted){ room.hinted = true; toast("info", `Hint: the ${WEAPONS[room.rd.weapon].name} is nearby`, room.hideHint, 4200); }
+  }
+  if (L.portal){ L.portal.rotation.z += dt*1.5; }
+}
+
+function updateBoards(dt){
+  for (const b of L.boards){
+    const u = b.userData;
+    if (u.dying){
+      u.dying -= dt*3; b.scale.setScalar(Math.max(.001, u.dying)); b.rotation.z += dt*6;
+      if (u.dying <= 0){ L.g.remove(b); u.gone = true; }
+      continue;
+    }
+    u.spawn = Math.min(1, u.spawn + dt*2.5);
+    const sc = u.spawn*(2-u.spawn);
+    b.scale.setScalar(sc);
+    if (u.hitFlash > 0){ u.hitFlash -= dt; b.position.x = u.baseX + Math.sin(L.t*80)*.06; }
+    else b.position.x = u.baseX + (u.drift ? Math.sin(L.t*.8*u.drift + u.phase)*1.3 : 0);
+    b.position.y = u.baseY + (reduceMotion ? 0 : Math.sin(L.t*1.4+u.phase)*.22);
+    tmpV.set(camera.position.x, b.position.y, camera.position.z);
+    b.lookAt(tmpV);
+  }
+  L.boards = L.boards.filter(b=>!b.userData.gone);
+}
+
+function updateEnemies(dt){
+  const room = curRoom();
+  const chest = tmpV.set(P.pos.x, P.pos.y + 1.1, P.pos.z).clone();
+  for (const e of room.enemies){
+    if (e.dead) continue;
+    e.t += dt;
+    if (e.flash > 0){ e.flash -= dt; e.body.material.emissive && e.body.material.emissive.setHex(e.flash>0 ? 0x888888 : 0); }
+    const dx = P.pos.x - e.pos.x, dz = P.pos.z - e.pos.z, dist = Math.hypot(dx,dz) || .001;
+    if (e.type === "germ"){
+      if (e.windup > 0){
+        e.windup -= dt;
+        e.g.scale.setScalar(1 + (.45-e.windup)*.8);
+        e.body.material.color.setHex(0xff6a55);
+        if (e.windup <= 0){
+          if (dist < 2.1 && Math.abs(P.pos.y - e.pos.y) < 1.6) hurtPlayer(1, e.pos.x, e.pos.z);
+          e.cd = 1.3; e.g.scale.setScalar(1); e.body.material.color.setHex(0x6fdc4a);
+        }
+      } else {
+        e.cd -= dt;
+        if (dist < 1.5 && e.cd <= 0 && Math.abs(P.pos.y - e.pos.y) < 1.6){ e.windup = .45; beep(260,.3,"square",.04,200); }
+        else if (dist > 1.1){
+          const sp = e.speed*dt, mx = dx/dist*sp, mz = dz/dist*sp;
+          const tryMove = (nx, nz) => {
+            nx = clamp(nx, -RW+.7, RW-.7); nz = clamp(nz, room.zFar+.8, room.zEntry-.8);
+            const g = groundAt(nx, nz, e.pos.y + .5);
+            if (g === null || g < e.pos.y - .6 || blockedAt(nx, nz, g)) return false;
+            e.pos.x = nx; e.pos.z = nz; e.pos.y = g; return true;
+          };
+          if (!tryMove(e.pos.x+mx, e.pos.z+mz)){ if (!tryMove(e.pos.x+mx, e.pos.z)) tryMove(e.pos.x, e.pos.z+mz); }
+        }
+      }
+      e.g.position.set(e.pos.x, e.pos.y + .65 + Math.abs(Math.sin(e.t*6))*.15, e.pos.z);
+      e.g.lookAt(P.pos.x, e.g.position.y, P.pos.z);
+    } else {
+      // drone: hover at a distance, strafe, fire slow orbs
+      let want = 0;
+      if (dist > 11) want = 1; else if (dist < 7) want = -1;
+      if (Math.random() < dt*.3) e.strafe *= -1;
+      const sp = 2.6*dt;
+      e.pos.x += (dx/dist*want + (-dz/dist)*e.strafe*.8)*sp;
+      e.pos.z += (dz/dist*want + (dx/dist)*e.strafe*.8)*sp;
+      e.pos.x = clamp(e.pos.x, -RW+1, RW-1); e.pos.z = clamp(e.pos.z, room.zFar+1, room.zEntry-1);
+      e.pos.y = 3.4 + Math.sin(e.t*2)*.4;
+      e.g.position.copy(e.pos);
+      e.g.lookAt(chest);
+      e.props.forEach((p,i)=>p.rotation.y += dt*30*(i?1:-1));
+      if (e.windup > 0){
+        e.windup -= dt; e.eye.scale.setScalar(1 + (.6-e.windup)*1.6);
+        if (e.windup <= 0){
+          e.eye.scale.setScalar(1); sfx.zap();
+          const from = e.g.position.clone();
+          const v = chest.clone().sub(from).normalize().multiplyScalar(7.5 + L.li*.35);
+          const m = new THREE.Mesh(new THREE.SphereGeometry(.2,10,8), ownMat(new THREE.MeshBasicMaterial({color:0xff3344})));
+          m.position.copy(from); L.g.add(m);
+          L.eshots.push({m, v, life:4});
+          e.cd = Math.max(1.4, 2.8 - L.li*.12) + rand(0,.6);
+        }
+      } else {
+        e.cd -= dt;
+        if (e.cd <= 0 && dist < 22){ e.windup = .6; beep(1200,.4,"sine",.03,-600); }
+      }
+    }
+  }
+  // enemy projectiles
+  for (let i=L.eshots.length-1;i>=0;i--){
+    const s = L.eshots[i];
+    s.m.position.addScaledVector(s.v, dt); s.life -= dt;
+    const hitP = s.m.position.distanceTo(chest) < .7;
+    if (hitP) hurtPlayer(1, s.m.position.x - s.v.x, s.m.position.z - s.v.z);
+    if (hitP || s.life <= 0 || pointInCollider(s.m.position)){
+      if (!hitP) burst(s.m.position, 0xff3344, 6, .4);
+      L.g.remove(s.m); L.eshots.splice(i,1);
+    }
+  }
+}
+
+function updatePickups(dt){
+  for (const p of L.pickups){
+    if (p.taken) continue;
+    p.g.rotation.y += dt*2;
+    p.g.position.y = p.baseY + Math.sin(L.t*2.4)*.15;
+    const d = Math.hypot(p.g.position.x - P.pos.x, p.g.position.z - P.pos.z);
+    if (d < 1.1 && Math.abs(p.g.position.y - (P.pos.y+.8)) < 1.6){
+      if (p.kind === "heart"){
+        if (L.hearts >= MAX_HEARTS) continue;
+        L.hearts++; sfx.pickup(); toast("good", "+1 heart!");
+      } else {
+        L.weapons[p.w] = true; L.weapon = p.w; p.room.weaponFound = true; L.score += 150;
+        sfx.pickup();
+        const w = WEAPONS[p.w];
+        banner("New weapon", `${w.name}!`, p.w==="heat" ? `It melts iron-plated boards. Press ${w.key} (or Q) to switch.` : `Its sound waves shatter crystal boards. Press ${w.key} (or Q) to switch.`, 3600);
+      }
+      p.taken = true; L.g.remove(p.g); renderHUD();
+    }
+  }
+}
+
+function updateShots(dt){
+  for (let i=L.shots.length-1;i>=0;i--){
+    const s = L.shots[i];
+    s.t += dt/s.dur;
+    s.m.position.lerpVectors(s.from, s.to, Math.min(1, s.t));
+    if (s.weapon==="sonic") s.m.scale.setScalar(1 + s.t*1.5);
+    if (s.t >= 1){
+      L.g.remove(s.m); L.shots.splice(i,1);
+      if (s.board) onBoardHit(s.board, s.to);
+      else if (s.enemy) onEnemyHit(s.enemy, WEAPONS[s.weapon].dmg, s.to);
+      else burst(s.to, WEAPONS[s.weapon].color, 8, .5);
+    }
+  }
+  for (let i=L.particles.length-1;i>=0;i--){
+    const p = L.particles[i];
+    if (p.isMat){ p.life -= dt*1.15; p.mat.opacity = Math.max(0,p.life); if (p.life <= 0){ p.mat.dispose(); L.particles.splice(i,1); } continue; }
+    p.v.y -= 14*dt; p.m.position.addScaledVector(p.v, dt);
+    p.age = (p.age||0) + dt;
+    if (p.age > .8){ L.g.remove(p.m); L.particles.splice(i,1); }
+  }
+}
+
+let crossEvery = 0;
+function tick(){
+  const dt = Math.min(clock.getDelta(), .05);
+  if (L && mode === "play"){
+    L.t += dt;
+    updatePlayer(dt);
+    if (mode === "play") updateRooms(dt);
+    if (mode === "play") updateEnemies(dt);
+    if (L) { updatePickups(dt); updateBoards(dt); updateShots(dt); }
+    if (fireHeld) shoot();
+    if ((crossEvery = (crossEvery+1)%3) === 0 && L){
+      const h = aim();
+      $("cross").classList.toggle("on-target", !!(h && (h.object.userData.board || h.object.userData.enemy)));
+    }
+  }
+  if (L && mode !== "map") renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+
+/* ==================================================================
+   Boot
+   ================================================================== */
+renderMap(progress.unlocked);
+showScreen("mapScreen");
+tick();
+})();
+</script>
+
+</body></html>

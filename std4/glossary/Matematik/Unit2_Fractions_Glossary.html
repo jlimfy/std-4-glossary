@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分数、小数与百分比 Fractions Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --c5:#5F7410; --ground:#EEF3F6; --grid:#DCE6EC; --paper:#FFFFFF; --ink:#1C2B3A; --muted:#5A6A77; --line:#D3DEE5;
+  --c1:#D9661A; --c2:#2B64D1; --c3:#0F8079; --c4:#B2427A;
+  --sec:var(--c1); --soft:color-mix(in srgb,var(--sec) 18%,var(--paper));
+  --shadow:0 10px 30px rgba(28,43,58,.16);
+  --zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --c5:#B3CB52; --ground:#0F161C; --grid:#18222B; --paper:#17212A; --ink:#E4ECF1; --muted:#96A6B2; --line:#2A3743;
+  --c1:#F08A42; --c2:#6B9BF2; --c3:#3DBDB3; --c4:#E07AAE;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 56px}
+header{margin-bottom:20px}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--display);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;margin-right:.3em}
+.sub{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.voice-note{font-size:13px;color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.search{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 0;outline:none}
+.search:focus-within{border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--ink);width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font:600 14px var(--body);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .zh{font-family:var(--zh)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--sec)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,button:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+.group{margin-bottom:26px}
+.group h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:20px}
+.group h2 .zh{font-family:var(--zh);font-weight:700;color:var(--sec)}
+.group h2 small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{position:relative;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--sec)}
+.card .hz{font-family:var(--zh);font-weight:700;font-size:26px;line-height:1.25;padding-right:36px;word-break:keep-all}
+.card .hz.long{font-size:19px;padding-top:4px;padding-bottom:3px}
+.card .py{color:var(--sec);font-weight:700;font-size:15px}
+.card .en{color:var(--muted);font-size:13px;margin-top:4px}
+body.hide-en .card .en{visibility:hidden}
+.say{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--sec);display:grid;place-items:center;cursor:pointer}
+.say:hover{background:var(--sec);color:var(--paper)}
+.say svg{width:18px;height:18px}
+.empty{color:var(--muted);padding:20px 0}
+footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+dialog{border:0;padding:0;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog::backdrop{background:rgba(10,18,26,.5)}
+.dlg{display:grid;grid-template-columns:1fr 1fr}
+.fig{background:var(--soft);display:grid;place-items:center;padding:20px;border-radius:20px 0 0 20px}
+.fig svg{width:100%;max-width:320px;height:auto}
+.info{padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.info .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec);padding-right:40px}
+.info .hz{font-family:var(--zh);font-weight:700;font-size:40px;line-height:1.15}
+.info .py{font-size:20px;font-weight:700;color:var(--sec)}
+.info .en{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.info .bm{font-size:13px;color:var(--muted)}
+.info .def{margin:0;font-size:16px}
+.info .tip{margin:0;font-size:14px;background:var(--ground);border-radius:10px;padding:8px 10px}
+.info .tip b{color:var(--sec)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:700 14px var(--body);border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--sec);border-color:var(--sec);color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px;border-top:1.5px solid var(--line)}
+.nav .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.page{font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .dlg{grid-template-columns:1fr}
+  .fig{border-radius:20px 20px 0 0;padding:14px}
+  .fig svg{max-width:240px}
+  .info .hz{font-size:32px}
+}
+/* figure styles */
+.s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.a{stroke:var(--sec);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.d{stroke:var(--sec);stroke-width:2.5;fill:none;stroke-dasharray:6 5}
+.fs{fill:color-mix(in srgb,var(--sec) 30%,var(--paper));stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fp{fill:var(--paper);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fa{fill:var(--sec);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fx{fill:none;stroke:var(--sec);stroke-width:2.5}
+.dot{fill:var(--sec)}
+.ink{fill:var(--ink)}
+.t{fill:var(--ink);font:700 13px var(--zh);text-anchor:middle}
+.ta{fill:var(--sec);font:700 14px var(--zh);text-anchor:middle}
+.tn{fill:var(--muted);font:700 10.5px var(--zh);text-anchor:middle}
+.tw{fill:var(--paper);font:700 11px var(--zh);text-anchor:middle}
+.tb{fill:var(--ink);font:700 22px var(--zh);text-anchor:middle}
+.tba{fill:var(--sec);font:700 22px var(--zh);text-anchor:middle}
+.dgr{fill:var(--ink)}
+.dg{fill:var(--paper);font:700 30px ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;font:700 14px var(--body);color:var(--ink);text-decoration:none;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.back:hover{border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="back" href="Std4_Maths_Glossary.html">← <span style="font-family:var(--zh)">所有单元</span> · All units</a>
+  <header>
+    <div class="eyebrow">Matematik Tahun 4 SJKC · 第 2 单元 · pp. 45–82</div>
+    <h1><span class="zh">分数、小数与百分比</span>Fractions, Decimals &amp; Percentages</h1>
+    <p class="sub">Tap a word to see what it means and a picture. Tap the speaker to hear it in Chinese.</p>
+    <div class="voice-note" id="voiceNote" hidden></div>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search: 分数, fenshu, fraction…" autocomplete="off">
+    </label>
+    <label class="toggle" for="hideEn"><input type="checkbox" id="hideEn"> Hide English (test yourself)</label>
+    <label class="toggle" for="slow"><input type="checkbox" id="slow" checked> Slow voice</label>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+  <main id="list"></main>
+  <footer>Terms and page numbers come from Unit 2 of the Standard 4 textbook (Kementerian Pendidikan Malaysia, 2019). Read-aloud uses your device's Chinese voice.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dHz">
+  <button class="close" id="dClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="fig" id="dFig"></div>
+    <div class="info">
+      <div class="tag" id="dTag"></div>
+      <div class="hz" id="dHz"></div>
+      <div class="py" id="dPy"></div>
+      <div class="row">
+        <button class="btn primary" id="dSayZh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>中文</button>
+        <button class="btn" id="dSayEn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>English</button>
+      </div>
+      <div class="en" id="dEn"></div>
+      <div class="bm" id="dBm"></div>
+      <p class="def" id="dDef"></p>
+      <p class="tip" id="dTip" hidden></p>
+      <div class="page" id="dPg"></div>
+      <div class="nav">
+        <button class="btn" id="dPrev">← Back</button>
+        <span class="count" id="dCount"></span>
+        <button class="btn" id="dNext">Next →</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+/* ---------- drawing helpers (viewBox 200×142) ---------- */
+const f1=n=>(+n).toFixed(1);
+const L=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${f1(a)}" y1="${f1(b)}" x2="${f1(c)}" y2="${f1(d)}"${st?` style="${st}"`:''}/>`;
+const R=(x,y,w,h,k='fp',rx=0)=>`<rect class="${k}" x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" rx="${rx}"/>`;
+const PA=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const T=(x,y,s,k='t')=>`<text class="${k}" x="${f1(x)}" y="${f1(y)}">${s}</text>`;
+const DOT=(x,y,r=5,k='dot')=>`<circle class="${k}" cx="${f1(x)}" cy="${f1(y)}" r="${r}"/>`;
+const rad=d=>d*Math.PI/180;
+
+function clock(h,m,hi,label){
+  const cx=100,cy=64,r=54;let o=`<circle class="${hi==='face'?'fs':'fp'}" cx="${cx}" cy="${cy}" r="${r}" style="stroke-width:3"/>`;
+  for(let i=0;i<60;i++){const a=rad(i*6-90),big=i%5===0;o+=L(cx+(r-(big?7:3))*Math.cos(a),cy+(r-(big?7:3))*Math.sin(a),cx+(r-1)*Math.cos(a),cy+(r-1)*Math.sin(a),'s',big?'stroke-width:2':'stroke-width:1');}
+  for(let i=1;i<=12;i++){const a=rad(i*30-90);o+=T(cx+38*Math.cos(a),cy+38*Math.sin(a)+4,i,hi==='face'?'t':'tn');}
+  if(h!=null){
+    const ha=rad(((h%12)+m/60)*30-90),ma=rad(m*6-90);
+    o+=L(cx,cy,cx+26*Math.cos(ha),cy+26*Math.sin(ha),hi==='h'?'a':'s',hi==='h'?'stroke-width:7':'stroke-width:6');
+    o+=L(cx,cy,cx+42*Math.cos(ma),cy+42*Math.sin(ma),hi==='m'?'a':'s',hi==='m'?'stroke-width:5':'stroke-width:3.5');
+    o+=DOT(cx,cy,4,'ink');
+  }
+  if(label)o+=T(100,137,label,'ta');
+  return o;
+}
+function digital(big,label,small){
+  return R(22,30,156,62,'dgr',12)+T(100,72,big,'dg')+(small?T(100,114,small,'t'):'')+(label?T(100,136,label,'ta'):'');
+}
+function dayBar(mode){
+  const y=54,h=26;let o='';
+  o+=R(28,y,72,h,mode==='am'?'fa':'fs',0)+R(100,y,72,h,mode==='pm'?'fa':'fs',0);
+  o+=T(64,y+18,'上午 a.m.',mode==='am'?'tw':'t')+T(136,y+18,'下午 p.m.',mode==='pm'?'tw':'t');
+  // sun & moon
+  o+=`<circle class="fp" cx="100" cy="30" r="9"/>`+PA('M100 15 V11 M100 45 V49 M85 30 H81 M115 30 H119','s');
+  o+=PA('M34 20 a10 10 0 1 0 12 14 a8 8 0 0 1 -12 -14 z','fp')+PA('M166 20 a10 10 0 1 1 -12 14 a8 8 0 0 0 12 -14 z','fp');
+  const mk=(x,txt,sub,on)=>L(x,y-4,x,y+h+4,on?'a':'s',on?'stroke-width:5':'')+T(x,y+h+20,txt,on?'ta':'t')+T(x,y+h+34,sub,'tn');
+  o+=mk(28,'午夜','0000 时',mode==='mid')+mk(100,'正午','1200 时',mode==='noon')+mk(172,'午夜','',mode==='mid');
+  return o;
+}
+function timeline(pts,arcs,below){
+  // pts: [{x,label,sub,on}] arcs: [{x1,x2,label}]
+  let o=L(14,78,186,78,'s');
+  for(const a of arcs){o+=PA(`M${a.x1} 72 Q${(a.x1+a.x2)/2} ${72-(a.h||34)} ${a.x2} 72`,'a')+T((a.x1+a.x2)/2,72-(a.h||34)/2-4,a.label,'ta');}
+  for(const p of pts){o+=L(p.x,72,p.x,84,'s')+(p.on?DOT(p.x,78,6):'')+T(p.x,100,p.label,p.on?'ta':'t')+(p.sub?T(p.x,113,p.sub,'tn'):'');}
+  if(below)o+=T(100,136,below,'ta');
+  return o;
+}
+function cells(n,cols,opt={}){
+  const W=opt.w||170,x0=(200-W)/2,cw=W/cols,ch=opt.ch||cw,y0=opt.y||30;let o='';
+  for(let i=0;i<n;i++){const c=i%cols,r=Math.floor(i/cols),on=opt.hi?opt.hi(i):true;
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fs');
+    if(opt.lab)o+=T(x0+c*cw+cw/2,y0+r*ch+ch/2+4,opt.lab(i),on?'tw':'tn');}
+  return o;
+}
+function cal(n,hi,ring){
+  const x0=16,cw=24,ch=18,y0=30;let o='';
+  '日一二三四五六'.split('').forEach((d,i)=>o+=T(x0+i*cw+cw/2,y0-6,d,i===0?'ta':'t'));
+  for(let i=0;i<n;i++){const c=i%7,r=Math.floor(i/7),on=hi&&hi(i);
+    o+=R(x0+c*cw,y0+r*ch,cw,ch,on?'fa':'fp');
+    o+=T(x0+c*cw+cw/2,y0+r*ch+13,i+1,on?'tw':'tn');
+    if(ring===i+1)o+=`<circle class="fx" cx="${x0+c*cw+cw/2}" cy="${y0+r*ch+9}" r="11" style="stroke-width:3"/>`;}
+  return o;
+}
+function vcalc(head,op,rows,res,notes,extra=''){
+  const c1=100,c2=150;let o=T(c1,18,head[0],'tn')+T(c2,18,head[1],'tn');
+  let y=40;rows.forEach((r,i)=>{if(i===rows.length-1)o+=T(58,y,op,'tb');o+=T(c1,y,r[0],'tb')+T(c2,y,r[1],'tb');y+=22;});
+  o+=L(48,y-14,176,y-14,'s');
+  o+=T(c1,y+10,res[0],'tb')+T(c2,y+10,res[1],'tb');
+  let ny=y+32;if(rows.length===2)ny=114;(notes||[]).forEach(n=>{o+=T(100,ny,n[0],n[1]||'ta');ny+=16;});
+  return o+extra;
+}
+function bars(rows){
+  // rows: [{y,label,parts:[{w,text,on}]}]
+  let o='';for(const r of rows){let x=64;o+=T(32,r.y+17,r.label,'t');
+    for(const p of r.parts){o+=R(x,r.y,p.w,24,p.on?'fa':'fs',3)+T(x+p.w/2,r.y+16,p.text,p.on?'tw':'tn');x+=p.w;}}
+  return o;
+}
+
+/* ---------- question-word helpers ---------- */
+const qT=(x,y,s,k='t',st='')=>`<text class="${k}" x="${x}" y="${y}"${st?` style="${st}"`:''}>${s}</text>`;
+const qR=(x,y,w,h,k,rx=3)=>`<rect class="${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const qL=(a,b,c,d,k='s',st='')=>`<line class="${k}" x1="${a}" y1="${b}" x2="${c}" y2="${d}"${st?` style="${st}"`:''}/>`;
+const qP=(d,k='s')=>`<path class="${k}" d="${d}"/>`;
+const qC=(x,y,r,k)=>`<circle class="${k}" cx="${x}" cy="${y}" r="${r}"/>`;
+function qText(big,lines,sz=26){let o=qT(100,46,big,'ta',`font-size:${sz}px`);let y=82;lines.forEach(l=>{o+=qT(100,y,l[0],l[1]||'t');y+=24;});return o;}
+function qBar(y,label,w,k,txt){return qT(32,y+16,label,'t')+qR(56,y,w,24,k)+(txt?qT(56+w/2,y+16,txt,k==='fa'?'tw':'tn'):'');}
+function qCmp(mode){
+  const la=mode==='short'?'M':'A',lb=mode==='short'?'N':'B';
+  let o=qBar(26,la,130,'fa')+qBar(68,lb,90,'fs')+qR(146,68,40,24,'d');
+  const lab={more:'多',less:'少',diff:'相差',short:'短'}[mode];
+  if(mode==='diff')o+=qL(146,104,186,104,'a')+qL(146,98,146,110,'a','stroke-width:2')+qL(186,98,186,110,'a','stroke-width:2')+qT(166,122,lab,'ta');
+  else o+=qT(166,114,lab,'ta');
+  const bottom={more:'A 比 B 多',less:'B 比 A 少',diff:'A 和 B 相差多少？',short:'N 比 M 短'}[mode];
+  return o+qT(100,138,bottom,'t');
+}
+function qLine(pts,arc,bottom){
+  let o=qL(16,78,184,78,'s');
+  if(arc)o+=qP(`M${arc[0]} 70 Q${(arc[0]+arc[1])/2} ${arc[3]||34} ${arc[1]} 70`,'a')+qT((arc[0]+arc[1])/2,(arc[3]||34)+18,arc[2],'ta');
+  pts.forEach(p=>{o+=qC(p[0],78,6,p[2]?'dot':'ink')+qT(p[0],100,p[1],'t');});
+  return o+(bottom?qT(100,134,bottom,'ta'):'');
+}
+function qFrac(n,hi,big,bottom){
+  const w=150/n;let o='';for(let i=0;i<n;i++)o+=qR(25+i*w,34,w,44,i<hi?'fa':'fs',0);
+  return o+qT(100,108,big,'ta','font-size:18px')+qT(100,134,bottom,'t');
+}
+function qTable(){
+  let o='';const rows=[['时间','节目'],['10:15','A'],['12:45','B']];
+  rows.forEach((r,i)=>r.forEach((c,j)=>{o+=qR(40+j*60,22+i*26,60,26,i===0?'fa':'fp',0)+qT(70+j*60,40+i*26,c,i===0?'tw':'t');}));
+  return o+qT(100,124,'下表 = 下面的表格','ta');
+}
+function qPic(){return qR(46,20,108,78,'fp',6)+qP('M60 86 L88 50 L108 74 L122 60 L142 86 Z','fs')+qC(128,40,9,'fa')+qT(100,124,'下图 = 下面的图','ta');}
+function qCut(n){let o=qR(30,30,140,56,'fs',4);for(let i=1;i<n;i++)o+=qL(30+i*140/n,26,30+i*140/n,90,'a','stroke-dasharray:6 5;stroke-width:2.5');return o;}
+
+function fr(x,y,n,d,k='tb',sz=26,w){w=w||sz*1.2;return `<text class="${k}" x="${x}" y="${y-5}" style="font-size:${sz}px">${n}</text>`+L(x-w/2,y+2,x+w/2,y+2,k==='tba'?'a':'s','stroke-width:2.5')+`<text class="${k}" x="${x}" y="${y+sz+4}" style="font-size:${sz}px">${d}</text>`;}
+function frC(x,y,n,d,kn,kd,sz=30){return `<text class="${kn}" x="${x}" y="${y-5}" style="font-size:${sz}px">${n}</text>`+L(x-20,y+2,x+20,y+2,'s','stroke-width:3')+`<text class="${kd}" x="${x}" y="${y+sz+4}" style="font-size:${sz}px">${d}</text>`;}
+function pie(cx,cy,r,n,k){let o='';for(let i=0;i<n;i++){const a1=rad(i*360/n-90),a2=rad((i+1)*360/n-90);o+=PA(`M${cx} ${cy} L${f1(cx+r*Math.cos(a1))} ${f1(cy+r*Math.sin(a1))} A${r} ${r} 0 0 1 ${f1(cx+r*Math.cos(a2))} ${f1(cy+r*Math.sin(a2))} Z`,i<k?'fa':'fp');}return o;}
+function barF(x,y,w,h,n,k){let o='';for(let i=0;i<n;i++)o+=R(x+i*w/n,y,w/n,h,i<k?'fa':'fp');return o;}
+const BT=(x,y,s,k='tb',sz=26)=>`<text class="${k}" x="${x}" y="${y}" style="font-size:${sz}px">${s}</text>`;
+function place(digits,hi){
+  const heads=['个位','十分位','百分位','千分位'],x0=20,cw=40;let o='';
+  heads.forEach((h,i)=>{o+=R(x0+i*cw+(i?16:0),24,cw,26,i===hi?'fa':'fs',0)+T(x0+i*cw+(i?16:0)+cw/2,41,h,i===hi?'tw':'tn');
+    o+=R(x0+i*cw+(i?16:0),50,cw,40,'fp',0)+BT(x0+i*cw+(i?16:0)+cw/2,80,digits[i],i===hi?'tba':'tb',24);});
+  o+=DOT(x0+cw+8,84,4,'ink');return o;
+}
+function eqParts(parts,labels,hi){
+  let o='',x=100-(parts.length-1)*18;parts.forEach((p,i)=>{o+=BT(x+i*36,62,p,i===hi?'tba':'tb',22);if(labels[i])o+=T(x+i*36,92,labels[i],i===hi?'ta':'tn');});return o;
+}
+function grid100(n,hi){let o='';for(let i=0;i<100;i++){const c=i%10,r=Math.floor(i/10);o+=R(55+c*9,12+r*9,9,9,i<hi?'fa':'fp',0).replace('class="fp"','class="fp" style="stroke-width:.8"').replace('class="fa"','class="fa" style="stroke-width:.8"');}return o;}
+function boxes(n,x,y,k,s=20,g=4){let o='';for(let i=0;i<n;i++)o+=R(x+i*(s+g),y,s,s,typeof k==='function'?k(i):k,3);return o;}
+const F={
+  fraction:()=>pie(62,62,40,4,3)+fr(150,56,'3','4')+T(100,132,'4 份中的 3 份','ta'),
+  num:()=>frC(70,60,'3','4','tba','tb')+T(140,46,'← 分子','ta')+T(140,66,'取了几份','t')+T(100,132,'分数线上面的数','t'),
+  den:()=>frC(70,60,'3','4','tb','tba')+T(140,94,'← 分母','ta')+T(140,114,'分成几份','t')+T(100,138,'分数线下面的数','t'),
+  proper:()=>fr(40,50,'3','4','tba')+barF(76,40,110,30,4,3)+T(100,110,'分子 < 分母','ta')+T(100,132,'比 1 小','t'),
+  improper:()=>fr(34,50,'4','3','tba')+barF(64,24,120,26,3,3)+barF(64,58,120,26,3,1)+T(100,110,'分子 ≥ 分母','ta')+T(100,132,'等于或大于 1','t'),
+  mixed:()=>BT(30,66,'1','tba',34)+fr(56,50,'1','3','tba',20)+barF(84,24,100,26,3,3)+barF(84,58,100,26,3,1)+T(100,110,'整数 + 真分数','ta')+T(100,132,'1 又 1/3','t'),
+  whole:()=>BT(100,70,'0, 1, 2, 3 …','tb',28)+T(100,106,'没有分数，也没有小数','ta'),
+  convert:()=>fr(56,50,'4','3')+BT(100,66,'→','ta',26)+BT(136,66,'1','tba',30)+fr(158,50,'1','3','tba',20)+T(100,112,'4 ÷ 3 = 1 余 1','t')+T(100,134,'化为：变成另一种写法','ta'),
+  simplest:()=>fr(50,50,'2','4')+BT(90,66,'=','tb')+fr(130,50,'1','2','tba')+T(170,66,'✓','ta')+T(100,132,'不能再约简','ta'),
+  reduce:()=>fr(50,50,'5','10')+T(98,50,'÷ 5','tn')+BT(98,72,'→','ta')+fr(146,50,'1','2','tba')+T(100,132,'分子分母同除以一个数','t'),
+  expand:()=>fr(50,50,'3','5')+T(98,50,'× 20','tn')+BT(98,72,'→','ta')+fr(146,50,'60','100','tba',24,40)+T(100,132,'分子分母同乘一个数','t'),
+  multiple:()=>T(100,34,'4 的倍数','ta')+[4,8,12,16,20].map((n,i)=>R(18+i*34,48,30,30,'fs',6)+T(33+i*34,68,n,'t')).join('')+T(100,106,'4 × 1, 4 × 2, 4 × 3 …','tn')+T(100,132,'乘出来的数','t'),
+  lcm:()=>T(24,40,'4：','t')+[4,8,12,16].map((n,i)=>T(58+i*34,40,n,n===12?'ta':'t')).join('')+T(24,76,'6：','t')+[6,12,18,24].map((n,i)=>T(58+i*34,76,n,n===12?'ta':'t')).join('')+`<circle class="fx" cx="126" cy="36" r="13"/><circle class="fx" cx="92" cy="72" r="13"/>`+T(100,120,'最小公倍数是 12','ta'),
+  commonden:()=>fr(40,40,'1','6','tb',20)+T(66,56,'+','t')+fr(92,40,'1','4','tb',20)+fr(40,96,'2','12','tba',20,26)+T(66,112,'+','t')+fr(92,96,'3','12','tba',20,26)+T(150,112,'分母一样','ta'),
+  unlike:()=>frC(60,50,'1','6','tb','tba',28)+BT(100,64,'+','tb')+frC(140,50,'1','4','tb','tba',28)+T(100,132,'分母不一样','ta'),
+  like:()=>frC(60,50,'2','12','tb','tba',28)+BT(100,64,'+','tb')+frC(140,50,'3','12','tb','tba',28)+T(100,132,'分母一样：分子直接相加','ta'),
+  gcf:()=>T(100,34,'5 和 10 的公约数','ta')+[1,5].map((n,i)=>`<circle class="fs" cx="${80+i*40}" cy="68" r="17"/>`+T(80+i*40,73,n,'t')).join('')+T(100,112,'都能整除 5 和 10','t')+T(100,134,'5 ÷ 5 = 1，10 ÷ 5 = 2','tn'),
+  regroup:()=>BT(40,66,'2','tb',34)+BT(80,66,'→','ta',24)+BT(118,66,'1','tba',34)+fr(146,50,'7','7','tba',20)+T(100,106,'把 1 个整数拆成 7/7','t')+T(100,132,'重组退 1','ta'),
+  of:()=>boxes(10,12,44,i=>i<2?'fa':'fs',14,3.5).replace(/rx="3"/g,'rx="7"')+T(100,24,'10 的 1/5','ta')+T(100,96,'的 = ×','ta')+T(100,124,'1/5 × 10 = 2','t'),
+  decimal:()=>barF(20,34,160,34,10,3)+BT(100,104,'0.3','tba',30)+T(100,132,'10 份中的 3 份','t'),
+  point:()=>BT(100,74,'12.5','tb',46)+`<circle class="fx" cx="113" cy="70" r="9" style="stroke-width:3"/>`+T(100,112,'这一点是小数点','ta')+T(100,134,'读作“点”','t'),
+  dp3:()=>BT(100,62,'0.234','tb',40)+L(86,74,150,74,'a')+T(118,94,'3 个数字','ta')+T(100,130,'三位小数','t'),
+  place:()=>place(['0','2','3','4'],-1)+T(100,118,'每个数字所在的位置','ta')+T(100,136,'0.234','t'),
+  value:()=>place(['0','2','3','4'],2)+T(100,118,'3 的数值是 0.03','ta')+T(100,136,'数字 × 它的数位','t'),
+  tenths:()=>place(['0','2','3','4'],1)+T(100,120,'十分位：0.1','ta'),
+  hundredths:()=>place(['0','2','3','4'],2)+T(100,120,'百分位：0.01','ta'),
+  thousandths:()=>place(['0','2','3','4'],3)+T(100,120,'千分位：0.001','ta'),
+  align:()=>['1.250','1.800','2.375'].map((s,i)=>`<text class="tb" x="120" y="${36+i*28}" style="text-anchor:end;font-size:22px;font-family:ui-monospace,Menlo,Consolas,monospace">${s}</text>`).join('')+L(68,16,68,96,'d')+T(40,92,'+','tb')+L(40,100,150,100,'s')+T(100,130,'小数点对齐','ta'),
+  zero:()=>BT(50,66,'1.8','tb',30)+BT(92,66,'→','ta',24)+BT(148,66,'1.800','tb',30).replace('>1.800<','>1.8<tspan class="tba" style="font-size:30px">00</tspan><')+T(100,108,'大小不变','ta')+T(100,132,'补 0 方便对齐','t'),
+  exact:()=>T(100,40,'0.75 ÷ 6 = 0.125 ✓','t')+T(100,64,'除尽：没有余数','ta')+T(100,98,'2.2 ÷ 7 = 0.3142…','t')+T(100,122,'不能除尽','tn'),
+  round:()=>BT(100,50,'0.3142…','tb',26)+BT(100,82,'↓','ta',20)+BT(100,112,'0.314','tba',26)+T(100,136,'4 以下舍，5 以上入','t'),
+  sum:()=>eqParts(['1.2','+','1.8','=','3'],['','','','','和'],4)+T(100,128,'加起来的答案','t'),
+  product:()=>eqParts(['4','×','1.2','=','4.8'],['','','','','积'],4)+T(100,128,'乘出来的答案','t'),
+  quotient:()=>eqParts(['6.3','÷','3','=','2.1'],['被除数','','除数','','商'],4)+T(100,128,'除出来的答案','t'),
+  dividend:()=>eqParts(['6.3','÷','3','=','2.1'],['被除数','','除数','','商'],0)+T(100,128,'被分的数','t'),
+  divisor:()=>eqParts(['6.3','÷','3','=','2.1'],['被除数','','除数','','商'],2)+T(100,128,'用来除的数','t'),
+  move:()=>BT(52,66,'0.845','tb',24)+T(52,96,'× 10','tn')+BT(100,66,'→','ta',20)+BT(150,66,'8.45','tba',24)+PA('M42 72 q8 10 16 0','a')+T(100,130,'小数点向右移 1 位','ta'),
+  percent:()=>grid100(100,60)+T(100,122,'100 格中的 60 格','t')+T(100,140,'60%','ta'),
+  sign:()=>BT(100,86,'%','tba',70)+T(100,124,'百分号：读作“百分之”','t'),
+  square:()=>grid100(100,0)+T(100,122,'100 个小格','t')+T(100,140,'1 格 = 1%','ta'),
+  share:()=>{let o='';for(let i=0;i<25;i++)o+=R(55+(i%5)*18,12+Math.floor(i/5)*18,18,18,i<8?'fa':'fp',0);return o+T(100,122,'8 格占 25 格的 32%','ta')+T(100,140,'占：是全部的多少','t');},
+  greater:()=>BT(100,64,'5 > 3','tb',34)+T(100,98,'5 大于 3','ta')+T(100,130,'开口向着大的数','t'),
+  smaller:()=>BT(100,64,'3 < 5','tb',34)+T(100,98,'3 小于 5','ta')+T(100,130,'开口向着大的数','t'),
+  altogether:()=>boxes(3,24,40,'fa',30,6)+BT(142,64,'+','tb')+boxes(1,156,40,'fs',30)+PA('M24 84 q0 10 10 10 h60 q10 0 10 10 q0 -10 10 -10 h60 q10 0 10 -10','a')+T(100,128,'一共 = 全部加起来','ta'),
+  left:()=>barF(20,40,160,34,4,1)+R(60,40,120,34,'d',0)+T(40,62,'用了','tw')+T(120,62,'还剩下','ta')+T(100,112,'减去用掉的','t'),
+  more:()=>qCmp('more'), longer:()=>qCmp('short').replace('N 比 M 短','M 比 N 长').replace('>短<','>长<'),
+  times4:()=>T(28,44,'M','t')+boxes(1,48,28,'fa',22)+T(28,90,'L','t')+boxes(4,48,74,'fa',22)+T(100,128,'L 是 M 的 4 倍 → × 4','ta'),
+  more4:()=>T(28,44,'M','t')+boxes(1,48,28,'fa',22)+T(28,90,'N','t')+boxes(5,48,74,i=>i?'fs':'fa',22)+T(160,66,'多 4 倍','ta')+T(100,128,'比 M 多 4 倍 → × 5','ta'),
+  whatfrac:()=>pie(60,60,36,5,2)+T(140,36,'几分之几？','ta')+fr(140,70,'2','5','tba',20)+T(100,128,'用分数回答','t'),
+  correct:()=>T(60,60,'✓','ta').replace('class="ta"','class="ta" style="font-size:40px"')+T(140,60,'✗','tb').replace('class="tb"','class="tb" style="font-size:40px"')+T(60,96,'正确','ta')+T(140,96,'不正确','t')+T(100,130,'这说明正确吗？','t'),
+  average:()=>barF(20,40,160,34,3,3)+T(100,62,'6.3 m','tw')+T(100,106,'平均分成 3 份','ta')+T(100,130,'每份 2.1 m','t'),
+  check:()=>T(100,40,'6.3 ÷ 3 = 2.1','t')+T(100,70,'验算','tn')+T(100,96,'2.1 × 3 = 6.3 ✓','ta')+T(100,128,'用另一个方法检查答案','t'),
+  each:()=>[0,1,2,3].map(i=>R(18+i*44,40,36,50,'fs',8)+T(36+i*44,70,'1.2 l','tn')).join('')+T(100,114,'每瓶 1.2 l','ta')+T(100,136,'每一个都一样','t'),
+  original:()=>R(30,40,140,34,'fs',4)+T(100,62,'原有：RM540','t')+PA('M100 82 v12','a')+T(100,112,'一开始有的','ta')+T(100,134,'用掉之前','t'),
+  giveto:()=>boxes(10,12,34,i=>i<2?'fa':'fs',14,3.5).replace(/rx="3"/g,'rx="7"')+PA('M26 60 q20 30 60 30','a')+T(130,96,'分给弟弟','ta')+T(100,130,'拿一些给别人','t'),
+  among:()=>boxes(10,12,34,i=>i<3?'fa':'fs',14,3.5).replace(/rx="3"/g,'rx="7"')+T(100,86,'20 个苹果，其中 10% 是烂的','t')+T(100,120,'其中：在这些里面','ta'),
+  ltr:()=>T(100,48,'3/4 − 1/10 + 1/2','t')+PA('M40 64 H160','a')+PA('M152 58 L162 64 L152 70','a')+T(100,96,'先算左边，再算右边','ta')+T(100,128,'从左至右依序计算','t')
+};
+/* ---------- glossary data ---------- */
+const SECTIONS=[
+  {id:'frac',zh:'分数',py:'fēn shù',en:'Fractions',color:'--c1',pg:'pp. 45–57'},
+  {id:'dec',zh:'小数',py:'xiǎo shù',en:'Decimals',color:'--c2',pg:'pp. 58–67'},
+  {id:'pct',zh:'百分比',py:'bǎi fēn bǐ',en:'Percentages',color:'--c3',pg:'pp. 68–71'},
+  {id:'q',zh:'题目用语',py:'tí mù yòng yǔ',en:'Words in questions',color:'--c5',pg:'pp. 45–82'}
+];
+const TERMS=[
+ // fractions
+ {s:'frac',zh:'分数',py:'fēn shù',en:'fraction',bm:'pecahan',pg:45,f:'fraction',def:'A number that shows part of a whole, like 3/4.'},
+ {s:'frac',zh:'分子',py:'fēn zǐ',en:'numerator',bm:'pengangka',pg:46,f:'num',def:'The top number of a fraction. It tells how many parts you take.'},
+ {s:'frac',zh:'分母',py:'fēn mǔ',en:'denominator',bm:'penyebut',pg:46,f:'den',def:'The bottom number of a fraction. It tells how many equal parts the whole is cut into.'},
+ {s:'frac',zh:'真分数',py:'zhēn fēn shù',en:'proper fraction',bm:'pecahan wajar',pg:45,f:'proper',def:'A fraction where the numerator is smaller than the denominator, like 3/4. It is less than 1.'},
+ {s:'frac',zh:'假分数',py:'jiǎ fēn shù',en:'improper fraction',bm:'pecahan tak wajar',pg:46,f:'improper',def:'A fraction where the numerator is the same as or bigger than the denominator, like 4/3.',tip:'When numerator = denominator, the fraction equals 1.'},
+ {s:'frac',zh:'带分数',py:'dài fēn shù',en:'mixed number',bm:'nombor bercampur',pg:46,f:'mixed',def:'A whole number and a proper fraction together, like 1⅓.'},
+ {s:'frac',zh:'整数',py:'zhěng shù',en:'whole number',bm:'nombor bulat',pg:46,f:'whole',def:'A number with no fraction or decimal part, like 0, 1, 2, 3.'},
+ {s:'frac',zh:'化为',py:'huà wéi',en:'change into / convert to',bm:'tukar kepada',pg:46,f:'convert',def:'Write the same amount in a different form.',tip:'例：假分数化为带分数 · 分数化为百分比'},
+ {s:'frac',zh:'最简分数',py:'zuì jiǎn fēn shù',en:'simplest form',bm:'pecahan dalam bentuk termudah',pg:49,f:'simplest',def:'A fraction that can’t be simplified any more, like 1/2.',tip:'别忘了把答案约成最简分数。'},
+ {s:'frac',zh:'约简',py:'yuē jiǎn',en:'simplify',bm:'permudahkan',pg:51,f:'reduce',def:'Divide the numerator and denominator by the same number to make the fraction simpler. Also 约分.'},
+ {s:'frac',zh:'扩分',py:'kuò fēn',en:'make an equivalent fraction',bm:'pecahan setara',pg:68,f:'expand',def:'Multiply the numerator and denominator by the same number. The value stays the same.',tip:'3/5 = 60/100 = 60%'},
+ {s:'frac',zh:'倍数',py:'bèi shù',en:'multiple',bm:'gandaan',pg:48,f:'multiple',def:'The numbers you get when you multiply a number by 1, 2, 3 …',tip:'4 的倍数：4, 8, 12, 16 …'},
+ {s:'frac',zh:'最小公倍数',py:'zuì xiǎo gōng bèi shù',en:'lowest common multiple',bm:'gandaan sepunya terkecil',pg:48,f:'lcm',def:'The smallest number that is a multiple of both numbers. Used to find a common denominator.'},
+ {s:'frac',zh:'公分母',py:'gōng fēn mǔ',en:'common denominator',bm:'penyebut sepunya',pg:53,f:'commonden',def:'The same denominator for two fractions, so you can add or subtract them. Changing to it is called 通分.'},
+ {s:'frac',zh:'异分母',py:'yì fēn mǔ',en:'different denominators',bm:'penyebut berbeza',pg:48,f:'unlike',def:'Fractions whose denominators are not the same. Change them to a common denominator first.'},
+ {s:'frac',zh:'同分母',py:'tóng fēn mǔ',en:'same denominators',bm:'penyebut sama',pg:48,f:'like',def:'Fractions with the same denominator. Just add or subtract the numerators.'},
+ {s:'frac',zh:'公约数',py:'gōng yuē shù',en:'common factor',bm:'faktor sepunya',pg:54,f:'gcf',def:'A number that divides exactly into both numbers. Used to simplify.'},
+ {s:'frac',zh:'重组',py:'chóng zǔ',en:'regroup',bm:'kumpul semula',pg:50,f:'regroup',def:'Change 1 whole into a fraction, like 1 = 7/7, so you can subtract.',tip:'例：2 − 3/7：把 2 重组退 1 → 1 7/7 − 3/7'},
+ {s:'frac',zh:'的',py:'de',en:'of (means ×)',bm:'daripada (darab)',pg:54,f:'of',def:'In fraction questions, “的” means multiply.',tip:'10 的 1/5 = 1/5 × 10 = 2'},
+ // decimals
+ {s:'dec',zh:'小数',py:'xiǎo shù',en:'decimal',bm:'perpuluhan',pg:58,f:'decimal',def:'A number with a decimal point, like 0.3. It shows parts of a whole in tenths, hundredths or thousandths.'},
+ {s:'dec',zh:'小数点',py:'xiǎo shù diǎn',en:'decimal point',bm:'titik perpuluhan',pg:58,f:'point',def:'The dot in a decimal. It separates the whole number from the parts.'},
+ {s:'dec',zh:'三位小数',py:'sān wèi xiǎo shù',en:'3 decimal places',bm:'tiga tempat perpuluhan',pg:58,f:'dp3',def:'A decimal with three digits after the decimal point, like 0.234.',tip:'0.234 读作“零点二三四”。'},
+ {s:'dec',zh:'数位',py:'shù wèi',en:'place (of a digit)',bm:'nilai tempat',pg:58,f:'place',def:'The position of a digit in a number.'},
+ {s:'dec',zh:'数值',py:'shù zhí',en:'value (of a digit)',bm:'nilai digit',pg:58,f:'value',def:'How much a digit is worth in its place.'},
+ {s:'dec',zh:'十分位',py:'shí fēn wèi',en:'tenths place',bm:'persepuluh',pg:58,f:'tenths',def:'The first place after the decimal point. Each unit is 0.1.'},
+ {s:'dec',zh:'百分位',py:'bǎi fēn wèi',en:'hundredths place',bm:'perseratus',pg:58,f:'hundredths',def:'The second place after the decimal point. Each unit is 0.01.'},
+ {s:'dec',zh:'千分位',py:'qiān fēn wèi',en:'thousandths place',bm:'perseribu',pg:58,f:'thousandths',def:'The third place after the decimal point. Each unit is 0.001.'},
+ {s:'dec',zh:'对齐',py:'duì qí',en:'line up',bm:'menyusun sejajar',pg:59,f:'align',def:'Write numbers so the decimal points are in a straight column.',tip:'小数点要对齐！'},
+ {s:'dec',zh:'补 0',py:'bǔ líng',en:'add zeros',bm:'tambah sifar',pg:58,f:'zero',def:'Write extra 0s at the end of a decimal to help line up. The value does not change.',tip:'1.8 = 1.80 = 1.800'},
+ {s:'dec',zh:'除尽',py:'chú jìn',en:'divide exactly',bm:'dibahagi tepat',pg:64,f:'exact',def:'A division with no remainder at the end. 不能除尽 means it keeps going.'},
+ {s:'dec',zh:'四舍五入',py:'sì shě wǔ rù',en:'rounding',bm:'membundarkan',pg:64,f:'round',def:'Rounding a number: if the next digit is 0–4, drop it; if it is 5–9, add 1.',tip:'When division doesn’t end, round the answer to 3 decimal places.'},
+ {s:'dec',zh:'和',py:'hé',en:'sum',bm:'hasil tambah',pg:59,f:'sum',def:'The answer to an addition.'},
+ {s:'dec',zh:'积',py:'jī',en:'product',bm:'hasil darab',pg:62,f:'product',def:'The answer to a multiplication.',tip:'A decimal × a whole number: the product has the same number of decimal places.'},
+ {s:'dec',zh:'商',py:'shāng',en:'quotient',bm:'hasil bahagi',pg:64,f:'quotient',def:'The answer to a division.',tip:'商的小数点要和被除数的小数点对齐。'},
+ {s:'dec',zh:'被除数',py:'bèi chú shù',en:'dividend',bm:'nombor yang dibahagi',pg:64,f:'dividend',def:'The number being divided.'},
+ {s:'dec',zh:'除数',py:'chú shù',en:'divisor',bm:'pembahagi',pg:65,f:'divisor',def:'The number you divide by.'},
+ {s:'dec',zh:'移动',py:'yí dòng',en:'move (the decimal point)',bm:'mengalihkan',pg:63,f:'move',def:'× 10, 100, 1 000: the decimal point moves right. ÷ 10, 100, 1 000: it moves left. One place for each 0.'},
+ // percentages
+ {s:'pct',zh:'百分比',py:'bǎi fēn bǐ',en:'percentage',bm:'peratus',pg:68,f:'percent',def:'A part out of 100, like 60%.',tip:'60% = 60/100'},
+ {s:'pct',zh:'百分号',py:'bǎi fēn hào',en:'percent sign (%)',say:'percent sign',bm:'simbol peratus',pg:68,f:'sign',def:'The sign % means “out of 100”. 60% is read 百分之六十.'},
+ {s:'pct',zh:'百格图',py:'bǎi gé tú',en:'hundred square',bm:'petak seratus',pg:68,f:'square',def:'A 10 × 10 grid of 100 small squares. Each square is 1%.'},
+ {s:'pct',zh:'占',py:'zhàn',en:'make up / take up',bm:'merangkumi',pg:70,f:'share',def:'How much of the whole something is.',tip:'例：计算红色的卷笔刀所占的百分比。'},
+ {s:'pct',zh:'大于',py:'dà yú',en:'greater than',bm:'lebih besar daripada',pg:71,f:'greater',def:'Bigger than. The sign is >.',tip:'当分子大于分母时，百分比大于 100%。'},
+ {s:'pct',zh:'小于',py:'xiǎo yú',en:'smaller than',bm:'lebih kecil daripada',pg:71,f:'smaller',def:'Smaller than. The sign is <.',tip:'当分子小于分母时，百分比小于 100%。'},
+ // question words
+ {s:'q',zh:'一共',py:'yí gòng',en:'altogether',bm:'kesemuanya',pg:49,f:'altogether',def:'Everything added together.',tip:'例：一共回收了多少 kg 的资源？'},
+ {s:'q',zh:'还剩下',py:'hái shèng xià',en:'how much is left',bm:'berapa baki',pg:50,f:'left',def:'What remains after some is used or taken. Subtract.',tip:'例：他锯掉 2/3 m 后，还剩下多长？'},
+ {s:'q',zh:'比……多',py:'bǐ … duō',en:'more than',bm:'lebih daripada',pg:73,f:'more',def:'The first amount is bigger by this much. Add.',tip:'例：伟明比楷贤多调制了 ¼ 杯。'},
+ {s:'q',zh:'比……长',py:'bǐ … cháng',en:'longer than',bm:'lebih panjang daripada',pg:74,f:'longer',def:'The first length is longer by this much. The opposite is 比……短 (shorter than).'},
+ {s:'q',zh:'……的 4 倍',py:'… de sì bèi',en:'4 times as much as',say:'four times as much as',bm:'4 kali ganda',pg:75,f:'times4',def:'Four times the amount. Multiply by 4.',tip:'例：L 石头的质量是 M 石头的 4 倍 → × 4'},
+ {s:'q',zh:'多……倍',py:'duō … bèi',en:'… times more than',bm:'lebih … kali ganda',pg:75,f:'more4',def:'Careful! “比 M 多 4 倍” means M plus 4 more Ms, so it is 5 times M.',tip:'的 4 倍 → × 4 · 多 4 倍 → × 5'},
+ {s:'q',zh:'几分之几',py:'jǐ fēn zhī jǐ',en:'what fraction',bm:'berapa pecahan',pg:69,f:'whatfrac',def:'Asks you to answer with a fraction.',tip:'例：华文书籍占全部书籍的几分之几？'},
+ {s:'q',zh:'正确',py:'zhèng què',en:'correct / true',bm:'betul',pg:72,f:'correct',def:'Right. The opposite is 不正确 (not correct).',tip:'例：这说明正确吗？ → Is this statement true?'},
+ {s:'q',zh:'平均',py:'píng jūn',en:'on average / equally',bm:'purata / sama rata',pg:64,f:'average',def:'Shared out so each part is the same.',tip:'例：平均 1 个灯笼会用多长的铁线？'},
+ {s:'q',zh:'验算',py:'yàn suàn',en:'check the answer',bm:'semak jawapan',pg:55,f:'check',def:'Work it out another way to make sure your answer is right.'},
+ {s:'q',zh:'每',py:'měi',en:'each / every',bm:'setiap',pg:62,f:'each',def:'Every one is the same amount.',tip:'例：每瓶果汁 1.2 l。'},
+ {s:'q',zh:'原有',py:'yuán yǒu',en:'had at first',bm:'asalnya ada',pg:55,f:'original',def:'The amount at the start, before anything was used or added.',tip:'例：我的储蓄原有多少钱？'},
+ {s:'q',zh:'分给',py:'fēn gěi',en:'give (a share) to',bm:'beri kepada',pg:54,f:'giveto',def:'Give part of something to someone.',tip:'例：其中的 1/5 分给弟弟。'},
+ {s:'q',zh:'其中',py:'qí zhōng',en:'of these / among them',bm:'antaranya',pg:54,f:'among',def:'Points to a part inside a bigger group.',tip:'例：100 个卷笔刀中有 72 个是红色的。'},
+ {s:'q',zh:'从左至右',py:'cóng zuǒ zhì yòu',en:'from left to right',bm:'dari kiri ke kanan',pg:52,f:'ltr',def:'Work out a mixed + and − sum in order from left to right.'}
+];
+
+const COMMON=new Set(["比……多", "比……少", "比……小", "比……长", "比……短", "比……长 / 比……短", "比……早", "相差", "差", "多于", "少于", "大于", "小于", "多于 / 大于", "少于 / 小于", "……的 2 倍", "……的 3 倍", "……的 4 倍", "……的 N 倍", "多……倍", "多 N 倍", "最多", "最少", "最大", "最高 / 最矮", "最多 / 最少", "最大 / 最小", "是否", "是否大于", "一共", "共", "一共 / 共", "总", "总额", "总和", "总 / 总额 / 总和", "加起来", "每", "各", "数量", "平均", "剩下", "剩余", "还剩下", "剩下 / 剩余", "至少", "足以", "介于……至……", "超出", "相同", "一样", "相同 / 一样", "相等", "与……相等", "计算", "写出", "解答", "填写", "绘制", "证明", "验算", "以……为单位", "根据", "分别", "尝试法", "多少", "下图显示", "下表显示", "所示", "说明", "正确", "正确 / 不正确", "不完整", "一半", "三分之一", "四分之一", "几分之几", "平分", "平分成", "分成", "切成", "分成 / 切成", "份", "量词", "袋", "张", "盒 / 瓶 / 袋", "本 / 张 / 卷", "支 / 条 / 件", "叠 / 块 / 台"]);
+/* ---------- speech ---------- */
+const synth=window.speechSynthesis;let voices=[];
+const note=document.getElementById('voiceNote');
+function loadVoices(){ if(!synth)return; voices=synth.getVoices()||[];
+  if(voices.length && !voices.some(v=>/^zh|cmn/i.test(v.lang))){note.textContent='No Chinese voice was found on this device — add one in your system’s language/speech settings to hear 中文.';note.hidden=false;}
+  else note.hidden=true;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+else{note.textContent='Read-aloud isn’t supported in this browser.';note.hidden=false;}
+function pickVoice(lang){
+  const pref=lang==='zh'?[/zh[-_]CN/i,/zh[-_]SG/i,/cmn/i,/^zh/i]:[/en[-_](GB|SG|US)/i,/^en/i];
+  for(const r of pref){const v=voices.find(v=>r.test(v.lang));if(v)return v;}
+  return null;
+}
+function speak(text,lang){
+  if(!synth)return; synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='zh'?'zh-CN':'en-GB';
+  const v=pickVoice(lang); if(v)u.voice=v;
+  u.rate=document.getElementById('slow').checked?(lang==='zh'?0.7:0.85):1;
+  synth.speak(u);
+}
+
+/* ---------- render ---------- */
+const spk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+const secById=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+let filter='all',query='',visible=[];
+const chips=document.getElementById('chips'),list=document.getElementById('list');
+function chip(id,label){return `<button class="chip" data-f="${id}" aria-pressed="${filter===id}" ${id!=='all'?`style="--sec:var(${secById[id].color})"`:''}>${id!=='all'?'<span class="dot"></span>':''}${label}</button>`;}
+function renderChips(){chips.innerHTML=chip('all','All · 全部')+SECTIONS.map(s=>chip(s.id,`<span class="zh">${s.zh}</span> ${s.en}`)).join('');}
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[\s’']+/g,'');
+function renderList(){
+  const q=norm(query);visible=[];let html='';
+  for(const s of SECTIONS){
+    if(filter!=='all'&&filter!==s.id)continue;
+    const items=TERMS.map((t,i)=>({t,i})).filter(({t})=>t.s===s.id&&(!q||norm(t.zh+t.py+t.en+t.bm).includes(q)));
+    if(!items.length)continue;
+    html+=`<section class="group" style="--sec:var(${s.color});--soft:color-mix(in srgb,var(${s.color}) 16%,var(--paper))"><h2><span class="zh">${s.zh}</span>${s.en}<small>${s.py} · ${s.pg}</small></h2><div class="grid">`+
+      items.map(({t,i})=>{visible.push(i);return `<div class="card" role="button" tabindex="0" data-i="${i}" aria-label="${t.zh} ${t.py}, ${t.en}"><button class="say" data-say="${i}" aria-label="Say ${t.zh}">${spk}</button><span class="hz${t.zh.length>=6?' long':''}">${t.zh}</span><span class="py">${t.py}</span><span class="en">${t.en}</span></div>`}).join('')+`</div></section>`;
+  }
+  list.innerHTML=html||'<p class="empty">No words match that search. Try Chinese, pinyin without tones (e.g. “fenshu”) or English.</p>';
+}
+chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;renderChips();renderList();});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;renderList();});
+document.getElementById('hideEn').addEventListener('change',e=>document.body.classList.toggle('hide-en',e.target.checked));
+list.addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');if(s){e.stopPropagation();speak(TERMS[+s.dataset.say].zh,'zh');return;}
+  const c=e.target.closest('.card');if(c)open(+c.dataset.i);
+});
+list.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(+c.dataset.i);}});
+
+/* ---------- detail dialog ---------- */
+const dlg=document.getElementById('dlg');let cur=0;
+const $=id=>document.getElementById(id);
+function open(i){
+  cur=i;const t=TERMS[i],s=secById[t.s];
+  dlg.style.setProperty('--sec',`var(${s.color})`);
+  dlg.style.setProperty('--soft',`color-mix(in srgb,var(${s.color}) 14%,var(--paper))`);
+  $('dFig').innerHTML=`<svg viewBox="0 0 200 142" role="img" aria-label="Picture of ${t.en}">${F[t.f]()}</svg>`;
+  $('dTag').textContent=`${s.zh} · ${s.en}`;
+  $('dHz').textContent=t.zh;$('dPy').textContent=t.py;$('dEn').textContent=t.en;
+  $('dBm').textContent='BM: '+t.bm;$('dDef').textContent=t.def;
+  $('dTip').hidden=!t.tip;$('dTip').innerHTML=t.tip?('<b>Tip:</b> '+t.tip):'';
+  $('dPg').textContent=(typeof t.pg==='number'?'Textbook page '+t.pg:t.pg)+(COMMON.has(t.zh)?' · 也在「通用词」页里 · also in Common Words':'');
+  const pos=visible.indexOf(i);
+  $('dCount').textContent=pos>=0?`${pos+1} / ${visible.length}`:'';
+  $('dPrev').disabled=pos<=0;$('dNext').disabled=pos<0||pos>=visible.length-1;
+  if(!dlg.open)dlg.showModal();
+}
+function step(d){const pos=visible.indexOf(cur)+d;if(pos>=0&&pos<visible.length)open(visible[pos]);}
+$('dPrev').onclick=()=>step(-1);$('dNext').onclick=()=>step(1);
+$('dClose').onclick=()=>dlg.close();
+$('dSayZh').onclick=()=>speak(TERMS[cur].zh,'zh');
+$('dSayEn').onclick=()=>speak(TERMS[cur].say||TERMS[cur].en,'en');
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+dlg.addEventListener('close',()=>synth&&synth.cancel());
+
+renderChips();renderList();
+})();
+</script>
+
+</body>
+</html>
